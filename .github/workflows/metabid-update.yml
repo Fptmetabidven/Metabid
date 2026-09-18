@@ -1,0 +1,21 @@
+name: MetaBid SharePoint Update
+
+on:
+  repository_dispatch:
+    types: [metabid_update]
+
+permissions:
+  contents: write
+
+jobs:
+  update-metabid:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show SharePoint item received
+        run: |
+          echo "MetaBid update received"
+          echo "Item ID: ${{ github.event.client_payload.itemId }}"
