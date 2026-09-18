@@ -12,94 +12,326 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create data folder
-        run: mkdir -p data
+      - name: Create folders
+        run: |
+          mkdir -p data
+          mkdir -p images
 
-      - name: Update MetaBid inventory
+      - name: Update MetaBid inventory and photo
         env:
           ITEM_ID: ${{ github.event.client_payload.itemId }}
           DESCRIPTION: ${{ github.event.client_payload.description }}
           WEIGHT: ${{ github.event.client_payload.weight }}
           BID_PRICE: ${{ github.event.client_payload.bidPrice }}
           VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
+          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
+          PHOTO_BASE64: ${{ github.event.client_payload.photoBase64 }}
 
         run: |
           python3 <<'PY'
-          import json
+
           import os
+          import json
+          import base64
           from pathlib import Path
 
-          file_path = Path("data/items.json")
 
-          # Load existing inventory
-          if file_path.exists():
+          # ==========================================
+          # VALUES FROM POWER AUTOMATE
+          # ==========================================
+
+          item_id = os.environ.get(
+              "ITEM_ID",
+              ""
+          ).strip()
+
+          description = os.environ.get(
+              "DESCRIPTION",
+              ""
+          )
+
+          weight = os.environ.get(
+              "WEIGHT",
+              ""
+          )
+
+          bid_price = os.environ.get(
+              "BID_PRICE",
+              ""
+          )
+
+          vendor_name = os.environ.get(
+              "VENDOR_NAME",
+              ""
+          )
+
+          photo_filename = os.environ.get(
+              "PHOTO_FILENAME",
+              ""
+          ).strip()
+
+          photo_base64 = os.environ.get(
+              "PHOTO_BASE64",
+              ""
+          ).strip()
+
+
+          # ==========================================
+          # PHOTO
+          # ==========================================
+
+          photo_path = ""
+
+
+          if photo_base64:
+
+              extension = (
+                  Path(photo_filename).suffix.lower()
+                  if photo_filename
+                  else ".png"
+              )
+
+
+              if extension not in [
+                  ".png",
+                  ".jpg",
+                  ".jpeg",
+                  ".gif",
+                  ".webp"
+              ]:
+
+                  extension = ".png"
+
+
+              # Remove previous image for this item
+              # in case its extension changed.
+
+              image_folder = Path("images")
+
+              for existing in image_folder.glob(
+                  f"{item_id}.*"
+              ):
+
+                  existing.unlink()
+
+
+              image_file = (
+                  image_folder /
+                  f"{item_id}{extension}"
+              )
+
+
+              image_bytes = base64.b64decode(
+                  photo_base64
+              )
+
+
+              image_file.write_bytes(
+                  image_bytes
+              )
+
+
+              photo_path = (
+                  f"images/{item_id}{extension}"
+              )
+
+
+              print(
+                  "Saved photo:",
+                  photo_path
+              )
+
+
+          # ==========================================
+          # ITEMS.JSON
+          # ==========================================
+
+          data_file = Path(
+              "data/items.json"
+          )
+
+
+          if data_file.exists():
+
               try:
+
                   items = json.loads(
-                      file_path.read_text(encoding="utf-8")
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
                   )
+
               except Exception:
+
                   items = []
+
           else:
+
               items = []
 
-          if not isinstance(items, list):
+
+          if not isinstance(
+              items,
+              list
+          ):
+
               items = []
 
-          item_id = os.environ.get("ITEM_ID", "").strip()
 
-          item = {
-              "id": item_id,
-              "description": os.environ.get("DESCRIPTION", ""),
-              "weight": os.environ.get("WEIGHT", ""),
-              "bidPrice": os.environ.get("BID_PRICE", ""),
-              "vendorName": os.environ.get("VENDOR_NAME", "")
+          new_item = {
+
+              "id":
+                  item_id,
+
+              "description":
+                  description,
+
+              "weight":
+                  weight,
+
+              "bidPrice":
+                  bid_price,
+
+              "vendorName":
+                  vendor_name,
+
+              "photo":
+                  photo_path
+
           }
 
-          # Replace existing item if the ID already exists
-          updated = False
 
-          for index, existing in enumerate(items):
-              if str(existing.get("id", "")) == item_id:
-                  items[index] = item
-                  updated = True
+          # ==========================================
+          # UPDATE EXISTING ITEM
+          # ==========================================
+
+          found = False
+
+
+          for index, item in enumerate(
+              items
+          ):
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ) == item_id:
+
+                  # If no new photo was sent,
+                  # preserve the existing photo.
+
+                  if (
+                      not photo_path
+                      and item.get("photo")
+                  ):
+
+                      new_item["photo"] = (
+                          item["photo"]
+                      )
+
+
+                  items[index] = (
+                      new_item
+                  )
+
+
+                  found = True
+
                   break
 
-          # Otherwise add it
-          if not updated:
-              items.append(item)
 
-          # Sort by SharePoint ID
-          def sort_key(record):
-              value = str(record.get("id", ""))
+          # ==========================================
+          # ADD NEW ITEM
+          # ==========================================
+
+          if not found:
+
+              items.append(
+                  new_item
+              )
+
+
+          # ==========================================
+          # SORT
+          # ==========================================
+
+          def sort_key(item):
+
+              value = str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              )
 
               if value.isdigit():
-                  return int(value)
+
+                  return int(
+                      value
+                  )
 
               return 999999999
 
-          items.sort(key=sort_key)
 
-          file_path.write_text(
-              json.dumps(items, indent=2),
-              encoding="utf-8"
+          items.sort(
+              key=sort_key
           )
 
-          print(f"Updated MetaBid item {item_id}")
+
+          # ==========================================
+          # SAVE JSON
+          # ==========================================
+
+          data_file.write_text(
+
+              json.dumps(
+                  items,
+                  indent=2
+              ),
+
+              encoding="utf-8"
+
+          )
+
+
+          print(
+              "Updated item:",
+              item_id
+          )
+
           PY
 
-      - name: Commit update
+
+      - name: Commit MetaBid update
         run: |
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
+
+          git config user.name \
+            "MetaBid Automation"
+
+          git config user.email \
+            "actions@github.com"
+
 
           git add data/items.json
+          git add images/
 
-          if git diff --cached --quiet; then
+
+          if git diff --cached --quiet
+          then
+
             echo "No changes to commit."
+
           else
-            git commit -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
+
+            git commit \
+              -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
+
             git push
+
           fi
