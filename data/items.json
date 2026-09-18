@@ -1,9 +1,9 @@
-
+[
   {
-    "id": "48",
-    "description": "Test",
-    "weight": "5",
-    "bidPrice": "500",
-    "vendorName": "abc 124"
+    "id": "49",
+    "description": "Test2",
+    "weight": "400",
+    "bidPrice": "12",
+    "vendorName": "Cde123"
   }
 ]
