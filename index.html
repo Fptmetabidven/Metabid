@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -25,15 +26,15 @@
         }
 
         .page {
-            width: 96%;
+            width: 94%;
             max-width: 1500px;
             margin: 0 auto;
-            padding: 8px 0 40px;
+            padding: 12px 0 40px;
         }
 
-        /* ==========================
+        /* ==============================
            HEADER
-        ========================== */
+        ============================== */
 
         .header {
             text-align: center;
@@ -41,64 +42,56 @@
         }
 
         .logo {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
             display: block;
             margin: 0 auto 2px;
         }
 
-        .header h1 {
+        h1 {
             margin: 0;
-            color: #004d7e;
-            font-size: 27px;
+            color: #005080;
+            font-size: 28px;
         }
 
 
-        /* ==========================
-           MESSAGES
-        ========================== */
+        /* ==============================
+           STATUS
+        ============================== */
 
-        #message {
+        #status {
             display: none;
-            padding: 11px 14px;
-            margin: 10px 0;
+            margin-bottom: 10px;
+            padding: 12px 14px;
             border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
+            font-weight: bold;
         }
 
-        #message.success {
-            display: block;
-            background: #e6f4ea;
-            border: 1px solid #8bc79a;
-            color: #176b2c;
-        }
-
-        #message.error {
+        #status.error {
             display: block;
             background: #fdeaea;
-            border: 1px solid #e59a9a;
-            color: #a31717;
+            border: 1px solid #e39090;
+            color: #a00000;
         }
 
-        #message.info {
+        #status.info {
             display: block;
-            background: #eaf3fb;
-            border: 1px solid #9abddc;
+            background: #eaf3fa;
+            border: 1px solid #98bdd7;
             color: #174f7c;
         }
 
 
-        /* ==========================
+        /* ==============================
            TABLE
-        ========================== */
+        ============================== */
 
         .table-wrap {
             width: 100%;
             overflow-x: auto;
             background: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, .18);
+            box-shadow: 0 2px 5px rgba(0,0,0,.18);
         }
 
         table {
@@ -108,68 +101,67 @@
         }
 
         thead {
-            background: #285f89;
+            background: #28638f;
             color: white;
         }
 
         th {
-            padding: 10px 8px;
-            font-size: 14px;
-            font-weight: bold;
             text-align: left;
+            padding: 11px 12px;
+            font-size: 14px;
             white-space: nowrap;
         }
 
         td {
-            padding: 13px 10px;
+            padding: 15px 12px;
             border-bottom: 1px solid #e7e7e7;
             vertical-align: middle;
             font-size: 14px;
         }
 
         tbody tr:hover {
-            background: #f8fafc;
+            background: #f9fbfc;
         }
 
-        .col-id {
+
+        /* ==============================
+           COLUMNS
+        ============================== */
+
+        .id-col {
             width: 70px;
             text-align: center;
         }
 
-        .col-photo {
-            width: 150px;
+        .photo-col {
+            width: 140px;
             text-align: center;
         }
 
-        .col-description {
-            min-width: 230px;
+        .description-col {
+            min-width: 260px;
         }
 
-        .col-weight {
-            min-width: 120px;
+        .weight-col {
+            min-width: 130px;
         }
 
-        .col-bid {
-            min-width: 175px;
+        .bid-col {
+            min-width: 150px;
         }
 
-        .col-vendor {
+        .vendor-col {
             min-width: 220px;
         }
 
-        .col-action {
-            width: 130px;
-            text-align: center;
-        }
 
-
-        /* ==========================
-           IMAGE
-        ========================== */
+        /* ==============================
+           PHOTO
+        ============================== */
 
         .item-photo {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             object-fit: contain;
             border-radius: 5px;
             display: block;
@@ -177,124 +169,50 @@
         }
 
         .no-photo {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             margin: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #eee;
-            border: 1px solid #ccc;
+            background: #eeeeee;
+            border: 1px solid #cccccc;
             border-radius: 5px;
-            color: #666;
             font-size: 11px;
+            color: #666;
         }
 
 
-        /* ==========================
-           INPUTS
-        ========================== */
-
-        .bid-box {
-            display: flex;
-            align-items: center;
-            width: 150px;
-            background: white;
-            border: 1px solid #aab5bd;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .bid-box:focus-within {
-            border-color: #285f89;
-            box-shadow: 0 0 0 2px rgba(40, 95, 137, .15);
-        }
-
-        .dollar {
-            padding-left: 10px;
-            font-weight: bold;
-            color: #444;
-        }
-
-        .bid-input {
-            width: 100%;
-            border: none;
-            outline: none;
-            padding: 9px 8px;
-            font-size: 14px;
-            text-align: right;
-            background: transparent;
-        }
-
-        .vendor-input {
-            width: 100%;
-            max-width: 240px;
-            padding: 9px 10px;
-            border: 1px solid #aab5bd;
-            border-radius: 4px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .vendor-input:focus {
-            border-color: #285f89;
-            box-shadow: 0 0 0 2px rgba(40, 95, 137, .15);
-        }
-
-
-        /* ==========================
-           BUTTON
-        ========================== */
-
-        .save-button {
-            min-width: 100px;
-            padding: 9px 13px;
-            border: none;
-            border-radius: 4px;
-            background: #285f89;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .save-button:hover {
-            background: #1c4d72;
-        }
-
-        .save-button:disabled {
-            opacity: .65;
-            cursor: default;
-        }
-
-        .save-button.saved {
-            background: #278044;
-        }
-
-        .save-button.failed {
-            background: #b42318;
-        }
-
-
-        /* ==========================
+        /* ==============================
            LOADING
-        ========================== */
+        ============================== */
 
-        .status-row td {
+        .message-row td {
             text-align: center;
             padding: 35px;
             color: #555;
         }
 
 
+        /* ==============================
+           MOBILE
+        ============================== */
+
         @media screen and (max-width: 800px) {
 
             .page {
-                width: 99%;
+                width: 98%;
             }
 
             th,
             td {
                 padding: 8px;
+            }
+
+            .item-photo,
+            .no-photo {
+                width: 55px;
+                height: 55px;
             }
 
         }
@@ -309,9 +227,9 @@
 <div class="page">
 
 
-    <!-- ==========================
+    <!-- ==============================
          HEADER
-    ========================== -->
+    ============================== -->
 
     <div class="header">
 
@@ -319,7 +237,7 @@
             src="logo.png"
             class="logo"
             alt="MetaBid"
-            onerror="this.style.display='none';"
+            onerror="this.style.display='none'"
         >
 
         <h1>MetaBid</h1>
@@ -327,16 +245,16 @@
     </div>
 
 
-    <!-- ==========================
-         MESSAGE AREA
-    ========================== -->
+    <!-- ==============================
+         STATUS
+    ============================== -->
 
-    <div id="message"></div>
+    <div id="status"></div>
 
 
-    <!-- ==========================
-         INVENTORY TABLE
-    ========================== -->
+    <!-- ==============================
+         TABLE
+    ============================== -->
 
     <div class="table-wrap">
 
@@ -346,32 +264,28 @@
 
                 <tr>
 
-                    <th class="col-id">
+                    <th class="id-col">
                         ID
                     </th>
 
-                    <th class="col-photo">
+                    <th class="photo-col">
                         Photo
                     </th>
 
-                    <th class="col-description">
+                    <th class="description-col">
                         Description
                     </th>
 
-                    <th class="col-weight">
+                    <th class="weight-col">
                         Weight
                     </th>
 
-                    <th class="col-bid">
+                    <th class="bid-col">
                         Bid Price
                     </th>
 
-                    <th class="col-vendor">
+                    <th class="vendor-col">
                         Vendor Name
-                    </th>
-
-                    <th class="col-action">
-                        Action
                     </th>
 
                 </tr>
@@ -381,9 +295,9 @@
 
             <tbody id="inventoryBody">
 
-                <tr class="status-row">
+                <tr class="message-row">
 
-                    <td colspan="7">
+                    <td colspan="6">
                         Loading MetaBid inventory...
                     </td>
 
@@ -401,226 +315,111 @@
 <script>
 
 /* ==========================================================
-   POWER AUTOMATE
+   META BID DATA FILE
 
-   Paste the URL from:
-
-   "When an HTTP request is received"
-
-   between the quotes.
+   This is generated automatically by GitHub Actions
+   from the SharePoint data sent by Power Automate.
 ========================================================== */
 
-const FLOW_URL =
-    "PASTE_YOUR_POWER_AUTOMATE_URL_HERE";
+const DATA_FILE = "./data/items.json";
 
 
 /* ==========================================================
-   CALL POWER AUTOMATE
-========================================================== */
-
-async function callFlow(data) {
-
-    if (
-        !FLOW_URL ||
-        FLOW_URL.includes("PASTE_YOUR")
-    ) {
-
-        throw new Error(
-            "Power Automate URL has not been configured."
-        );
-
-    }
-
-
-    /*
-        text/plain is intentional.
-
-        This usually avoids the browser performing
-        an OPTIONS preflight request before sending
-        the POST to Power Automate.
-    */
-
-    const response = await fetch(
-        FLOW_URL,
-        {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type":
-                    "text/plain;charset=UTF-8"
-
-            },
-
-            body:
-                JSON.stringify(data)
-
-        }
-    );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Power Automate returned HTTP " +
-            response.status
-        );
-
-    }
-
-
-    /*
-        Some save responses might not contain JSON.
-    */
-
-    const responseText =
-        await response.text();
-
-
-    if (!responseText) {
-
-        return {};
-
-    }
-
-
-    try {
-
-        return JSON.parse(
-            responseText
-        );
-
-    }
-    catch {
-
-        return {
-            result: responseText
-        };
-
-    }
-
-}
-
-
-/* ==========================================================
-   LOAD SHAREPOINT INVENTORY
+   LOAD INVENTORY
 ========================================================== */
 
 async function loadInventory() {
 
     const body =
-        document.getElementById(
-            "inventoryBody"
-        );
-
-
-    body.innerHTML = `
-
-        <tr class="status-row">
-
-            <td colspan="7">
-
-                Loading MetaBid inventory...
-
-            </td>
-
-        </tr>
-
-    `;
+        document.getElementById("inventoryBody");
 
 
     try {
 
-
         /*
-            Power Automate receives:
-
-            {
-                "action": "loadItems"
-            }
+            Date.now() prevents the browser from
+            holding onto an old cached items.json file.
         */
 
-        const result =
-            await callFlow({
+        const response =
+            await fetch(
+                DATA_FILE + "?v=" + Date.now(),
+                {
+                    cache: "no-store"
+                }
+            );
 
-                action:
-                    "loadItems"
 
-            });
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load " +
+                DATA_FILE +
+                ". HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
 
 
         /*
-            This supports several common Power Automate
-            response formats.
+            Your GitHub Action currently writes:
 
-            Option 1:
+            [
+                {...},
+                {...}
+            ]
+
+            This also supports:
+
             {
                 "items": [...]
             }
-
-            Option 2:
-            {
-                "value": [...]
-            }
-
-            Option 3:
-            [...]
         */
 
         let items = [];
 
 
-        if (
-            result &&
-            Array.isArray(result.items)
-        ) {
+        if (Array.isArray(data)) {
 
-            items =
-                result.items;
+            items = data;
 
         }
         else if (
-            result &&
-            Array.isArray(result.value)
+            data &&
+            Array.isArray(data.items)
         ) {
 
-            items =
-                result.value;
+            items = data.items;
 
         }
-        else if (
-            Array.isArray(result)
-        ) {
+        else {
 
-            items =
-                result;
+            throw new Error(
+                "items.json is not in the expected format."
+            );
 
         }
 
 
-        renderInventory(
-            items
-        );
-
+        renderInventory(items);
 
     }
     catch (error) {
 
-        console.error(
-            "Inventory load error:",
-            error
-        );
+        console.error(error);
 
 
         body.innerHTML = `
 
-            <tr class="status-row">
+            <tr class="message-row">
 
-                <td colspan="7">
-
+                <td colspan="6">
                     Unable to load inventory.
-
                 </td>
 
             </tr>
@@ -628,9 +427,8 @@ async function loadInventory() {
         `;
 
 
-        showMessage(
-            "Could not load the MetaBid inventory.",
-            "error"
+        showError(
+            "Could not load the MetaBid inventory."
         );
 
     }
@@ -639,21 +437,18 @@ async function loadInventory() {
 
 
 /* ==========================================================
-   GET FIELD
+   FIELD HELPER
 
-   Allows different SharePoint / Power Automate names.
+   Allows several possible field names.
 ========================================================== */
 
 function getField(
     item,
-    possibleNames,
+    names,
     fallback = ""
 ) {
 
-    for (
-        const name
-        of possibleNames
-    ) {
+    for (const name of names) {
 
         if (
             Object.prototype.hasOwnProperty.call(
@@ -669,7 +464,6 @@ function getField(
         }
 
     }
-
 
     return fallback;
 
@@ -692,19 +486,14 @@ function renderInventory(items) {
         "";
 
 
-    if (
-        !items ||
-        items.length === 0
-    ) {
+    if (!items.length) {
 
         body.innerHTML = `
 
-            <tr class="status-row">
+            <tr class="message-row">
 
-                <td colspan="7">
-
-                    No inventory items are currently available.
-
+                <td colspan="6">
+                    No MetaBid inventory items found.
                 </td>
 
             </tr>
@@ -716,791 +505,354 @@ function renderInventory(items) {
     }
 
 
-    items.forEach(
-        function(item) {
+    items.forEach(function(item) {
 
 
-            /* ==========================
-               ID
-            ========================== */
+        /* ==============================
+           VALUES
+        ============================== */
 
-            const itemId =
-                getField(
-                    item,
-                    [
-                        "ID",
-                        "Id",
-                        "id",
-                        "itemId",
-                        "ItemID"
-                    ]
-                );
-
-
-            /* ==========================
-               DESCRIPTION
-            ========================== */
-
-            const description =
-                getField(
-                    item,
-                    [
-                        "Description",
-                        "description",
-                        "Title",
-                        "title"
-                    ]
-                );
-
-
-            /* ==========================
-               WEIGHT
-            ========================== */
-
-            const weight =
-                getField(
-                    item,
-                    [
-                        "Weight",
-                        "weight"
-                    ]
-                );
-
-
-            /* ==========================
-               BID PRICE
-            ========================== */
-
-            const bid =
-                getField(
-                    item,
-                    [
-                        "BidPrice",
-                        "Bid Price",
-                        "bidPrice",
-                        "Bid",
-                        "bid"
-                    ],
-                    ""
-                );
-
-
-            /* ==========================
-               VENDOR
-            ========================== */
-
-            const vendor =
-                getField(
-                    item,
-                    [
-                        "VendorName",
-                        "Vendor Name",
-                        "vendorName",
-                        "Vendor",
-                        "vendor"
-                    ],
-                    ""
-                );
-
-
-            /* ==========================
-               PHOTO
-            ========================== */
-
-            let photo =
-                getField(
-                    item,
-                    [
-                        "PhotoURL",
-                        "PhotoUrl",
-                        "photoUrl",
-                        "photo",
-                        "Photo",
-                        "Image",
-                        "image"
-                    ],
-                    ""
-                );
-
-
-            /*
-                Sometimes SharePoint image columns
-                return an object instead of a string.
-
-                Example:
-
-                {
-                    "serverUrl": "...",
-                    "serverRelativeUrl": "..."
-                }
-            */
-
-            if (
-                photo &&
-                typeof photo === "object"
-            ) {
-
-                if (photo.url) {
-
-                    photo =
-                        photo.url;
-
-                }
-                else if (photo.Url) {
-
-                    photo =
-                        photo.Url;
-
-                }
-                else if (
-                    photo.serverUrl &&
-                    photo.serverRelativeUrl
-                ) {
-
-                    photo =
-                        photo.serverUrl +
-                        photo.serverRelativeUrl;
-
-                }
-                else {
-
-                    photo =
-                        "";
-
-                }
-
-            }
-
-
-            /* ==========================
-               ROW
-            ========================== */
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            /* --------------------------
-               ID
-            -------------------------- */
-
-            const idCell =
-                document.createElement(
-                    "td"
-                );
-
-            idCell.className =
-                "col-id";
-
-            idCell.textContent =
-                itemId;
-
-            row.appendChild(
-                idCell
+        const id =
+            getField(
+                item,
+                [
+                    "id",
+                    "ID",
+                    "Id",
+                    "itemId"
+                ]
             );
 
 
-            /* --------------------------
-               PHOTO
-            -------------------------- */
+        const description =
+            getField(
+                item,
+                [
+                    "description",
+                    "Description",
+                    "title",
+                    "Title"
+                ]
+            );
 
-            const photoCell =
+
+        const weight =
+            getField(
+                item,
+                [
+                    "weight",
+                    "Weight"
+                ]
+            );
+
+
+        const bidPrice =
+            getField(
+                item,
+                [
+                    "bidPrice",
+                    "BidPrice",
+                    "Bid Price",
+                    "bid",
+                    "Bid"
+                ]
+            );
+
+
+        const vendorName =
+            getField(
+                item,
+                [
+                    "vendorName",
+                    "VendorName",
+                    "Vendor Name",
+                    "vendor",
+                    "Vendor"
+                ]
+            );
+
+
+        const photo =
+            getField(
+                item,
+                [
+                    "photo",
+                    "Photo",
+                    "photoUrl",
+                    "PhotoURL",
+                    "image",
+                    "Image"
+                ]
+            );
+
+
+        /* ==============================
+           ROW
+        ============================== */
+
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+
+        /* ------------------------------
+           ID
+        ------------------------------ */
+
+        const idCell =
+            document.createElement(
+                "td"
+            );
+
+        idCell.className =
+            "id-col";
+
+        idCell.textContent =
+            id;
+
+        row.appendChild(
+            idCell
+        );
+
+
+        /* ------------------------------
+           PHOTO
+        ------------------------------ */
+
+        const photoCell =
+            document.createElement(
+                "td"
+            );
+
+        photoCell.className =
+            "photo-col";
+
+
+        if (photo) {
+
+            const img =
                 document.createElement(
-                    "td"
+                    "img"
                 );
 
-            photoCell.className =
-                "col-photo";
+            img.className =
+                "item-photo";
+
+            img.src =
+                photo;
+
+            img.alt =
+                "Item " + id;
 
 
-            if (photo) {
+            img.onerror =
+                function() {
 
-                const img =
-                    document.createElement(
-                        "img"
+                    photoCell.innerHTML =
+                        "";
+
+                    addNoPhoto(
+                        photoCell
                     );
 
-                img.className =
-                    "item-photo";
-
-                img.src =
-                    photo;
-
-                img.alt =
-                    "Item " + itemId;
+                };
 
 
-                img.onerror =
-                    function() {
+            photoCell.appendChild(
+                img
+            );
 
-                        photoCell.innerHTML =
-                            "";
+        }
+        else {
 
-                        const missing =
-                            document.createElement(
-                                "div"
-                            );
+            addNoPhoto(
+                photoCell
+            );
 
-                        missing.className =
-                            "no-photo";
-
-                        missing.textContent =
-                            "No Photo";
-
-                        photoCell.appendChild(
-                            missing
-                        );
-
-                    };
+        }
 
 
-                photoCell.appendChild(
-                    img
+        row.appendChild(
+            photoCell
+        );
+
+
+        /* ------------------------------
+           DESCRIPTION
+        ------------------------------ */
+
+        const descriptionCell =
+            document.createElement(
+                "td"
+            );
+
+        descriptionCell.className =
+            "description-col";
+
+        descriptionCell.textContent =
+            description;
+
+        row.appendChild(
+            descriptionCell
+        );
+
+
+        /* ------------------------------
+           WEIGHT
+        ------------------------------ */
+
+        const weightCell =
+            document.createElement(
+                "td"
+            );
+
+        weightCell.className =
+            "weight-col";
+
+        weightCell.textContent =
+            weight;
+
+        row.appendChild(
+            weightCell
+        );
+
+
+        /* ------------------------------
+           BID PRICE
+        ------------------------------ */
+
+        const bidCell =
+            document.createElement(
+                "td"
+            );
+
+        bidCell.className =
+            "bid-col";
+
+
+        if (
+            bidPrice !== "" &&
+            bidPrice !== null
+        ) {
+
+            const numericBid =
+                Number(
+                    String(bidPrice)
+                        .replace(/\$/g, "")
+                        .replace(/,/g, "")
                 );
+
+
+            if (
+                Number.isFinite(
+                    numericBid
+                )
+            ) {
+
+                bidCell.textContent =
+                    numericBid.toLocaleString(
+                        "en-US",
+                        {
+                            style:
+                                "currency",
+
+                            currency:
+                                "USD"
+                        }
+                    );
 
             }
             else {
 
-                const missing =
-                    document.createElement(
-                        "div"
-                    );
-
-                missing.className =
-                    "no-photo";
-
-                missing.textContent =
-                    "No Photo";
-
-                photoCell.appendChild(
-                    missing
-                );
+                bidCell.textContent =
+                    bidPrice;
 
             }
-
-
-            row.appendChild(
-                photoCell
-            );
-
-
-            /* --------------------------
-               DESCRIPTION
-            -------------------------- */
-
-            const descCell =
-                document.createElement(
-                    "td"
-                );
-
-            descCell.className =
-                "col-description";
-
-            descCell.textContent =
-                description;
-
-            row.appendChild(
-                descCell
-            );
-
-
-            /* --------------------------
-               WEIGHT
-            -------------------------- */
-
-            const weightCell =
-                document.createElement(
-                    "td"
-                );
-
-            weightCell.className =
-                "col-weight";
-
-            weightCell.textContent =
-                weight;
-
-            row.appendChild(
-                weightCell
-            );
-
-
-            /* --------------------------
-               BID INPUT
-            -------------------------- */
-
-            const bidCell =
-                document.createElement(
-                    "td"
-                );
-
-            bidCell.className =
-                "col-bid";
-
-
-            const bidBox =
-                document.createElement(
-                    "div"
-                );
-
-            bidBox.className =
-                "bid-box";
-
-
-            const dollar =
-                document.createElement(
-                    "span"
-                );
-
-            dollar.className =
-                "dollar";
-
-            dollar.textContent =
-                "$";
-
-
-            const bidInput =
-                document.createElement(
-                    "input"
-                );
-
-            bidInput.type =
-                "number";
-
-            bidInput.className =
-                "bid-input";
-
-            bidInput.id =
-                "bid-" + itemId;
-
-            bidInput.min =
-                "0";
-
-            bidInput.step =
-                "0.01";
-
-            bidInput.placeholder =
-                "0.00";
-
-
-            if (
-                bid !== "" &&
-                bid !== null
-            ) {
-
-                const cleanBid =
-                    String(bid)
-                        .replace(/\$/g, "")
-                        .replace(/,/g, "")
-                        .trim();
-
-
-                if (
-                    cleanBid !== "" &&
-                    !isNaN(
-                        Number(cleanBid)
-                    )
-                ) {
-
-                    bidInput.value =
-                        Number(cleanBid);
-
-                }
-
-            }
-
-
-            bidBox.appendChild(
-                dollar
-            );
-
-            bidBox.appendChild(
-                bidInput
-            );
-
-            bidCell.appendChild(
-                bidBox
-            );
-
-            row.appendChild(
-                bidCell
-            );
-
-
-            /* --------------------------
-               VENDOR INPUT
-            -------------------------- */
-
-            const vendorCell =
-                document.createElement(
-                    "td"
-                );
-
-            vendorCell.className =
-                "col-vendor";
-
-
-            const vendorInput =
-                document.createElement(
-                    "input"
-                );
-
-            vendorInput.type =
-                "text";
-
-            vendorInput.className =
-                "vendor-input";
-
-            vendorInput.id =
-                "vendor-" + itemId;
-
-            vendorInput.placeholder =
-                "Enter vendor name";
-
-            vendorInput.maxLength =
-                150;
-
-            vendorInput.value =
-                vendor;
-
-
-            vendorCell.appendChild(
-                vendorInput
-            );
-
-            row.appendChild(
-                vendorCell
-            );
-
-
-            /* --------------------------
-               SAVE BUTTON
-            -------------------------- */
-
-            const actionCell =
-                document.createElement(
-                    "td"
-                );
-
-            actionCell.className =
-                "col-action";
-
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-            button.type =
-                "button";
-
-            button.className =
-                "save-button";
-
-            button.textContent =
-                "Save Bid";
-
-
-            button.addEventListener(
-                "click",
-                function() {
-
-                    saveBid(
-                        itemId,
-                        button
-                    );
-
-                }
-            );
-
-
-            actionCell.appendChild(
-                button
-            );
-
-            row.appendChild(
-                actionCell
-            );
-
-
-            body.appendChild(
-                row
-            );
 
         }
+        else {
+
+            bidCell.textContent =
+                "";
+
+        }
+
+
+        row.appendChild(
+            bidCell
+        );
+
+
+        /* ------------------------------
+           VENDOR
+        ------------------------------ */
+
+        const vendorCell =
+            document.createElement(
+                "td"
+            );
+
+        vendorCell.className =
+            "vendor-col";
+
+        vendorCell.textContent =
+            vendorName;
+
+        row.appendChild(
+            vendorCell
+        );
+
+
+        body.appendChild(
+            row
+        );
+
+    });
+
+}
+
+
+/* ==========================================================
+   NO PHOTO
+========================================================== */
+
+function addNoPhoto(cell) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.className =
+        "no-photo";
+
+    div.textContent =
+        "No Photo";
+
+    cell.appendChild(
+        div
     );
 
 }
 
 
 /* ==========================================================
-   SAVE BID
+   ERROR
 ========================================================== */
 
-async function saveBid(
-    itemId,
-    button
-) {
+function showError(text) {
 
-    const bidInput =
+    const status =
         document.getElementById(
-            "bid-" + itemId
+            "status"
         );
 
+    status.className =
+        "error";
 
-    const vendorInput =
-        document.getElementById(
-            "vendor-" + itemId
-        );
-
-
-    const vendorName =
-        vendorInput.value.trim();
-
-
-    const bidText =
-        bidInput.value.trim();
-
-
-    /* ==========================
-       VALIDATE VENDOR
-    ========================== */
-
-    if (!vendorName) {
-
-        showMessage(
-            "Please enter the vendor name.",
-            "error"
-        );
-
-        vendorInput.focus();
-
-        return;
-
-    }
-
-
-    /* ==========================
-       VALIDATE BID
-    ========================== */
-
-    if (!bidText) {
-
-        showMessage(
-            "Please enter a bid price.",
-            "error"
-        );
-
-        bidInput.focus();
-
-        return;
-
-    }
-
-
-    const bidPrice =
-        Number(
-            bidText
-        );
-
-
-    if (
-        !Number.isFinite(
-            bidPrice
-        ) ||
-        bidPrice < 0
-    ) {
-
-        showMessage(
-            "Please enter a valid bid price.",
-            "error"
-        );
-
-        bidInput.focus();
-
-        return;
-
-    }
-
-
-    /* ==========================
-       BUTTON SAVING STATE
-    ========================== */
-
-    button.disabled =
-        true;
-
-    button.classList.remove(
-        "saved",
-        "failed"
-    );
-
-    button.textContent =
-        "Saving...";
-
-
-    showMessage(
-        "Saving bid for item " +
-        itemId +
-        "...",
-        "info"
-    );
-
-
-    try {
-
-
-        /*
-            This is all that GitHub sends.
-
-            It does NOT send description,
-            weight, photo, etc.
-        */
-
-        const result =
-            await callFlow({
-
-                action:
-                    "saveBid",
-
-                itemId:
-                    String(itemId),
-
-                vendorName:
-                    vendorName,
-
-                bidPrice:
-                    bidPrice
-
-            });
-
-
-        /*
-            Optional Power Automate response:
-
-            {
-                "success": true
-            }
-        */
-
-        if (
-            result &&
-            result.success === false
-        ) {
-
-            throw new Error(
-                result.message ||
-                "Power Automate reported an error."
-            );
-
-        }
-
-
-        button.disabled =
-            false;
-
-        button.classList.add(
-            "saved"
-        );
-
-        button.textContent =
-            "Saved ✓";
-
-
-        showMessage(
-            "Bid saved successfully for item " +
-            itemId +
-            ".",
-            "success"
-        );
-
-
-        setTimeout(
-            function() {
-
-                button.classList.remove(
-                    "saved"
-                );
-
-                button.textContent =
-                    "Save Bid";
-
-            },
-            2500
-        );
-
-
-    }
-    catch (error) {
-
-        console.error(
-            "Bid save error:",
-            error
-        );
-
-
-        button.disabled =
-            false;
-
-        button.classList.add(
-            "failed"
-        );
-
-        button.textContent =
-            "Try Again";
-
-
-        showMessage(
-            "The bid could not be saved. Please try again.",
-            "error"
-        );
-
-    }
-
-}
-
-
-/* ==========================================================
-   MESSAGE
-========================================================== */
-
-function showMessage(
-    text,
-    type
-) {
-
-    const message =
-        document.getElementById(
-            "message"
-        );
-
-
-    message.className =
-        type;
-
-    message.textContent =
+    status.textContent =
         text;
-
-    message.style.display =
-        "block";
-
-
-    if (
-        type === "success"
-    ) {
-
-        setTimeout(
-            function() {
-
-                message.style.display =
-                    "none";
-
-            },
-            4000
-        );
-
-    }
 
 }
 
