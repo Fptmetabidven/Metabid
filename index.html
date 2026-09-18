@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -20,197 +19,321 @@
 
         body {
             margin: 0;
+            padding: 0;
+
             background: #f4f5f7;
-            font-family: Arial, Helvetica, sans-serif;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
             color: #111;
         }
 
         .page {
+
             width: 94%;
             max-width: 1500px;
+
             margin: 0 auto;
-            padding: 12px 0 40px;
+
+            padding:
+                12px 0 40px 0;
         }
 
-        /* ==============================
+
+        /* =====================================================
            HEADER
-        ============================== */
+        ===================================================== */
 
         .header {
+
             text-align: center;
-            margin-bottom: 8px;
+
+            margin-bottom: 10px;
         }
 
         .logo {
-            width: 48px;
-            height: 48px;
+
+            width: 50px;
+            height: 50px;
+
             object-fit: contain;
+
             display: block;
-            margin: 0 auto 2px;
+
+            margin:
+                0 auto 2px auto;
         }
 
-        h1 {
+        .header h1 {
+
             margin: 0;
+
             color: #005080;
+
             font-size: 28px;
+            font-weight: 700;
         }
 
 
-        /* ==============================
-           STATUS
-        ============================== */
+        /* =====================================================
+           STATUS MESSAGE
+        ===================================================== */
 
         #status {
+
             display: none;
+
+            width: 100%;
+
             margin-bottom: 10px;
-            padding: 12px 14px;
+
+            padding:
+                12px 14px;
+
             border-radius: 4px;
-            font-weight: bold;
+
+            font-size: 14px;
+            font-weight: 700;
         }
 
+
         #status.error {
+
             display: block;
+
             background: #fdeaea;
-            border: 1px solid #e39090;
+
+            border:
+                1px solid #e58c8c;
+
             color: #a00000;
         }
 
+
         #status.info {
+
             display: block;
+
             background: #eaf3fa;
-            border: 1px solid #98bdd7;
+
+            border:
+                1px solid #98bdd7;
+
             color: #174f7c;
         }
 
 
-        /* ==============================
+        /* =====================================================
            TABLE
-        ============================== */
+        ===================================================== */
 
         .table-wrap {
+
             width: 100%;
+
             overflow-x: auto;
+
             background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,.18);
+
+            box-shadow:
+                0 2px 5px rgba(0,0,0,.18);
         }
+
 
         table {
+
             width: 100%;
+
             border-collapse: collapse;
+
             background: white;
         }
 
+
         thead {
+
             background: #28638f;
+
             color: white;
         }
 
+
         th {
+
+            padding:
+                11px 12px;
+
             text-align: left;
-            padding: 11px 12px;
+
             font-size: 14px;
+
+            font-weight: 700;
+
             white-space: nowrap;
         }
 
+
         td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #e7e7e7;
+
+            padding:
+                15px 12px;
+
+            border-bottom:
+                1px solid #e7e7e7;
+
             vertical-align: middle;
+
             font-size: 14px;
         }
 
+
         tbody tr:hover {
-            background: #f9fbfc;
+
+            background: #f8fafc;
         }
 
 
-        /* ==============================
+        /* =====================================================
            COLUMNS
-        ============================== */
+        ===================================================== */
 
         .id-col {
+
             width: 70px;
+
             text-align: center;
         }
+
 
         .photo-col {
+
             width: 140px;
+
             text-align: center;
         }
 
+
         .description-col {
+
             min-width: 260px;
         }
 
+
         .weight-col {
+
             min-width: 130px;
         }
 
+
         .bid-col {
-            min-width: 150px;
+
+            min-width: 160px;
         }
 
+
         .vendor-col {
+
             min-width: 220px;
         }
 
 
-        /* ==============================
+        /* =====================================================
            PHOTO
-        ============================== */
+        ===================================================== */
 
         .item-photo {
+
             width: 70px;
             height: 70px;
+
             object-fit: contain;
-            border-radius: 5px;
+
             display: block;
+
             margin: auto;
+
+            border-radius: 5px;
         }
+
 
         .no-photo {
+
             width: 70px;
             height: 70px;
-            margin: auto;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
+
+            margin: auto;
+
             background: #eeeeee;
-            border: 1px solid #cccccc;
+
+            border:
+                1px solid #cccccc;
+
             border-radius: 5px;
-            font-size: 11px;
+
             color: #666;
+
+            font-size: 11px;
         }
 
 
-        /* ==============================
-           LOADING
-        ============================== */
+        /* =====================================================
+           MESSAGE ROW
+        ===================================================== */
 
         .message-row td {
+
             text-align: center;
+
             padding: 35px;
+
             color: #555;
+
+            line-height: 1.6;
         }
 
 
-        /* ==============================
+        .error-detail {
+
+            margin-top: 8px;
+
+            font-family: monospace;
+
+            font-size: 12px;
+
+            color: #a00000;
+        }
+
+
+        /* =====================================================
            MOBILE
-        ============================== */
+        ===================================================== */
 
         @media screen and (max-width: 800px) {
 
             .page {
+
                 width: 98%;
             }
 
+
             th,
             td {
+
                 padding: 8px;
             }
 
+
             .item-photo,
             .no-photo {
+
                 width: 55px;
                 height: 55px;
             }
@@ -227,9 +350,9 @@
 <div class="page">
 
 
-    <!-- ==============================
+    <!-- =====================================================
          HEADER
-    ============================== -->
+    ====================================================== -->
 
     <div class="header">
 
@@ -237,24 +360,26 @@
             src="logo.png"
             class="logo"
             alt="MetaBid"
-            onerror="this.style.display='none'"
+            onerror="this.style.display='none';"
         >
 
-        <h1>MetaBid</h1>
+        <h1>
+            MetaBid
+        </h1>
 
     </div>
 
 
-    <!-- ==============================
+    <!-- =====================================================
          STATUS
-    ============================== -->
+    ====================================================== -->
 
     <div id="status"></div>
 
 
-    <!-- ==============================
+    <!-- =====================================================
          TABLE
-    ============================== -->
+    ====================================================== -->
 
     <div class="table-wrap">
 
@@ -315,13 +440,24 @@
 <script>
 
 /* ==========================================================
-   META BID DATA FILE
+   INVENTORY FILE LOCATIONS
 
-   This is generated automatically by GitHub Actions
-   from the SharePoint data sent by Power Automate.
+   First:
+   GitHub Pages local file
+
+   Second:
+   Raw GitHub repository fallback
 ========================================================== */
 
-const DATA_FILE = "./data/items.json";
+const DATA_FILES = [
+
+    "./data/items.json",
+
+    "data/items.json",
+
+    "https://raw.githubusercontent.com/Fptmetabidven/MetaBid/main/data/items.json"
+
+];
 
 
 /* ==========================================================
@@ -331,95 +467,190 @@ const DATA_FILE = "./data/items.json";
 async function loadInventory() {
 
     const body =
-        document.getElementById("inventoryBody");
+        document.getElementById(
+            "inventoryBody"
+        );
 
 
-    try {
+    body.innerHTML = `
 
-        /*
-            Date.now() prevents the browser from
-            holding onto an old cached items.json file.
-        */
+        <tr class="message-row">
 
-        const response =
-            await fetch(
-                DATA_FILE + "?v=" + Date.now(),
-                {
-                    cache: "no-store"
-                }
+            <td colspan="6">
+                Loading MetaBid inventory...
+            </td>
+
+        </tr>
+
+    `;
+
+
+    let data = null;
+
+    let lastError =
+        "Unknown error";
+
+
+    /*
+        Try each possible location
+        until one successfully loads.
+    */
+
+    for (
+        const file
+        of DATA_FILES
+    ) {
+
+        try {
+
+            console.log(
+                "Trying MetaBid data file:",
+                file
             );
 
 
-        if (!response.ok) {
+            const separator =
+                file.includes("?")
+                    ? "&"
+                    : "?";
 
-            throw new Error(
-                "Unable to load " +
-                DATA_FILE +
-                ". HTTP " +
+
+            const response =
+                await fetch(
+
+                    file +
+                    separator +
+                    "v=" +
+                    Date.now(),
+
+                    {
+                        cache:
+                            "no-store"
+                    }
+
+                );
+
+
+            console.log(
+                "Response:",
+                file,
                 response.status
             );
 
-        }
 
+            if (
+                !response.ok
+            ) {
 
-        const data =
-            await response.json();
+                lastError =
+                    file +
+                    " returned HTTP " +
+                    response.status;
 
+                continue;
 
-        /*
-            Your GitHub Action currently writes:
-
-            [
-                {...},
-                {...}
-            ]
-
-            This also supports:
-
-            {
-                "items": [...]
             }
-        */
-
-        let items = [];
 
 
-        if (Array.isArray(data)) {
+            const text =
+                await response.text();
 
-            items = data;
 
-        }
-        else if (
-            data &&
-            Array.isArray(data.items)
-        ) {
+            if (
+                !text.trim()
+            ) {
 
-            items = data.items;
+                lastError =
+                    file +
+                    " returned an empty file.";
 
-        }
-        else {
+                continue;
 
-            throw new Error(
-                "items.json is not in the expected format."
+            }
+
+
+            try {
+
+                data =
+                    JSON.parse(
+                        text
+                    );
+
+            }
+            catch (jsonError) {
+
+                console.error(
+                    "Invalid JSON:",
+                    text
+                );
+
+
+                lastError =
+                    file +
+                    " does not contain valid JSON.";
+
+                continue;
+
+            }
+
+
+            console.log(
+                "MetaBid inventory loaded from:",
+                file
             );
 
+
+            /*
+                Stop trying other locations.
+            */
+
+            break;
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Could not load:",
+                file,
+                error
+            );
+
+
+            lastError =
+                file +
+                ": " +
+                error.message;
+
         }
 
-
-        renderInventory(items);
-
     }
-    catch (error) {
 
-        console.error(error);
 
+    /* ======================================================
+       NOTHING LOADED
+    ====================================================== */
+
+    if (
+        data === null
+    ) {
 
         body.innerHTML = `
 
             <tr class="message-row">
 
                 <td colspan="6">
+
                     Unable to load inventory.
+
+                    <div class="error-detail">
+
+                        ${escapeHtml(
+                            lastError
+                        )}
+
+                    </div>
+
                 </td>
 
             </tr>
@@ -431,7 +662,100 @@ async function loadInventory() {
             "Could not load the MetaBid inventory."
         );
 
+
+        return;
+
     }
+
+
+    /* ======================================================
+       DETERMINE JSON FORMAT
+    ====================================================== */
+
+    let items = [];
+
+
+    /*
+        Format 1:
+
+        [
+            {...},
+            {...}
+        ]
+    */
+
+    if (
+        Array.isArray(
+            data
+        )
+    ) {
+
+        items =
+            data;
+
+    }
+
+
+    /*
+        Format 2:
+
+        {
+            "items": [
+                {...}
+            ]
+        }
+    */
+
+    else if (
+        data &&
+        Array.isArray(
+            data.items
+        )
+    ) {
+
+        items =
+            data.items;
+
+    }
+
+
+    else {
+
+        console.error(
+            "Unexpected MetaBid JSON:",
+            data
+        );
+
+
+        body.innerHTML = `
+
+            <tr class="message-row">
+
+                <td colspan="6">
+
+                    The inventory file loaded,
+                    but the JSON format is not correct.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        showError(
+            "MetaBid inventory file format is incorrect."
+        );
+
+
+        return;
+
+    }
+
+
+    renderInventory(
+        items
+    );
 
 }
 
@@ -439,7 +763,7 @@ async function loadInventory() {
 /* ==========================================================
    FIELD HELPER
 
-   Allows several possible field names.
+   Supports slightly different JSON field names.
 ========================================================== */
 
 function getField(
@@ -448,15 +772,26 @@ function getField(
     fallback = ""
 ) {
 
-    for (const name of names) {
+    for (
+        const name
+        of names
+    ) {
 
         if (
+
             Object.prototype.hasOwnProperty.call(
                 item,
                 name
-            ) &&
-            item[name] !== null &&
+            )
+
+            &&
+
+            item[name] !== null
+
+            &&
+
             item[name] !== undefined
+
         ) {
 
             return item[name];
@@ -464,6 +799,7 @@ function getField(
         }
 
     }
+
 
     return fallback;
 
@@ -474,7 +810,9 @@ function getField(
    RENDER INVENTORY
 ========================================================== */
 
-function renderInventory(items) {
+function renderInventory(
+    items
+) {
 
     const body =
         document.getElementById(
@@ -486,349 +824,514 @@ function renderInventory(items) {
         "";
 
 
-    if (!items.length) {
+    /* ======================================================
+       EMPTY LIST
+    ====================================================== */
+
+    if (
+        !items ||
+        items.length === 0
+    ) {
 
         body.innerHTML = `
 
             <tr class="message-row">
 
                 <td colspan="6">
+
                     No MetaBid inventory items found.
+
                 </td>
 
             </tr>
 
         `;
 
+
         return;
 
     }
 
 
-    items.forEach(function(item) {
+    /* ======================================================
+       CREATE EACH ROW
+    ====================================================== */
+
+    items.forEach(
+        function(item) {
 
 
-        /* ==============================
-           VALUES
-        ============================== */
+            /* ==================================================
+               GET VALUES
+            ================================================== */
 
-        const id =
-            getField(
-                item,
-                [
-                    "id",
-                    "ID",
-                    "Id",
-                    "itemId"
-                ]
-            );
+            const id =
+                getField(
 
+                    item,
 
-        const description =
-            getField(
-                item,
-                [
-                    "description",
-                    "Description",
-                    "title",
-                    "Title"
-                ]
-            );
+                    [
+                        "id",
+                        "ID",
+                        "Id",
+                        "itemId",
+                        "ItemID"
+                    ]
 
-
-        const weight =
-            getField(
-                item,
-                [
-                    "weight",
-                    "Weight"
-                ]
-            );
-
-
-        const bidPrice =
-            getField(
-                item,
-                [
-                    "bidPrice",
-                    "BidPrice",
-                    "Bid Price",
-                    "bid",
-                    "Bid"
-                ]
-            );
-
-
-        const vendorName =
-            getField(
-                item,
-                [
-                    "vendorName",
-                    "VendorName",
-                    "Vendor Name",
-                    "vendor",
-                    "Vendor"
-                ]
-            );
-
-
-        const photo =
-            getField(
-                item,
-                [
-                    "photo",
-                    "Photo",
-                    "photoUrl",
-                    "PhotoURL",
-                    "image",
-                    "Image"
-                ]
-            );
-
-
-        /* ==============================
-           ROW
-        ============================== */
-
-        const row =
-            document.createElement(
-                "tr"
-            );
-
-
-        /* ------------------------------
-           ID
-        ------------------------------ */
-
-        const idCell =
-            document.createElement(
-                "td"
-            );
-
-        idCell.className =
-            "id-col";
-
-        idCell.textContent =
-            id;
-
-        row.appendChild(
-            idCell
-        );
-
-
-        /* ------------------------------
-           PHOTO
-        ------------------------------ */
-
-        const photoCell =
-            document.createElement(
-                "td"
-            );
-
-        photoCell.className =
-            "photo-col";
-
-
-        if (photo) {
-
-            const img =
-                document.createElement(
-                    "img"
                 );
 
-            img.className =
-                "item-photo";
 
-            img.src =
-                photo;
+            const description =
+                getField(
 
-            img.alt =
-                "Item " + id;
+                    item,
+
+                    [
+                        "description",
+                        "Description",
+                        "title",
+                        "Title"
+                    ]
+
+                );
 
 
-            img.onerror =
-                function() {
+            const weight =
+                getField(
 
-                    photoCell.innerHTML =
+                    item,
+
+                    [
+                        "weight",
+                        "Weight"
+                    ]
+
+                );
+
+
+            const bidPrice =
+                getField(
+
+                    item,
+
+                    [
+                        "bidPrice",
+                        "BidPrice",
+                        "Bid Price",
+                        "bid",
+                        "Bid"
+                    ]
+
+                );
+
+
+            const vendorName =
+                getField(
+
+                    item,
+
+                    [
+                        "vendorName",
+                        "VendorName",
+                        "Vendor Name",
+                        "vendor",
+                        "Vendor"
+                    ]
+
+                );
+
+
+            let photo =
+                getField(
+
+                    item,
+
+                    [
+                        "photo",
+                        "Photo",
+                        "photoUrl",
+                        "PhotoUrl",
+                        "PhotoURL",
+                        "image",
+                        "Image"
+                    ],
+
+                    ""
+
+                );
+
+
+            /*
+                If we later send an object
+                from SharePoint instead of
+                a normal URL, try to extract
+                the URL automatically.
+            */
+
+            if (
+                photo &&
+                typeof photo === "object"
+            ) {
+
+                if (
+                    photo.url
+                ) {
+
+                    photo =
+                        photo.url;
+
+                }
+
+                else if (
+                    photo.Url
+                ) {
+
+                    photo =
+                        photo.Url;
+
+                }
+
+                else if (
+
+                    photo.serverUrl
+
+                    &&
+
+                    photo.serverRelativeUrl
+
+                ) {
+
+                    photo =
+                        photo.serverUrl +
+                        photo.serverRelativeUrl;
+
+                }
+
+                else {
+
+                    photo =
                         "";
 
-                    addNoPhoto(
-                        photoCell
-                    );
+                }
 
-                };
+            }
 
 
-            photoCell.appendChild(
-                img
-            );
+            /* ==================================================
+               CREATE ROW
+            ================================================== */
 
-        }
-        else {
-
-            addNoPhoto(
-                photoCell
-            );
-
-        }
-
-
-        row.appendChild(
-            photoCell
-        );
-
-
-        /* ------------------------------
-           DESCRIPTION
-        ------------------------------ */
-
-        const descriptionCell =
-            document.createElement(
-                "td"
-            );
-
-        descriptionCell.className =
-            "description-col";
-
-        descriptionCell.textContent =
-            description;
-
-        row.appendChild(
-            descriptionCell
-        );
-
-
-        /* ------------------------------
-           WEIGHT
-        ------------------------------ */
-
-        const weightCell =
-            document.createElement(
-                "td"
-            );
-
-        weightCell.className =
-            "weight-col";
-
-        weightCell.textContent =
-            weight;
-
-        row.appendChild(
-            weightCell
-        );
-
-
-        /* ------------------------------
-           BID PRICE
-        ------------------------------ */
-
-        const bidCell =
-            document.createElement(
-                "td"
-            );
-
-        bidCell.className =
-            "bid-col";
-
-
-        if (
-            bidPrice !== "" &&
-            bidPrice !== null
-        ) {
-
-            const numericBid =
-                Number(
-                    String(bidPrice)
-                        .replace(/\$/g, "")
-                        .replace(/,/g, "")
+            const row =
+                document.createElement(
+                    "tr"
                 );
+
+
+            /* ==================================================
+               ID
+            ================================================== */
+
+            const idCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            idCell.className =
+                "id-col";
+
+
+            idCell.textContent =
+                id;
+
+
+            row.appendChild(
+                idCell
+            );
+
+
+            /* ==================================================
+               PHOTO
+            ================================================== */
+
+            const photoCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            photoCell.className =
+                "photo-col";
 
 
             if (
-                Number.isFinite(
-                    numericBid
-                )
+                photo
             ) {
 
-                bidCell.textContent =
-                    numericBid.toLocaleString(
-                        "en-US",
-                        {
-                            style:
-                                "currency",
-
-                            currency:
-                                "USD"
-                        }
+                const img =
+                    document.createElement(
+                        "img"
                     );
 
+
+                img.className =
+                    "item-photo";
+
+
+                img.src =
+                    photo;
+
+
+                img.alt =
+                    "Item " +
+                    id;
+
+
+                img.onerror =
+                    function() {
+
+                        photoCell.innerHTML =
+                            "";
+
+                        addNoPhoto(
+                            photoCell
+                        );
+
+                    };
+
+
+                photoCell.appendChild(
+                    img
+                );
+
             }
+
+            else {
+
+                addNoPhoto(
+                    photoCell
+                );
+
+            }
+
+
+            row.appendChild(
+                photoCell
+            );
+
+
+            /* ==================================================
+               DESCRIPTION
+            ================================================== */
+
+            const descriptionCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            descriptionCell.className =
+                "description-col";
+
+
+            descriptionCell.textContent =
+                description;
+
+
+            row.appendChild(
+                descriptionCell
+            );
+
+
+            /* ==================================================
+               WEIGHT
+            ================================================== */
+
+            const weightCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            weightCell.className =
+                "weight-col";
+
+
+            weightCell.textContent =
+                weight;
+
+
+            row.appendChild(
+                weightCell
+            );
+
+
+            /* ==================================================
+               BID PRICE
+            ================================================== */
+
+            const bidCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            bidCell.className =
+                "bid-col";
+
+
+            if (
+
+                bidPrice !== ""
+
+                &&
+
+                bidPrice !== null
+
+                &&
+
+                bidPrice !== undefined
+
+            ) {
+
+                const cleaned =
+                    String(
+                        bidPrice
+                    )
+
+                    .replace(
+                        /\$/g,
+                        ""
+                    )
+
+                    .replace(
+                        /,/g,
+                        ""
+                    )
+
+                    .trim();
+
+
+                const numericBid =
+                    Number(
+                        cleaned
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        numericBid
+                    )
+                ) {
+
+                    bidCell.textContent =
+                        numericBid.toLocaleString(
+
+                            "en-US",
+
+                            {
+
+                                style:
+                                    "currency",
+
+                                currency:
+                                    "USD"
+
+                            }
+
+                        );
+
+                }
+
+                else {
+
+                    bidCell.textContent =
+                        bidPrice;
+
+                }
+
+            }
+
             else {
 
                 bidCell.textContent =
-                    bidPrice;
+                    "";
 
             }
 
-        }
-        else {
 
-            bidCell.textContent =
-                "";
-
-        }
-
-
-        row.appendChild(
-            bidCell
-        );
-
-
-        /* ------------------------------
-           VENDOR
-        ------------------------------ */
-
-        const vendorCell =
-            document.createElement(
-                "td"
+            row.appendChild(
+                bidCell
             );
 
-        vendorCell.className =
-            "vendor-col";
 
-        vendorCell.textContent =
-            vendorName;
+            /* ==================================================
+               VENDOR NAME
+            ================================================== */
 
-        row.appendChild(
-            vendorCell
-        );
+            const vendorCell =
+                document.createElement(
+                    "td"
+                );
 
 
-        body.appendChild(
-            row
-        );
+            vendorCell.className =
+                "vendor-col";
 
-    });
+
+            vendorCell.textContent =
+                vendorName;
+
+
+            row.appendChild(
+                vendorCell
+            );
+
+
+            /* ==================================================
+               ADD ROW
+            ================================================== */
+
+            body.appendChild(
+                row
+            );
+
+        }
+
+    );
+
+
+    /*
+        Hide any old error message
+        after successful loading.
+    */
+
+    clearStatus();
 
 }
 
 
 /* ==========================================================
-   NO PHOTO
+   NO PHOTO PLACEHOLDER
 ========================================================== */
 
-function addNoPhoto(cell) {
+function addNoPhoto(
+    cell
+) {
 
     const div =
         document.createElement(
             "div"
         );
 
+
     div.className =
         "no-photo";
 
+
     div.textContent =
         "No Photo";
+
 
     cell.appendChild(
         div
@@ -838,21 +1341,91 @@ function addNoPhoto(cell) {
 
 
 /* ==========================================================
-   ERROR
+   ERROR MESSAGE
 ========================================================== */
 
-function showError(text) {
+function showError(
+    text
+) {
 
     const status =
         document.getElementById(
             "status"
         );
 
+
     status.className =
         "error";
 
+
     status.textContent =
         text;
+
+
+    status.style.display =
+        "block";
+
+}
+
+
+/* ==========================================================
+   CLEAR STATUS
+========================================================== */
+
+function clearStatus() {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.style.display =
+        "none";
+
+
+    status.textContent =
+        "";
+
+}
+
+
+/* ==========================================================
+   SAFE ERROR TEXT
+========================================================== */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
 
 }
 
@@ -862,11 +1435,15 @@ function showError(text) {
 ========================================================== */
 
 document.addEventListener(
+
     "DOMContentLoaded",
+
     loadInventory
+
 );
 
 </script>
+
 
 </body>
 
