@@ -1,0 +1,10 @@
+[
+  {
+    "id": 12,
+    "description": "Test Item",
+    "weight": "1000",
+    "bidPrice": "2500",
+    "vendorName": "ABC Recycling",
+    "image": "images/Test.jpg"
+  }
+]
