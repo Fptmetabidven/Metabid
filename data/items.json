@@ -19,5 +19,12 @@
     "weight": "1",
     "bidPrice": "12",
     "vendorName": ""
+  },
+  {
+    "id": "52",
+    "description": "test 5",
+    "weight": "",
+    "bidPrice": "",
+    "vendorName": ""
   }
 ]
