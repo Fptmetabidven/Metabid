@@ -7,331 +7,177 @@ on:
 permissions:
   contents: write
 
+# Prevent two SharePoint updates from trying to write to main at the same time
+concurrency:
+  group: metabid-main-updates
+  cancel-in-progress: false
+
 jobs:
   update-metabid:
     runs-on: ubuntu-latest
 
     steps:
-
+      # ---------------------------------------------------------
+      # 1. CHECK OUT REPOSITORY
+      # ---------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create folders
+      # ---------------------------------------------------------
+      # 2. MAKE SURE WE HAVE THE LATEST MAIN
+      # ---------------------------------------------------------
+      - name: Sync with latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git pull --rebase origin main
+
+      # ---------------------------------------------------------
+      # 3. CREATE DATA FOLDER IF IT DOES NOT EXIST
+      # ---------------------------------------------------------
+      - name: Create data folder
         run: |
           mkdir -p data
-          mkdir -p images
 
-      - name: Update MetaBid inventory and photo
+      # ---------------------------------------------------------
+      # 4. UPDATE ITEMS.JSON
+      # ---------------------------------------------------------
+      - name: Update MetaBid inventory
         env:
           ITEM_ID: ${{ github.event.client_payload.itemId }}
           DESCRIPTION: ${{ github.event.client_payload.description }}
           WEIGHT: ${{ github.event.client_payload.weight }}
           BID_PRICE: ${{ github.event.client_payload.bidPrice }}
           VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
-          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
-          PHOTO_BASE64: ${{ github.event.client_payload.photoBase64 }}
-
+          PHOTO_FILE_NAME: ${{ github.event.client_payload.photoFileName }}
         run: |
           python3 <<'PY'
-
-          import os
           import json
-          import base64
+          import os
           from pathlib import Path
 
+          file_path = Path("data/items.json")
 
-          # ==========================================
-          # VALUES FROM POWER AUTOMATE
-          # ==========================================
-
-          item_id = os.environ.get(
-              "ITEM_ID",
-              ""
-          ).strip()
-
-          description = os.environ.get(
-              "DESCRIPTION",
-              ""
-          )
-
-          weight = os.environ.get(
-              "WEIGHT",
-              ""
-          )
-
-          bid_price = os.environ.get(
-              "BID_PRICE",
-              ""
-          )
-
-          vendor_name = os.environ.get(
-              "VENDOR_NAME",
-              ""
-          )
-
-          photo_filename = os.environ.get(
-              "PHOTO_FILENAME",
-              ""
-          ).strip()
-
-          photo_base64 = os.environ.get(
-              "PHOTO_BASE64",
-              ""
-          ).strip()
-
-
-          # ==========================================
-          # PHOTO
-          # ==========================================
-
-          photo_path = ""
-
-
-          if photo_base64:
-
-              extension = (
-                  Path(photo_filename).suffix.lower()
-                  if photo_filename
-                  else ".png"
-              )
-
-
-              if extension not in [
-                  ".png",
-                  ".jpg",
-                  ".jpeg",
-                  ".gif",
-                  ".webp"
-              ]:
-
-                  extension = ".png"
-
-
-              # Remove previous image for this item
-              # in case its extension changed.
-
-              image_folder = Path("images")
-
-              for existing in image_folder.glob(
-                  f"{item_id}.*"
-              ):
-
-                  existing.unlink()
-
-
-              image_file = (
-                  image_folder /
-                  f"{item_id}{extension}"
-              )
-
-
-              image_bytes = base64.b64decode(
-                  photo_base64
-              )
-
-
-              image_file.write_bytes(
-                  image_bytes
-              )
-
-
-              photo_path = (
-                  f"images/{item_id}{extension}"
-              )
-
-
-              print(
-                  "Saved photo:",
-                  photo_path
-              )
-
-
-          # ==========================================
-          # ITEMS.JSON
-          # ==========================================
-
-          data_file = Path(
-              "data/items.json"
-          )
-
-
-          if data_file.exists():
-
+          # -----------------------------------------------------
+          # Load existing items
+          # -----------------------------------------------------
+          if file_path.exists():
               try:
-
                   items = json.loads(
-                      data_file.read_text(
-                          encoding="utf-8"
-                      )
+                      file_path.read_text(encoding="utf-8")
                   )
-
               except Exception:
+                  items = []
+          else:
+              items = []
 
+          # Make sure data is a list
+          if isinstance(items, dict):
+              if "items" in items and isinstance(items["items"], list):
+                  items = items["items"]
+              else:
                   items = []
 
-          else:
-
+          if not isinstance(items, list):
               items = []
 
+          # -----------------------------------------------------
+          # Read SharePoint / Power Automate values
+          # -----------------------------------------------------
+          item_id = os.environ.get("ITEM_ID", "").strip()
+          description = os.environ.get("DESCRIPTION", "")
+          weight = os.environ.get("WEIGHT", "")
+          bid_price = os.environ.get("BID_PRICE", "")
+          vendor_name = os.environ.get("VENDOR_NAME", "")
+          photo_file_name = os.environ.get("PHOTO_FILE_NAME", "")
 
-          if not isinstance(
-              items,
-              list
-          ):
+          print(f"Processing MetaBid item: {item_id}")
+          print(f"Description: {description}")
+          print(f"Weight: {weight}")
+          print(f"Bid Price: {bid_price}")
+          print(f"Vendor Name: {vendor_name}")
+          print(f"Photo File Name: {photo_file_name}")
 
-              items = []
-
-
+          # -----------------------------------------------------
+          # Build updated item
+          # -----------------------------------------------------
           new_item = {
-
-              "id":
-                  item_id,
-
-              "description":
-                  description,
-
-              "weight":
-                  weight,
-
-              "bidPrice":
-                  bid_price,
-
-              "vendorName":
-                  vendor_name,
-
-              "photo":
-                  photo_path
-
+              "id": item_id,
+              "description": description,
+              "weight": weight,
+              "bidPrice": bid_price,
+              "vendorName": vendor_name,
+              "photoFileName": photo_file_name
           }
 
+          # -----------------------------------------------------
+          # Preserve existing photo path if one already exists
+          # -----------------------------------------------------
+          updated = False
 
-          # ==========================================
-          # UPDATE EXISTING ITEM
-          # ==========================================
+          for index, existing in enumerate(items):
+              if str(existing.get("id", "")).strip() == item_id:
 
-          found = False
+                  # Keep existing photo URL/path if already stored
+                  existing_photo = existing.get("photo", "")
 
+                  items[index] = new_item
 
-          for index, item in enumerate(
-              items
-          ):
+                  if existing_photo:
+                      items[index]["photo"] = existing_photo
 
-              if str(
-                  item.get(
-                      "id",
-                      ""
-                  )
-              ) == item_id:
-
-                  # If no new photo was sent,
-                  # preserve the existing photo.
-
-                  if (
-                      not photo_path
-                      and item.get("photo")
-                  ):
-
-                      new_item["photo"] = (
-                          item["photo"]
-                      )
-
-
-                  items[index] = (
-                      new_item
-                  )
-
-
-                  found = True
-
+                  updated = True
+                  print(f"Updated existing item {item_id}")
                   break
 
+          # -----------------------------------------------------
+          # If item does not exist, add it
+          # -----------------------------------------------------
+          if not updated:
+              items.append(new_item)
+              print(f"Added new item {item_id}")
 
-          # ==========================================
-          # ADD NEW ITEM
-          # ==========================================
-
-          if not found:
-
-              items.append(
-                  new_item
-              )
-
-
-          # ==========================================
-          # SORT
-          # ==========================================
-
-          def sort_key(item):
-
-              value = str(
-                  item.get(
-                      "id",
-                      ""
-                  )
-              )
+          # -----------------------------------------------------
+          # Sort by SharePoint item ID
+          # -----------------------------------------------------
+          def sort_key(record):
+              value = str(record.get("id", "")).strip()
 
               if value.isdigit():
+                  return (0, int(value))
 
-                  return int(
-                      value
-                  )
+              return (1, value)
 
-              return 999999999
+          items.sort(key=sort_key)
 
-
-          items.sort(
-              key=sort_key
-          )
-
-
-          # ==========================================
-          # SAVE JSON
-          # ==========================================
-
-          data_file.write_text(
-
-              json.dumps(
-                  items,
-                  indent=2
-              ),
-
+          # -----------------------------------------------------
+          # Save items.json
+          # -----------------------------------------------------
+          file_path.write_text(
+              json.dumps(items, indent=2, ensure_ascii=False),
               encoding="utf-8"
-
           )
 
-
-          print(
-              "Updated item:",
-              item_id
-          )
-
+          print(f"Successfully wrote {file_path}")
           PY
 
-
+      # ---------------------------------------------------------
+      # 5. COMMIT AND PUSH
+      # ---------------------------------------------------------
       - name: Commit MetaBid update
         run: |
-
-          git config user.name \
-            "MetaBid Automation"
-
-          git config user.email \
-            "actions@github.com"
-
+          git config user.name "MetaBid Automation"
+          git config user.email "actions@github.com"
 
           git add data/items.json
-          git add images/
 
-
-          if git diff --cached --quiet
-          then
-
+          if git diff --cached --quiet; then
             echo "No changes to commit."
-
-          else
-
-            git commit \
-              -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
-
-            git push
-
+            exit 0
           fi
+
+          git commit -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
+
+          git push origin main
