@@ -6,5 +6,12 @@
     "bidPrice": "2500",
     "vendorName": "ABC Recycling",
     "image": "images/Test.jpg"
+  },
+  {
+    "id": "48",
+    "description": "Test",
+    "weight": "5",
+    "bidPrice": "500",
+    "vendorName": "abc 124"
   }
 ]
