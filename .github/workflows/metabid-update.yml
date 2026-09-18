@@ -15,7 +15,91 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Show SharePoint item received
+      - name: Create data folder
+        run: mkdir -p data
+
+      - name: Update MetaBid inventory
+        env:
+          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          DESCRIPTION: ${{ github.event.client_payload.description }}
+          WEIGHT: ${{ github.event.client_payload.weight }}
+          BID_PRICE: ${{ github.event.client_payload.bidPrice }}
+          VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
+
         run: |
-          echo "MetaBid update received"
-          echo "Item ID: ${{ github.event.client_payload.itemId }}"
+          python3 <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          file_path = Path("data/items.json")
+
+          # Load existing inventory
+          if file_path.exists():
+              try:
+                  items = json.loads(
+                      file_path.read_text(encoding="utf-8")
+                  )
+              except Exception:
+                  items = []
+          else:
+              items = []
+
+          if not isinstance(items, list):
+              items = []
+
+          item_id = os.environ.get("ITEM_ID", "").strip()
+
+          item = {
+              "id": item_id,
+              "description": os.environ.get("DESCRIPTION", ""),
+              "weight": os.environ.get("WEIGHT", ""),
+              "bidPrice": os.environ.get("BID_PRICE", ""),
+              "vendorName": os.environ.get("VENDOR_NAME", "")
+          }
+
+          # Replace existing item if the ID already exists
+          updated = False
+
+          for index, existing in enumerate(items):
+              if str(existing.get("id", "")) == item_id:
+                  items[index] = item
+                  updated = True
+                  break
+
+          # Otherwise add it
+          if not updated:
+              items.append(item)
+
+          # Sort by SharePoint ID
+          def sort_key(record):
+              value = str(record.get("id", ""))
+
+              if value.isdigit():
+                  return int(value)
+
+              return 999999999
+
+          items.sort(key=sort_key)
+
+          file_path.write_text(
+              json.dumps(items, indent=2),
+              encoding="utf-8"
+          )
+
+          print(f"Updated MetaBid item {item_id}")
+          PY
+
+      - name: Commit update
+        run: |
+          git config user.name "MetaBid Automation"
+          git config user.email "actions@github.com"
+
+          git add data/items.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
+            git push
+          fi
