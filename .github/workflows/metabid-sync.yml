@@ -1,0 +1,220 @@
+name: MetaBid SharePoint Sync
+
+on:
+  repository_dispatch:
+    types: [metabid_sync]
+
+permissions:
+  contents: write
+
+jobs:
+  sync-metabid:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Remove deleted SharePoint items
+        env:
+          CURRENT_IDS: ${{ github.event.client_payload.currentIds }}
+
+        run: |
+          python3 <<'PY'
+
+          import json
+          import os
+          from pathlib import Path
+
+
+          # ------------------------------------------
+          # IDs that currently exist in SharePoint
+          # ------------------------------------------
+
+          raw_ids = os.environ.get(
+              "CURRENT_IDS",
+              ""
+          )
+
+          current_ids = {
+              value.strip()
+              for value in raw_ids.split(",")
+              if value.strip()
+          }
+
+          print(
+              "Current SharePoint IDs:",
+              sorted(current_ids)
+          )
+
+
+          # ------------------------------------------
+          # Load GitHub inventory
+          # ------------------------------------------
+
+          data_file = Path(
+              "data/items.json"
+          )
+
+          if not data_file.exists():
+
+              print(
+                  "data/items.json does not exist."
+              )
+
+              raise SystemExit(0)
+
+
+          try:
+
+              items = json.loads(
+                  data_file.read_text(
+                      encoding="utf-8"
+                  )
+              )
+
+          except Exception as error:
+
+              print(
+                  "Could not read items.json:",
+                  error
+              )
+
+              raise SystemExit(1)
+
+
+          if not isinstance(
+              items,
+              list
+          ):
+
+              print(
+                  "items.json is not a list."
+              )
+
+              raise SystemExit(1)
+
+
+          # ------------------------------------------
+          # Determine which GitHub items were deleted
+          # from SharePoint
+          # ------------------------------------------
+
+          removed_ids = []
+
+          remaining_items = []
+
+
+          for item in items:
+
+              item_id = str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ).strip()
+
+
+              if item_id in current_ids:
+
+                  remaining_items.append(
+                      item
+                  )
+
+              else:
+
+                  if item_id:
+
+                      removed_ids.append(
+                          item_id
+                      )
+
+
+          print(
+              "Deleted SharePoint IDs:",
+              removed_ids
+          )
+
+
+          # ------------------------------------------
+          # Save cleaned items.json
+          # ------------------------------------------
+
+          data_file.write_text(
+
+              json.dumps(
+                  remaining_items,
+                  indent=2
+              ),
+
+              encoding="utf-8"
+
+          )
+
+
+          # ------------------------------------------
+          # Remove corresponding images
+          #
+          # Handles:
+          # images/53.png
+          # images/53.jpg
+          # images/53.jpeg
+          # etc.
+          # ------------------------------------------
+
+          image_folder = Path(
+              "images"
+          )
+
+
+          if image_folder.exists():
+
+              for item_id in removed_ids:
+
+                  for image in image_folder.glob(
+                      f"{item_id}.*"
+                  ):
+
+                      print(
+                          "Deleting image:",
+                          image
+                      )
+
+                      image.unlink()
+
+
+          print(
+              "MetaBid cleanup complete."
+          )
+
+          PY
+
+
+      - name: Commit cleanup
+        run: |
+
+          git config user.name \
+            "MetaBid Automation"
+
+          git config user.email \
+            "actions@github.com"
+
+
+          git add -A
+
+
+          if git diff --cached --quiet
+          then
+
+            echo "GitHub already matches SharePoint."
+
+          else
+
+            git commit \
+              -m "Sync MetaBid deletions from SharePoint"
+
+            git push
+
+          fi
