@@ -5,28 +5,22 @@ on:
     types:
       - metabid_update
       - metabid_photo_chunk
-      - metabid_photo_finalize
       - metabid_remove
 
 permissions:
   contents: write
 
-
 jobs:
 
-  # ==========================================================
-  # STORE ITEM DATA TEMPORARILY
-  # DOES NOT TOUCH MAIN
-  # DOES NOT DEPLOY PAGES
-  # ==========================================================
-
-  store-item-data:
-
-    if: github.event.action == 'metabid_update'
+  update-metabid:
 
     runs-on: ubuntu-latest
 
     steps:
+
+      # ======================================================
+      # CHECKOUT
+      # ======================================================
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,8 +28,15 @@ jobs:
           fetch-depth: 0
 
 
-      - name: Create temporary item branch
+      # ======================================================
+      # PROCESS EVENT
+      # ======================================================
+
+      - name: Process MetaBid event
+
         env:
+
+          EVENT_TYPE: ${{ github.event.action }}
 
           ITEM_ID: ${{ github.event.client_payload.itemId }}
 
@@ -51,155 +52,9 @@ jobs:
 
           VENDOR_NOTES: ${{ github.event.client_payload.vendorNotes }}
 
-        run: |
+          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
 
-          python3 <<'PY'
-
-          import os
-          import json
-          from pathlib import Path
-
-
-          item_id = os.environ.get(
-              "ITEM_ID",
-              ""
-          ).strip()
-
-
-          if not item_id:
-
-              raise SystemExit(
-                  "Missing itemId."
-              )
-
-
-          temp_data = {
-
-              "id":
-                  item_id,
-
-              "description":
-                  os.environ.get(
-                      "DESCRIPTION",
-                      ""
-                  ),
-
-              "weight":
-                  os.environ.get(
-                      "WEIGHT",
-                      ""
-                  ),
-
-              "bidPrice":
-                  os.environ.get(
-                      "BID_PRICE",
-                      ""
-                  ),
-
-              "vendorName":
-                  os.environ.get(
-                      "VENDOR_NAME",
-                      ""
-                  ),
-
-              "vendorEmail":
-                  os.environ.get(
-                      "VENDOR_EMAIL",
-                      ""
-                  ),
-
-              "vendorNotes":
-                  os.environ.get(
-                      "VENDOR_NOTES",
-                      ""
-                  )
-
-          }
-
-
-          Path(
-              ".metabid_item.json"
-          ).write_text(
-
-              json.dumps(
-                  temp_data,
-                  indent=2
-              ),
-
-              encoding="utf-8"
-
-          )
-
-
-          print(
-              "Temporary item data created for:",
-              item_id
-          )
-
-          PY
-
-
-      - name: Push temporary item branch
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-        run: |
-
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
-
-
-          BRANCH_NAME="metabid-item-${ITEM_ID}"
-
-
-          git checkout \
-            -b \
-            "${BRANCH_NAME}"
-
-
-          git add \
-            .metabid_item.json
-
-
-          git commit \
-            -m "Temporary MetaBid item ${ITEM_ID}"
-
-
-          git push \
-            --force \
-            origin \
-            "${BRANCH_NAME}"
-
-
-          echo "Temporary item branch created:"
-          echo "${BRANCH_NAME}"
-
-
-
-  # ==========================================================
-  # STORE PHOTO CHUNK TEMPORARILY
-  # DOES NOT TOUCH MAIN
-  # ==========================================================
-
-  save-photo-chunk:
-
-    if: github.event.action == 'metabid_photo_chunk'
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-
-      - name: Save photo chunk
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          PHOTO_CHUNK_COUNT: ${{ github.event.client_payload.photoChunkCount }}
 
           CHUNK_INDEX: ${{ github.event.client_payload.chunkIndex }}
 
@@ -209,321 +64,23 @@ jobs:
 
         run: |
 
-          if [ -z "${ITEM_ID}" ]
-          then
-
-            echo "Missing itemId."
-
-            exit 1
-
-          fi
-
-
-          if [ -z "${CHUNK_INDEX}" ]
-          then
-
-            echo "Missing chunkIndex."
-
-            exit 1
-
-          fi
-
-
-          if [ -z "${CHUNK_DATA}" ]
-          then
-
-            echo "Missing chunkData."
-
-            exit 1
-
-          fi
-
-
-          PADDED_INDEX=$(printf "%06d" "${CHUNK_INDEX}")
-
-
-          BRANCH_NAME="metabid-chunk-${ITEM_ID}-${PADDED_INDEX}"
-
-
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
-
-
-          git checkout \
-            -b \
-            "${BRANCH_NAME}"
-
-
-          printf '%s' "${CHUNK_DATA}" \
-            > .metabid_chunk.txt
-
-
-          printf '%s' "${CHUNK_COUNT}" \
-            > .metabid_chunk_count.txt
-
-
-          git add \
-            .metabid_chunk.txt \
-            .metabid_chunk_count.txt
-
-
-          git commit \
-            -m "Temporary photo chunk ${ITEM_ID}-${PADDED_INDEX}"
-
-
-          git push \
-            --force \
-            origin \
-            "${BRANCH_NAME}"
-
-
-          echo "Stored photo chunk:"
-          echo "${PADDED_INDEX}"
-
-
-
-  # ==========================================================
-  # FINALIZE
-  #
-  # WAITS FOR ITEM DATA + ALL PHOTO CHUNKS
-  # THEN MAKES ONE COMMIT TO MAIN
-  # ==========================================================
-
-  finalize-item:
-
-    if: github.event.action == 'metabid_photo_finalize'
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-
-      # --------------------------------------------------------
-      # WAIT FOR ITEM DATA
-      # --------------------------------------------------------
-
-      - name: Wait for temporary item data
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-        run: |
-
-          BRANCH_NAME="metabid-item-${ITEM_ID}"
-
-
-          echo "Waiting for item data:"
-          echo "${BRANCH_NAME}"
-
-
-          for attempt in $(seq 1 60)
-          do
-
-            if git ls-remote \
-              --exit-code \
-              --heads \
-              origin \
-              "${BRANCH_NAME}" \
-              > /dev/null 2>&1
-            then
-
-              echo "Item data is ready."
-
-              exit 0
-
-            fi
-
-
-            echo "Waiting for item data..."
-
-            sleep 2
-
-          done
-
-
-          echo "Timed out waiting for item data."
-
-          exit 1
-
-
-      # --------------------------------------------------------
-      # WAIT FOR ALL PHOTO CHUNKS
-      # --------------------------------------------------------
-
-      - name: Wait for photo chunks
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-          CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
-
-        run: |
-
-          if [ -z "${CHUNK_COUNT}" ]
-          then
-
-            echo "Missing chunkCount."
-
-            exit 1
-
-          fi
-
-
-          echo "Waiting for ${CHUNK_COUNT} chunks."
-
-
-          for attempt in $(seq 1 60)
-          do
-
-            FOUND=0
-
-
-            for index in $(seq 0 $((CHUNK_COUNT - 1)))
-            do
-
-              PADDED_INDEX=$(printf "%06d" "${index}")
-
-
-              BRANCH_NAME="metabid-chunk-${ITEM_ID}-${PADDED_INDEX}"
-
-
-              if git ls-remote \
-                --exit-code \
-                --heads \
-                origin \
-                "${BRANCH_NAME}" \
-                > /dev/null 2>&1
-              then
-
-                FOUND=$((FOUND + 1))
-
-              fi
-
-            done
-
-
-            echo \
-              "Found ${FOUND} of ${CHUNK_COUNT} chunks."
-
-
-            if [ "${FOUND}" -eq "${CHUNK_COUNT}" ]
-            then
-
-              echo "All chunks are ready."
-
-              exit 0
-
-            fi
-
-
-            sleep 2
-
-          done
-
-
-          echo "Timed out waiting for chunks."
-
-          exit 1
-
-
-      # --------------------------------------------------------
-      # DOWNLOAD ITEM DATA
-      # --------------------------------------------------------
-
-      - name: Download item data
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-        run: |
-
-          BRANCH_NAME="metabid-item-${ITEM_ID}"
-
-
-          git fetch \
-            origin \
-            "${BRANCH_NAME}"
-
-
-          git show \
-            FETCH_HEAD:.metabid_item.json \
-            > .metabid_item_download.json
-
-
-          echo "Item data downloaded."
-
-
-      # --------------------------------------------------------
-      # DOWNLOAD PHOTO CHUNKS
-      # --------------------------------------------------------
-
-      - name: Download photo chunks
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-          CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
-
-        run: |
-
-          mkdir -p \
-            ".metabid_download/${ITEM_ID}"
-
-
-          for index in $(seq 0 $((CHUNK_COUNT - 1)))
-          do
-
-            PADDED_INDEX=$(printf "%06d" "${index}")
-
-
-            BRANCH_NAME="metabid-chunk-${ITEM_ID}-${PADDED_INDEX}"
-
-
-            echo \
-              "Downloading chunk ${PADDED_INDEX}"
-
-
-            git fetch \
-              origin \
-              "${BRANCH_NAME}"
-
-
-            git show \
-              FETCH_HEAD:.metabid_chunk.txt \
-              > ".metabid_download/${ITEM_ID}/${PADDED_INDEX}.txt"
-
-          done
-
-
-          echo "All chunks downloaded."
-
-
-      # --------------------------------------------------------
-      # BUILD FINAL ITEM + PHOTO
-      # --------------------------------------------------------
-
-      - name: Build final MetaBid item
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-          CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
-
-          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
-
-        run: |
-
           python3 <<'PY'
 
           import os
           import json
           import base64
+          import shutil
           from pathlib import Path
+
+
+          # ==================================================
+          # EVENT INFORMATION
+          # ==================================================
+
+          event_type = os.environ.get(
+              "EVENT_TYPE",
+              ""
+          ).strip()
 
 
           item_id = os.environ.get(
@@ -532,117 +89,32 @@ jobs:
           ).strip()
 
 
-          chunk_count = int(
-
-              os.environ.get(
-                  "CHUNK_COUNT",
-                  "0"
-              )
-
-          )
-
-
-          photo_filename = os.environ.get(
-              "PHOTO_FILENAME",
-              ""
-          ).strip()
-
-
           if not item_id:
 
               raise SystemExit(
-                  "Missing itemId."
+                  "No itemId received."
               )
 
 
-          # -------------------------------------------
-          # LOAD TEMPORARY ITEM DATA
-          # -------------------------------------------
-
-          item_data_file = Path(
-              ".metabid_item_download.json"
+          print(
+              "Event:",
+              event_type
           )
 
 
-          if not item_data_file.exists():
-
-              raise SystemExit(
-                  "Temporary item data is missing."
-              )
-
-
-          item_data = json.loads(
-
-              item_data_file.read_text(
-                  encoding="utf-8"
-              )
-
-          )
-
-
-          # -------------------------------------------
-          # ASSEMBLE PHOTO
-          # -------------------------------------------
-
-          chunk_folder = (
-
-              Path(".metabid_download")
-              /
+          print(
+              "Item:",
               item_id
-
           )
 
 
-          complete_base64 = ""
+          # ==================================================
+          # FOLDERS
+          # ==================================================
 
-
-          for index in range(
-              chunk_count
-          ):
-
-              chunk_file = (
-
-                  chunk_folder
-                  /
-                  f"{index:06d}.txt"
-
-              )
-
-
-              if not chunk_file.exists():
-
-                  raise SystemExit(
-
-                      f"Missing photo chunk {index}"
-
-                  )
-
-
-              complete_base64 += (
-
-                  chunk_file.read_text(
-                      encoding="utf-8"
-                  ).strip()
-
-              )
-
-
-          extension = Path(
-              photo_filename
-          ).suffix.lower()
-
-
-          if extension not in [
-
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".gif",
-              ".webp"
-
-          ]:
-
-              extension = ".jpg"
+          data_folder = Path(
+              "data"
+          )
 
 
           images_folder = Path(
@@ -650,71 +122,8 @@ jobs:
           )
 
 
-          images_folder.mkdir(
-              exist_ok=True
-          )
-
-
-          # Remove previous image if item already existed.
-
-          for old_image in images_folder.glob(
-              f"{item_id}.*"
-          ):
-
-              old_image.unlink()
-
-
-          image_file = (
-
-              images_folder
-              /
-              f"{item_id}{extension}"
-
-          )
-
-
-          try:
-
-              image_bytes = base64.b64decode(
-
-                  complete_base64,
-
-                  validate=False
-
-              )
-
-          except Exception as error:
-
-              raise SystemExit(
-
-                  f"Could not decode image: {error}"
-
-              )
-
-
-          image_file.write_bytes(
-              image_bytes
-          )
-
-
-          photo_path = (
-
-              f"images/{item_id}{extension}"
-
-          )
-
-
-          item_data["photo"] = (
-              photo_path
-          )
-
-
-          # -------------------------------------------
-          # LOAD CURRENT SITE INVENTORY
-          # -------------------------------------------
-
-          data_folder = Path(
-              "data"
+          chunk_root = Path(
+              ".metabid_chunks"
           )
 
 
@@ -723,411 +132,776 @@ jobs:
           )
 
 
-          data_file = (
-
-              data_folder /
-              "items.json"
-
-          )
-
-
-          if data_file.exists():
-
-              try:
-
-                  items = json.loads(
-
-                      data_file.read_text(
-                          encoding="utf-8"
-                      )
-
-                  )
-
-              except Exception:
-
-                  items = []
-
-          else:
-
-              items = []
-
-
-          if not isinstance(
-              items,
-              list
-          ):
-
-              items = []
-
-
-          # -------------------------------------------
-          # ADD / UPDATE ITEM
-          # -------------------------------------------
-
-          found = False
-
-
-          for index, item in enumerate(
-              items
-          ):
-
-              if str(
-                  item.get(
-                      "id",
-                      ""
-                  )
-              ) == item_id:
-
-                  items[index] = (
-                      item_data
-                  )
-
-                  found = True
-
-                  break
-
-
-          if not found:
-
-              items.append(
-                  item_data
-              )
-
-
-          # -------------------------------------------
-          # SORT
-          # -------------------------------------------
-
-          def sort_key(item):
-
-              value = str(
-                  item.get(
-                      "id",
-                      ""
-                  )
-              )
-
-
-              if value.isdigit():
-
-                  return int(
-                      value
-                  )
-
-
-              return 999999999
-
-
-          items.sort(
-              key=sort_key
-          )
-
-
-          # -------------------------------------------
-          # SAVE
-          # -------------------------------------------
-
-          data_file.write_text(
-
-              json.dumps(
-                  items,
-                  indent=2
-              ),
-
-              encoding="utf-8"
-
-          )
-
-
-          print(
-              "Finalized item:",
-              item_id
-          )
-
-
-          print(
-              "Photo:",
-              photo_path
-          )
-
-
-          print(
-              "Photo bytes:",
-              len(image_bytes)
-          )
-
-          PY
-
-
-      # --------------------------------------------------------
-      # ONE COMMIT TO MAIN
-      # --------------------------------------------------------
-
-      - name: Commit completed item
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-        run: |
-
-          rm -rf \
-            .metabid_download \
-            .metabid_item_download.json
-
-
-          git config user.name "MetaBid Automation"
-
-          git config user.email "actions@github.com"
-
-
-          git add \
-            data/items.json \
-            images
-
-
-          if git diff --cached --quiet
-          then
-
-            echo "No final changes."
-
-            exit 0
-
-          fi
-
-
-          git commit \
-            -m "Publish MetaBid item ${ITEM_ID}"
-
-
-          for attempt in 1 2 3 4 5 6
-          do
-
-            echo "Main push attempt ${attempt}"
-
-
-            if git pull \
-              --rebase \
-              origin \
-              main
-            then
-
-              if git push \
-                origin \
-                HEAD:main
-              then
-
-                echo "Published successfully."
-
-                exit 0
-
-              fi
-
-            else
-
-              git rebase --abort || true
-
-            fi
-
-
-            sleep $((attempt * 2))
-
-          done
-
-
-          echo "Unable to publish item."
-
-          exit 1
-
-
-      # --------------------------------------------------------
-      # CLEAN TEMPORARY BRANCHES
-      # --------------------------------------------------------
-
-      - name: Clean temporary branches
-        if: success()
-
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-          CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
-
-        run: |
-
-          echo "Cleaning temporary branches."
-
-
-          git push \
-            origin \
-            --delete \
-            "metabid-item-${ITEM_ID}" \
-            || true
-
-
-          for index in $(seq 0 $((CHUNK_COUNT - 1)))
-          do
-
-            PADDED_INDEX=$(printf "%06d" "${index}")
-
-
-            git push \
-              origin \
-              --delete \
-              "metabid-chunk-${ITEM_ID}-${PADDED_INDEX}" \
-              || true
-
-          done
-
-
-          echo "Cleanup complete."
-
-
-
-  # ==========================================================
-  # REMOVE CLOSED ITEM
-  # THIS IS THE ONLY OTHER EVENT THAT CHANGES MAIN
-  # ==========================================================
-
-  remove-item:
-
-    if: github.event.action == 'metabid_remove'
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-
-      - name: Remove item
-        env:
-
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-
-        run: |
-
-          python3 <<'PY'
-
-          import os
-          import json
-          from pathlib import Path
-
-
-          item_id = os.environ.get(
-              "ITEM_ID",
-              ""
-          ).strip()
-
-
-          if not item_id:
-
-              raise SystemExit(
-                  "Missing itemId."
-              )
-
-
-          data_file = Path(
-              "data/items.json"
-          )
-
-
-          if data_file.exists():
-
-              try:
-
-                  items = json.loads(
-
-                      data_file.read_text(
-                          encoding="utf-8"
-                      )
-
-                  )
-
-              except Exception:
-
-                  items = []
-
-          else:
-
-              items = []
-
-
-          if not isinstance(
-              items,
-              list
-          ):
-
-              items = []
-
-
-          items = [
-
-              item
-
-              for item in items
-
-              if str(
-                  item.get(
-                      "id",
-                      ""
-                  )
-              ) != item_id
-
-          ]
-
-
-          data_file.parent.mkdir(
+          images_folder.mkdir(
               exist_ok=True
           )
 
 
-          data_file.write_text(
-
-              json.dumps(
-                  items,
-                  indent=2
-              ),
-
-              encoding="utf-8"
-
+          chunk_root.mkdir(
+              exist_ok=True
           )
 
 
-          images_folder = Path(
-              "images"
+          data_file = (
+              data_folder /
+              "items.json"
           )
 
 
-          if images_folder.exists():
+          # ==================================================
+          # LOAD INVENTORY
+          # ==================================================
 
-              for image in images_folder.glob(
-                  f"{item_id}.*"
+          if data_file.exists():
+
+              try:
+
+                  items = json.loads(
+
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
+
+                  )
+
+              except Exception:
+
+                  items = []
+
+          else:
+
+              items = []
+
+
+          if not isinstance(
+              items,
+              list
+          ):
+
+              items = []
+
+
+          # ==================================================
+          # ITEM UPDATE
+          # ==================================================
+
+          if event_type == "metabid_update":
+
+
+              description = os.environ.get(
+                  "DESCRIPTION",
+                  ""
+              )
+
+
+              weight = os.environ.get(
+                  "WEIGHT",
+                  ""
+              )
+
+
+              bid_price = os.environ.get(
+                  "BID_PRICE",
+                  ""
+              )
+
+
+              vendor_name = os.environ.get(
+                  "VENDOR_NAME",
+                  ""
+              )
+
+
+              vendor_email = os.environ.get(
+                  "VENDOR_EMAIL",
+                  ""
+              )
+
+
+              vendor_notes = os.environ.get(
+                  "VENDOR_NOTES",
+                  ""
+              )
+
+
+              existing_photo = ""
+
+
+              for item in items:
+
+                  if str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  ) == item_id:
+
+                      existing_photo = item.get(
+                          "photo",
+                          ""
+                      )
+
+                      break
+
+
+              new_item = {
+
+                  "id":
+                      item_id,
+
+                  "description":
+                      description,
+
+                  "weight":
+                      weight,
+
+                  "bidPrice":
+                      bid_price,
+
+                  "vendorName":
+                      vendor_name,
+
+                  "vendorEmail":
+                      vendor_email,
+
+                  "vendorNotes":
+                      vendor_notes,
+
+                  "photo":
+                      existing_photo
+
+              }
+
+
+              found = False
+
+
+              for index, item in enumerate(
+                  items
               ):
 
-                  image.unlink()
+                  if str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  ) == item_id:
+
+                      items[index] = (
+                          new_item
+                      )
+
+                      found = True
+
+                      break
 
 
-          print(
-              "Removed item:",
-              item_id
-          )
+              if not found:
+
+                  items.append(
+                      new_item
+                  )
+
+
+              def sort_key(item):
+
+                  value = str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  )
+
+
+                  if value.isdigit():
+
+                      return int(
+                          value
+                      )
+
+
+                  return 999999999
+
+
+              items.sort(
+                  key=sort_key
+              )
+
+
+              data_file.write_text(
+
+                  json.dumps(
+                      items,
+                      indent=2
+                  ),
+
+                  encoding="utf-8"
+
+              )
+
+
+              print(
+                  "Item data updated."
+              )
+
+
+          # ==================================================
+          # PHOTO CHUNK
+          # ==================================================
+
+          elif event_type == "metabid_photo_chunk":
+
+
+              chunk_index_text = os.environ.get(
+                  "CHUNK_INDEX",
+                  ""
+              ).strip()
+
+
+              chunk_count_text = os.environ.get(
+                  "CHUNK_COUNT",
+                  ""
+              ).strip()
+
+
+              chunk_data = os.environ.get(
+                  "CHUNK_DATA",
+                  ""
+              ).strip()
+
+
+              photo_filename = os.environ.get(
+                  "PHOTO_FILENAME",
+                  ""
+              ).strip()
+
+
+              if chunk_index_text == "":
+
+                  raise SystemExit(
+                      "No chunkIndex received."
+                  )
+
+
+              if chunk_count_text == "":
+
+                  raise SystemExit(
+                      "No chunkCount received."
+                  )
+
+
+              if not chunk_data:
+
+                  raise SystemExit(
+                      "No chunkData received."
+                  )
+
+
+              chunk_index = int(
+                  chunk_index_text
+              )
+
+
+              chunk_count = int(
+                  chunk_count_text
+              )
+
+
+              item_chunk_folder = (
+
+                  chunk_root /
+                  item_id
+
+              )
+
+
+              item_chunk_folder.mkdir(
+                  parents=True,
+                  exist_ok=True
+              )
+
+
+              # ==============================================
+              # SAVE PHOTO FILENAME
+              # ==============================================
+
+              if photo_filename:
+
+                  (
+                      item_chunk_folder /
+                      "filename.txt"
+                  ).write_text(
+
+                      photo_filename,
+
+                      encoding="utf-8"
+
+                  )
+
+
+              # ==============================================
+              # SAVE CURRENT CHUNK
+              # ==============================================
+
+              chunk_file = (
+
+                  item_chunk_folder /
+                  f"{chunk_index:06d}.txt"
+
+              )
+
+
+              chunk_file.write_text(
+
+                  chunk_data,
+
+                  encoding="utf-8"
+
+              )
+
+
+              print(
+                  "Saved chunk",
+                  chunk_index + 1,
+                  "of",
+                  chunk_count
+              )
+
+
+              # ==============================================
+              # CHECK WHETHER ALL CHUNKS EXIST
+              # ==============================================
+
+              expected_names = [
+
+                  f"{index:06d}.txt"
+
+                  for index in range(
+                      chunk_count
+                  )
+
+              ]
+
+
+              all_present = all(
+
+                  (
+                      item_chunk_folder /
+                      name
+                  ).exists()
+
+                  for name in expected_names
+
+              )
+
+
+              if not all_present:
+
+                  actual_chunks = [
+
+                      file
+
+                      for file in
+                      item_chunk_folder.glob(
+                          "*.txt"
+                      )
+
+                      if file.name !=
+                      "filename.txt"
+
+                  ]
+
+
+                  print(
+
+                      "Waiting for remaining chunks.",
+
+                      len(actual_chunks),
+
+                      "of",
+
+                      chunk_count,
+
+                      "received."
+
+                  )
+
+
+              else:
+
+                  print(
+                      "All photo chunks received."
+                  )
+
+
+                  # ==========================================
+                  # ASSEMBLE BASE64
+                  # ==========================================
+
+                  complete_base64 = ""
+
+
+                  for index in range(
+                      chunk_count
+                  ):
+
+                      complete_base64 += (
+
+                          item_chunk_folder /
+                          f"{index:06d}.txt"
+
+                      ).read_text(
+                          encoding="utf-8"
+                      ).strip()
+
+
+                  # ==========================================
+                  # DETERMINE IMAGE TYPE
+                  # ==========================================
+
+                  filename_file = (
+
+                      item_chunk_folder /
+                      "filename.txt"
+
+                  )
+
+
+                  if filename_file.exists():
+
+                      saved_filename = (
+
+                          filename_file.read_text(
+                              encoding="utf-8"
+                          ).strip()
+
+                      )
+
+                  else:
+
+                      saved_filename = (
+                          photo_filename
+                      )
+
+
+                  extension = Path(
+                      saved_filename
+                  ).suffix.lower()
+
+
+                  if extension not in [
+
+                      ".jpg",
+                      ".jpeg",
+                      ".png",
+                      ".gif",
+                      ".webp"
+
+                  ]:
+
+                      extension = ".jpg"
+
+
+                  # ==========================================
+                  # REMOVE PREVIOUS IMAGE
+                  # ==========================================
+
+                  for old_image in (
+                      images_folder.glob(
+                          f"{item_id}.*"
+                      )
+                  ):
+
+                      old_image.unlink()
+
+
+                  # ==========================================
+                  # DECODE IMAGE
+                  # ==========================================
+
+                  image_file = (
+
+                      images_folder /
+                      f"{item_id}{extension}"
+
+                  )
+
+
+                  try:
+
+                      image_bytes = (
+                          base64.b64decode(
+                              complete_base64,
+                              validate=False
+                          )
+                      )
+
+                  except Exception as error:
+
+                      raise SystemExit(
+
+                          f"Could not decode image: {error}"
+
+                      )
+
+
+                  image_file.write_bytes(
+                      image_bytes
+                  )
+
+
+                  photo_path = (
+
+                      f"images/"
+                      f"{item_id}"
+                      f"{extension}"
+
+                  )
+
+
+                  print(
+                      "Photo saved:",
+                      photo_path
+                  )
+
+
+                  # ==========================================
+                  # RELOAD INVENTORY
+                  # ==========================================
+
+                  if data_file.exists():
+
+                      try:
+
+                          items = json.loads(
+
+                              data_file.read_text(
+                                  encoding="utf-8"
+                              )
+
+                          )
+
+                      except Exception:
+
+                          items = []
+
+                  else:
+
+                      items = []
+
+
+                  if not isinstance(
+                      items,
+                      list
+                  ):
+
+                      items = []
+
+
+                  # ==========================================
+                  # UPDATE PHOTO PATH
+                  # ==========================================
+
+                  found = False
+
+
+                  for item in items:
+
+                      if str(
+                          item.get(
+                              "id",
+                              ""
+                          )
+                      ) == item_id:
+
+                          item["photo"] = (
+                              photo_path
+                          )
+
+                          found = True
+
+                          break
+
+
+                  if not found:
+
+                      items.append({
+
+                          "id":
+                              item_id,
+
+                          "description":
+                              "",
+
+                          "weight":
+                              "",
+
+                          "bidPrice":
+                              "",
+
+                          "vendorName":
+                              "",
+
+                          "vendorEmail":
+                              "",
+
+                          "vendorNotes":
+                              "",
+
+                          "photo":
+                              photo_path
+
+                      })
+
+
+                  def sort_key(item):
+
+                      value = str(
+                          item.get(
+                              "id",
+                              ""
+                          )
+                      )
+
+
+                      if value.isdigit():
+
+                          return int(
+                              value
+                          )
+
+
+                      return 999999999
+
+
+                  items.sort(
+                      key=sort_key
+                  )
+
+
+                  data_file.write_text(
+
+                      json.dumps(
+                          items,
+                          indent=2
+                      ),
+
+                      encoding="utf-8"
+
+                  )
+
+
+                  # ==========================================
+                  # DELETE TEMP CHUNKS
+                  # ==========================================
+
+                  shutil.rmtree(
+                      item_chunk_folder
+                  )
+
+
+                  print(
+                      "Photo assembly complete."
+                  )
+
+
+          # ==================================================
+          # REMOVE CLOSED ITEM
+          # ==================================================
+
+          elif event_type == "metabid_remove":
+
+
+              items = [
+
+                  item
+
+                  for item in items
+
+                  if str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  ) != item_id
+
+              ]
+
+
+              data_file.write_text(
+
+                  json.dumps(
+                      items,
+                      indent=2
+                  ),
+
+                  encoding="utf-8"
+
+              )
+
+
+              for old_image in (
+                  images_folder.glob(
+                      f"{item_id}.*"
+                  )
+              ):
+
+                  old_image.unlink()
+
+
+              item_chunk_folder = (
+
+                  chunk_root /
+                  item_id
+
+              )
+
+
+              if item_chunk_folder.exists():
+
+                  shutil.rmtree(
+                      item_chunk_folder
+                  )
+
+
+              print(
+                  "Removed MetaBid item:",
+                  item_id
+              )
+
+
+          else:
+
+              raise SystemExit(
+
+                  f"Unknown event: {event_type}"
+
+              )
+
 
           PY
 
 
-      - name: Commit removal
+      # ======================================================
+      # COMMIT / PUSH
+      # ======================================================
+
+      - name: Commit MetaBid changes
+
         env:
 
           ITEM_ID: ${{ github.event.client_payload.itemId }}
 
+          EVENT_TYPE: ${{ github.event.action }}
+
         run: |
 
-          git config user.name "MetaBid Automation"
+          git config user.name \
+            "MetaBid Automation"
 
-          git config user.email "actions@github.com"
+
+          git config user.email \
+            "actions@github.com"
 
 
           git add -A
@@ -1136,7 +910,7 @@ jobs:
           if git diff --cached --quiet
           then
 
-            echo "Nothing to remove."
+            echo "No changes to commit."
 
             exit 0
 
@@ -1144,11 +918,15 @@ jobs:
 
 
           git commit \
-            -m "Remove MetaBid item ${ITEM_ID}"
+            -m "MetaBid ${EVENT_TYPE} item ${ITEM_ID}"
 
 
-          for attempt in 1 2 3 4 5 6
+          for attempt in 1 2 3 4 5
           do
+
+            echo \
+              "Push attempt ${attempt}"
+
 
             if git pull \
               --rebase \
@@ -1161,7 +939,7 @@ jobs:
                 HEAD:main
               then
 
-                echo "Removal published."
+                echo "Push successful."
 
                 exit 0
 
@@ -1174,9 +952,11 @@ jobs:
             fi
 
 
-            sleep $((attempt * 2))
+            sleep 2
 
           done
 
+
+          echo "Unable to push changes."
 
           exit 1
