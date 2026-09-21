@@ -3,62 +3,34 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>MetaBid</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-
         body {
             margin: 0;
             padding: 0;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             background: #f4f6f8;
-
             color: #111;
         }
-
-
-        /* ==========================================
-           PAGE
-           ========================================== */
 
         .page-container {
             width: 100%;
             padding: 12px 10px 40px 10px;
         }
 
-
         .table-container {
             width: 100%;
-
             background: white;
-
-            box-shadow:
-                0 2px 5px
-                rgba(0, 0, 0, 0.15);
-
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             overflow-x: auto;
         }
-
-
-        /* ==========================================
-           TABLE
-           ========================================== */
 
         table {
             width: 100%;
@@ -66,356 +38,233 @@
             table-layout: fixed;
         }
 
-
         thead {
             background: #2b678e;
             color: white;
         }
 
-
         th {
             text-align: left;
-
-            padding:
-                12px
-                14px;
-
+            padding: 12px 10px;
             font-size: 14px;
             font-weight: bold;
         }
 
-
         td {
-            padding:
-                14px
-                14px;
-
-            border-bottom:
-                1px solid
-                #dddddd;
-
+            padding: 14px 10px;
+            border-bottom: 1px solid #dddddd;
             vertical-align: middle;
-
             font-size: 14px;
+            overflow-wrap: anywhere;
         }
-
 
         tbody tr:hover {
-            background:
-                #f8fafc;
+            background: #f8fafc;
         }
 
-
-        /* ==========================================
-           COLUMN WIDTHS
-           ========================================== */
+        /* Column widths */
 
         .col-id {
-            width: 6%;
+            width: 5%;
             text-align: center;
         }
-
 
         .col-photo {
             width: 8%;
         }
 
-
         .col-description {
-            width: 29%;
+            width: 20%;
         }
-
 
         .col-weight {
-            width: 14%;
+            width: 9%;
         }
-
 
         .col-bid {
-            width: 18%;
+            width: 11%;
         }
-
 
         .col-vendor {
-            width: 25%;
+            width: 13%;
         }
 
+        .col-email {
+            width: 15%;
+        }
 
-        /* ==========================================
-           ITEM PHOTO
-           ========================================== */
+        .col-notes {
+            width: 19%;
+        }
+
+        /* Photo */
 
         .photo-wrapper {
             width: 70px;
             height: 70px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
         }
-
 
         .item-photo {
             width: 70px;
             height: 70px;
-
             object-fit: cover;
-
             border-radius: 5px;
-
-            border:
-                1px solid
-                #cccccc;
-
+            border: 1px solid #cccccc;
             cursor: zoom-in;
-
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
 
         .item-photo:hover {
             transform: scale(1.07);
-
-            box-shadow:
-                0 4px 12px
-                rgba(0, 0, 0, 0.30);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.30);
         }
-
-
-        /* ==========================================
-           NO PHOTO
-           ========================================== */
 
         .no-photo {
             width: 70px;
             height: 70px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             text-align: center;
-
-            background:
-                #eeeeee;
-
-            border:
-                1px solid
-                #cccccc;
-
-            border-radius:
-                5px;
-
-            font-size:
-                11px;
-
-            color:
-                #333333;
+            background: #eeeeee;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 11px;
+            color: #333333;
         }
 
+        /* Vendor email */
 
-        /* ==========================================
-           LOADING / ERROR
-           ========================================== */
+        .vendor-email {
+            color: #1769aa;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .vendor-email:hover {
+            text-decoration: underline;
+        }
+
+        /* Vendor notes */
+
+        .vendor-notes {
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        /* Status messages */
 
         .status-row td {
             text-align: center;
-
             padding: 40px;
-
             color: #555555;
         }
-
 
         .error-message {
             color: #b00020;
             font-weight: bold;
         }
 
-
-        /* ==========================================
-           IMAGE PREVIEW MODAL
-           ========================================== */
+        /* =========================================
+           IMAGE PREVIEW
+           ========================================= */
 
         .image-modal {
             display: none;
-
             position: fixed;
-
             z-index: 99999;
-
             top: 0;
             left: 0;
-
             width: 100%;
             height: 100%;
-
-            background:
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.88
-                );
-
+            background: rgba(0,0,0,0.88);
             align-items: center;
             justify-content: center;
-
             padding: 35px;
         }
-
 
         .image-modal.open {
             display: flex;
         }
 
-
         .modal-image-container {
             position: relative;
-
             max-width: 95%;
             max-height: 95%;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
         }
 
-
         .image-modal-content {
             max-width: 90vw;
             max-height: 88vh;
-
             width: auto;
             height: auto;
-
             object-fit: contain;
-
             background: white;
-
             border-radius: 7px;
-
-            box-shadow:
-                0 10px 50px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.75
-                );
+            box-shadow: 0 10px 50px rgba(0,0,0,0.75);
         }
-
-
-        /* ==========================================
-           CLOSE BUTTON
-           ========================================== */
 
         .image-modal-close {
             position: fixed;
-
             top: 18px;
             right: 28px;
-
             color: white;
-
             font-size: 44px;
-            font-weight: normal;
-
             line-height: 1;
-
             cursor: pointer;
-
             user-select: none;
-
             z-index: 100000;
         }
-
 
         .image-modal-close:hover {
             color: #dddddd;
         }
 
-
-        /* ==========================================
-           PREVIEW TEXT
-           ========================================== */
-
         .preview-hint {
             position: fixed;
-
             bottom: 18px;
             left: 50%;
-
-            transform:
-                translateX(-50%);
-
+            transform: translateX(-50%);
             color: white;
-
             font-size: 13px;
-
-            background:
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.50
-                );
-
-            padding:
-                7px
-                12px;
-
-            border-radius:
-                5px;
+            background: rgba(0,0,0,0.50);
+            padding: 7px 12px;
+            border-radius: 5px;
+            text-align: center;
         }
 
+        /* Mobile */
 
-        /* ==========================================
-           MOBILE
-           ========================================== */
-
-        @media
-        (
-            max-width: 800px
-        ) {
-
+        @media (max-width: 900px) {
             table {
-                min-width: 900px;
+                min-width: 1250px;
             }
-
 
             .image-modal {
                 padding: 15px;
             }
-
 
             .image-modal-content {
                 max-width: 96vw;
                 max-height: 85vh;
             }
 
-
             .image-modal-close {
                 top: 12px;
                 right: 18px;
-
                 font-size: 40px;
             }
-
         }
-
     </style>
-
 </head>
 
-
 <body>
-
 
     <div class="page-container">
 
@@ -424,48 +273,24 @@
             <table>
 
                 <thead>
-
                     <tr>
-
-                        <th class="col-id">
-                            ID
-                        </th>
-
-                        <th class="col-photo">
-                            Photo
-                        </th>
-
-                        <th class="col-description">
-                            Description
-                        </th>
-
-                        <th class="col-weight">
-                            Weight
-                        </th>
-
-                        <th class="col-bid">
-                            Bid Price
-                        </th>
-
-                        <th class="col-vendor">
-                            Vendor Name
-                        </th>
-
+                        <th class="col-id">ID</th>
+                        <th class="col-photo">Photo</th>
+                        <th class="col-description">Description</th>
+                        <th class="col-weight">Weight</th>
+                        <th class="col-bid">Bid Price</th>
+                        <th class="col-vendor">Vendor Name</th>
+                        <th class="col-email">Vendor Email</th>
+                        <th class="col-notes">Vendor Notes</th>
                     </tr>
-
                 </thead>
 
-
                 <tbody id="inventoryBody">
-
                     <tr class="status-row">
-
-                        <td colspan="6">
+                        <td colspan="8">
                             Loading MetaBid items...
                         </td>
-
                     </tr>
-
                 </tbody>
 
             </table>
@@ -475,15 +300,9 @@
     </div>
 
 
+    <!-- IMAGE PREVIEW -->
 
-    <!-- ==========================================
-         IMAGE PREVIEW
-         ========================================== -->
-
-    <div
-        id="imageModal"
-        class="image-modal"
-    >
+    <div id="imageModal" class="image-modal">
 
         <span
             id="imageModalClose"
@@ -493,18 +312,14 @@
             &times;
         </span>
 
-
         <div class="modal-image-container">
-
             <img
                 id="imageModalImage"
                 class="image-modal-content"
                 src=""
                 alt="Item photo preview"
             >
-
         </div>
-
 
         <div class="preview-hint">
             Click outside the image or press Esc to close
@@ -513,41 +328,26 @@
     </div>
 
 
-
     <script>
 
-        /* ==========================================
-           SETTINGS
-           ========================================== */
-
-        const DATA_FILE =
-            "data/items.json";
-
+        const DATA_FILE = "data/items.json";
 
         const inventoryBody =
-            document.getElementById(
-                "inventoryBody"
-            );
+            document.getElementById("inventoryBody");
 
 
-        /* ==========================================
-           LOAD METABID ITEMS
-           ========================================== */
+        /* =========================================
+           LOAD INVENTORY
+           ========================================= */
 
         async function loadInventory() {
 
             try {
 
-                /*
-                    Add timestamp so the browser does
-                    not keep showing an old items.json.
-                */
-
                 const url =
                     DATA_FILE +
                     "?v=" +
                     Date.now();
-
 
                 const response =
                     await fetch(
@@ -557,67 +357,30 @@
                         }
                     );
 
-
                 if (!response.ok) {
-
                     throw new Error(
                         "Could not load MetaBid inventory."
                     );
-
                 }
-
 
                 const data =
                     await response.json();
 
-
-                /*
-                    Supports either:
-
-                    [
-                        {...},
-                        {...}
-                    ]
-
-                    OR
-
-                    {
-                        "items": [
-                            {...}
-                        ]
-                    }
-                */
-
                 let items = [];
 
-
-                if (
-                    Array.isArray(data)
-                ) {
-
+                if (Array.isArray(data)) {
                     items = data;
-
                 }
-
                 else if (
                     data &&
-                    Array.isArray(
-                        data.items
-                    )
+                    Array.isArray(data.items)
                 ) {
-
-                    items =
-                        data.items;
-
+                    items = data.items;
                 }
 
-
-                renderInventory(
-                    items
-                );
+                renderInventory(items);
 
             }
-
             catch (error) {
 
                 console.error(
@@ -625,42 +388,26 @@
                     error
                 );
 
-
                 inventoryBody.innerHTML = `
-
                     <tr class="status-row">
-
-                        <td colspan="6">
-
+                        <td colspan="8">
                             <span class="error-message">
-
                                 Unable to load MetaBid inventory.
-
                             </span>
-
                         </td>
-
                     </tr>
-
                 `;
-
             }
-
         }
 
 
+        /* =========================================
+           RENDER INVENTORY
+           ========================================= */
 
-        /* ==========================================
-           RENDER TABLE
-           ========================================== */
+        function renderInventory(items) {
 
-        function renderInventory(
-            items
-        ) {
-
-            inventoryBody.innerHTML =
-                "";
-
+            inventoryBody.innerHTML = "";
 
             if (
                 !items ||
@@ -668,180 +415,161 @@
             ) {
 
                 inventoryBody.innerHTML = `
-
                     <tr class="status-row">
-
-                        <td colspan="6">
-
+                        <td colspan="8">
                             No MetaBid items found.
-
                         </td>
-
                     </tr>
-
                 `;
 
                 return;
-
             }
 
 
-            /*
-                Sort by SharePoint ID.
-            */
+            /* Sort by SharePoint ID */
 
-            items.sort(
-                function(
-                    a,
-                    b
-                ) {
+            items.sort(function(a, b) {
 
-                    const aId =
-                        parseInt(
-                            a.id,
-                            10
-                        ) || 0;
+                const aId =
+                    parseInt(a.id, 10) || 0;
+
+                const bId =
+                    parseInt(b.id, 10) || 0;
+
+                return aId - bId;
+            });
 
 
-                    const bId =
-                        parseInt(
-                            b.id,
-                            10
-                        ) || 0;
+            items.forEach(function(item) {
+
+                const row =
+                    document.createElement("tr");
 
 
-                    return (
-                        aId -
-                        bId
+                const id =
+                    safeValue(item.id);
+
+                const description =
+                    safeValue(item.description);
+
+                const weight =
+                    safeValue(item.weight);
+
+                const vendorName =
+                    safeValue(item.vendorName);
+
+                /*
+                    Supports our preferred property name
+                    plus a few capitalization variations.
+                */
+
+                const vendorEmail =
+                    safeValue(
+                        item.vendorEmail ||
+                        item.VendorEmail ||
+                        item.vendoremail ||
+                        ""
                     );
 
-                }
-            );
-
-
-            items.forEach(
-                function(
-                    item
-                ) {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    const id =
-                        safeValue(
-                            item.id
-                        );
-
-
-                    const description =
-                        safeValue(
-                            item.description
-                        );
-
-
-                    const weight =
-                        safeValue(
-                            item.weight
-                        );
-
-
-                    const vendorName =
-                        safeValue(
-                            item.vendorName
-                        );
-
-
-                    const bidPrice =
-                        formatBidPrice(
-                            item.bidPrice
-                        );
-
-
-                    const photo =
-                        getPhotoPath(
-                            item
-                        );
-
-
-                    const photoHTML =
-                        createPhotoHTML(
-                            photo,
-                            id
-                        );
-
-
-                    row.innerHTML = `
-
-                        <td class="col-id">
-
-                            ${escapeHTML(id)}
-
-                        </td>
-
-
-                        <td class="col-photo">
-
-                            ${photoHTML}
-
-                        </td>
-
-
-                        <td class="col-description">
-
-                            ${escapeHTML(description)}
-
-                        </td>
-
-
-                        <td class="col-weight">
-
-                            ${escapeHTML(weight)}
-
-                        </td>
-
-
-                        <td class="col-bid">
-
-                            ${escapeHTML(bidPrice)}
-
-                        </td>
-
-
-                        <td class="col-vendor">
-
-                            ${escapeHTML(vendorName)}
-
-                        </td>
-
-                    `;
-
-
-                    inventoryBody.appendChild(
-                        row
+                const vendorNotes =
+                    safeValue(
+                        item.vendorNotes ||
+                        item.VendorNotes ||
+                        item.vendornotes ||
+                        ""
                     );
 
-                }
-            );
+                const bidPrice =
+                    formatBidPrice(item.bidPrice);
 
+                const photo =
+                    getPhotoPath(item);
+
+                const photoHTML =
+                    createPhotoHTML(
+                        photo,
+                        id
+                    );
+
+                const emailHTML =
+                    createEmailHTML(
+                        vendorEmail
+                    );
+
+
+                row.innerHTML = `
+
+                    <td class="col-id">
+                        ${escapeHTML(id)}
+                    </td>
+
+                    <td class="col-photo">
+                        ${photoHTML}
+                    </td>
+
+                    <td class="col-description">
+                        ${escapeHTML(description)}
+                    </td>
+
+                    <td class="col-weight">
+                        ${escapeHTML(weight)}
+                    </td>
+
+                    <td class="col-bid">
+                        ${escapeHTML(bidPrice)}
+                    </td>
+
+                    <td class="col-vendor">
+                        ${escapeHTML(vendorName)}
+                    </td>
+
+                    <td class="col-email">
+                        ${emailHTML}
+                    </td>
+
+                    <td class="col-notes vendor-notes">
+                        ${escapeHTML(vendorNotes)}
+                    </td>
+                `;
+
+                inventoryBody.appendChild(row);
+            });
         }
 
 
+        /* =========================================
+           EMAIL
+           ========================================= */
 
-        /* ==========================================
+        function createEmailHTML(email) {
+
+            if (!email) {
+                return "";
+            }
+
+            const safeEmail =
+                escapeHTML(email);
+
+            const mailtoEmail =
+                encodeURIComponent(email);
+
+            return `
+                <a
+                    class="vendor-email"
+                    href="mailto:${mailtoEmail}"
+                    title="Email ${safeEmail}"
+                >
+                    ${safeEmail}
+                </a>
+            `;
+        }
+
+
+        /* =========================================
            PHOTO PATH
-           ========================================== */
+           ========================================= */
 
-        function getPhotoPath(
-            item
-        ) {
-
-            /*
-                Supports several possible JSON
-                property names.
-            */
+        function getPhotoPath(item) {
 
             const photo =
                 item.photo ||
@@ -853,78 +581,47 @@
                 item.Image ||
                 "";
 
-
             if (
                 photo === null ||
                 photo === undefined
             ) {
-
                 return "";
-
             }
 
-
-            return String(
-                photo
-            ).trim();
-
+            return String(photo).trim();
         }
 
 
-
-        /* ==========================================
+        /* =========================================
            CREATE PHOTO
-           ========================================== */
+           ========================================= */
 
         function createPhotoHTML(
             photo,
             itemId
         ) {
 
-            if (
-                !photo
-            ) {
+            if (!photo) {
 
                 return `
-
                     <div class="photo-wrapper">
-
                         <div class="no-photo">
-
                             No Photo
-
                         </div>
-
                     </div>
-
                 `;
-
             }
 
-
             const safePhoto =
-                escapeAttribute(
-                    photo
-                );
-
+                escapeAttribute(photo);
 
             const safeId =
-                escapeAttribute(
-                    itemId
-                );
-
-
-            /*
-                Timestamp prevents the browser from
-                keeping an older version of an image
-                when SharePoint replaces the photo.
-            */
+                escapeAttribute(itemId);
 
             const separator =
                 photo.includes("?")
-                ? "&"
-                : "?";
-
+                    ? "&"
+                    : "?";
 
             const displayPhoto =
                 safePhoto +
@@ -932,222 +629,121 @@
                 "v=" +
                 Date.now();
 
-
             return `
-
                 <div class="photo-wrapper">
 
                     <img
                         src="${displayPhoto}"
-
                         data-full-image="${safePhoto}"
-
                         class="item-photo"
-
                         alt="Photo for item ${safeId}"
-
                         title="Click to enlarge"
-
                         loading="lazy"
-
                         onerror="handleImageError(this)"
                     >
 
                 </div>
-
             `;
-
         }
 
 
-
-        /* ==========================================
-           IMAGE ERROR
-           ========================================== */
-
-        function handleImageError(
-            image
-        ) {
+        function handleImageError(image) {
 
             const wrapper =
                 image.parentElement;
 
-
-            if (
-                wrapper
-            ) {
+            if (wrapper) {
 
                 wrapper.innerHTML = `
-
                     <div class="no-photo">
-
                         No Photo
-
                     </div>
-
                 `;
-
             }
-
         }
 
 
-
-        /* ==========================================
+        /* =========================================
            BID PRICE
-           ========================================== */
+           ========================================= */
 
-        function formatBidPrice(
-            value
-        ) {
+        function formatBidPrice(value) {
 
             if (
                 value === null ||
                 value === undefined ||
                 String(value).trim() === ""
             ) {
-
                 return "";
-
             }
-
 
             const number =
                 Number(
                     String(value)
-                        .replace(
-                            /[$,]/g,
-                            ""
-                        )
+                        .replace(/[$,]/g, "")
                 );
 
-
-            if (
-                Number.isNaN(number)
-            ) {
-
-                return String(
-                    value
-                );
-
+            if (Number.isNaN(number)) {
+                return String(value);
             }
-
 
             return new Intl.NumberFormat(
                 "en-US",
                 {
-                    style:
-                        "currency",
-
-                    currency:
-                        "USD"
+                    style: "currency",
+                    currency: "USD"
                 }
-            ).format(
-                number
-            );
-
+            ).format(number);
         }
 
 
-
-        /* ==========================================
+        /* =========================================
            SAFE VALUES
-           ========================================== */
+           ========================================= */
 
-        function safeValue(
-            value
-        ) {
+        function safeValue(value) {
 
             if (
                 value === null ||
                 value === undefined
             ) {
-
                 return "";
-
             }
 
-
-            return String(
-                value
-            );
-
+            return String(value);
         }
 
 
+        function escapeHTML(value) {
 
-        /* ==========================================
-           ESCAPE HTML
-           ========================================== */
+            return String(value)
 
-        function escapeHTML(
-            value
-        ) {
-
-            return String(
-                value
-            )
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
 
-
-        /* ==========================================
-           ESCAPE ATTRIBUTE
-           ========================================== */
-
-        function escapeAttribute(
-            value
-        ) {
-
-            return escapeHTML(
-                value
-            );
-
+        function escapeAttribute(value) {
+            return escapeHTML(value);
         }
 
 
-
-        /* ==========================================
+        /* =========================================
            IMAGE PREVIEW
-           ========================================== */
+           ========================================= */
 
         const imageModal =
             document.getElementById(
                 "imageModal"
             );
 
-
         const imageModalImage =
             document.getElementById(
                 "imageModalImage"
             );
-
 
         const imageModalClose =
             document.getElementById(
@@ -1155,31 +751,18 @@
             );
 
 
-
-        /*
-            Detect clicks on inventory photos.
-        */
-
         document.addEventListener(
             "click",
-            function(
-                event
-            ) {
+            function(event) {
 
                 const image =
                     event.target.closest(
                         ".item-photo"
                     );
 
-
-                if (
-                    !image
-                ) {
-
+                if (!image) {
                     return;
-
                 }
-
 
                 const fullImage =
                     image.getAttribute(
@@ -1187,39 +770,25 @@
                     ) ||
                     image.src;
 
-
                 openImagePreview(
                     fullImage
                 );
-
             }
         );
-
 
 
         function openImagePreview(
             imageSource
         ) {
 
-            if (
-                !imageSource
-            ) {
-
+            if (!imageSource) {
                 return;
-
             }
-
-
-            /*
-                Cache buster also ensures the
-                preview displays the newest image.
-            */
 
             const separator =
                 imageSource.includes("?")
-                ? "&"
-                : "?";
-
+                    ? "&"
+                    : "?";
 
             imageModalImage.src =
                 imageSource +
@@ -1227,22 +796,13 @@
                 "preview=" +
                 Date.now();
 
-
             imageModal.classList.add(
                 "open"
             );
 
-
-            /*
-                Stop the page behind the preview
-                from scrolling.
-            */
-
             document.body.style.overflow =
                 "hidden";
-
         }
-
 
 
         function closeImagePreview() {
@@ -1251,95 +811,58 @@
                 "open"
             );
 
-
-            imageModalImage.src =
-                "";
-
+            imageModalImage.src = "";
 
             document.body.style.overflow =
                 "";
-
         }
 
 
-
-        /* ==========================================
-           CLOSE BUTTON
-           ========================================== */
-
         imageModalClose.addEventListener(
             "click",
-            function(
-                event
-            ) {
+            function(event) {
 
                 event.stopPropagation();
 
-
                 closeImagePreview();
-
             }
         );
 
 
-
-        /* ==========================================
-           CLICK DARK BACKGROUND TO CLOSE
-           ========================================== */
-
         imageModal.addEventListener(
             "click",
-            function(
-                event
-            ) {
+            function(event) {
 
                 if (
                     event.target ===
                     imageModal
                 ) {
-
                     closeImagePreview();
-
                 }
-
             }
         );
 
-
-
-        /* ==========================================
-           ESC KEY TO CLOSE
-           ========================================== */
 
         document.addEventListener(
             "keydown",
-            function(
-                event
-            ) {
+            function(event) {
 
                 if (
-                    event.key ===
-                    "Escape"
+                    event.key === "Escape"
                 ) {
-
                     closeImagePreview();
-
                 }
-
             }
         );
 
 
-
-        /* ==========================================
+        /* =========================================
            START
-           ========================================== */
+           ========================================= */
 
         loadInventory();
 
     </script>
 
-
 </body>
-
 </html>
