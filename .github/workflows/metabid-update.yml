@@ -2,219 +2,818 @@ name: MetaBid SharePoint Update
 
 on:
   repository_dispatch:
-    types: [metabid_update]
+    types:
+      - metabid_update
+      - metabid_photo_chunk
 
 permissions:
   contents: write
 
+concurrency:
+  group: metabid-repo-write
+  cancel-in-progress: false
+
 jobs:
   update-metabid:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
 
-      - name: Create MetaBid update script
-        run: |
-          cat > /tmp/update_metabid.py <<'PY'
-          import os
-          import json
-          import base64
-          from pathlib import Path
+      # ==========================================================
+      # NORMAL ITEM UPDATE
+      # ==========================================================
 
-          item_id = os.environ.get("ITEM_ID", "").strip()
-          description = os.environ.get("DESCRIPTION", "")
-          weight = os.environ.get("WEIGHT", "")
-          bid_price = os.environ.get("BID_PRICE", "")
-          vendor_name = os.environ.get("VENDOR_NAME", "")
+      - name: Update MetaBid item
+        if: github.event.action == 'metabid_update'
 
-          photo_file_name = os.environ.get("PHOTO_FILE_NAME", "").strip()
-          photo_content = os.environ.get("PHOTO_CONTENT", "").strip()
-          photo_content_type = os.environ.get("PHOTO_CONTENT_TYPE", "").strip()
-
-          if not item_id:
-              raise SystemExit("No SharePoint item ID was supplied.")
-
-          data_dir = Path("data")
-          image_dir = Path("images")
-
-          data_dir.mkdir(parents=True, exist_ok=True)
-          image_dir.mkdir(parents=True, exist_ok=True)
-
-          file_path = data_dir / "items.json"
-
-          if file_path.exists():
-              try:
-                  items = json.loads(
-                      file_path.read_text(encoding="utf-8")
-                  )
-              except Exception:
-                  items = []
-          else:
-              items = []
-
-          if not isinstance(items, list):
-              items = []
-
-          existing_item = None
-
-          for existing in items:
-              if str(existing.get("id", "")) == item_id:
-                  existing_item = existing
-                  break
-
-          existing_photo = ""
-
-          if existing_item:
-              existing_photo = existing_item.get("photo", "")
-
-          photo_path = existing_photo
-
-          # -------------------------------------------------
-          # Save SharePoint image into GitHub
-          # -------------------------------------------------
-          if photo_content:
-
-              extension = ""
-
-              if photo_file_name:
-                  extension = Path(photo_file_name).suffix.lower()
-
-              if not extension:
-                  if photo_content_type == "image/jpeg":
-                      extension = ".jpg"
-                  elif photo_content_type == "image/gif":
-                      extension = ".gif"
-                  elif photo_content_type == "image/webp":
-                      extension = ".webp"
-                  else:
-                      extension = ".png"
-
-              destination = image_dir / f"{item_id}{extension}"
-
-              try:
-                  image_bytes = base64.b64decode(photo_content)
-
-                  # Remove an older image for the same item
-                  # if its extension changed.
-                  for old_image in image_dir.glob(f"{item_id}.*"):
-                      if old_image != destination:
-                          old_image.unlink()
-
-                  destination.write_bytes(image_bytes)
-
-                  photo_path = destination.as_posix()
-
-                  print(
-                      f"Saved image for item {item_id}: "
-                      f"{photo_path} ({len(image_bytes)} bytes)"
-                  )
-
-              except Exception as exc:
-                  raise SystemExit(
-                      f"Could not decode/save photo: {exc}"
-                  )
-
-          else:
-              print("No photo content supplied. Keeping existing photo.")
-
-          # -------------------------------------------------
-          # Build MetaBid item
-          # -------------------------------------------------
-          item = {
-              "id": item_id,
-              "description": description,
-              "weight": weight,
-              "bidPrice": bid_price,
-              "vendorName": vendor_name,
-              "photo": photo_path
-          }
-
-          updated = False
-
-          for index, existing in enumerate(items):
-              if str(existing.get("id", "")) == item_id:
-                  items[index] = item
-                  updated = True
-                  break
-
-          if not updated:
-              items.append(item)
-
-          def sort_key(record):
-              value = str(record.get("id", ""))
-
-              if value.isdigit():
-                  return (0, int(value))
-
-              return (1, value)
-
-          items.sort(key=sort_key)
-
-          file_path.write_text(
-              json.dumps(items, indent=2),
-              encoding="utf-8"
-          )
-
-          print(f"Updated MetaBid item {item_id}")
-          print(f"Photo path: {photo_path}")
-
-          PY
-
-      - name: Update repository and push
         env:
           ITEM_ID: ${{ github.event.client_payload.itemId }}
           DESCRIPTION: ${{ github.event.client_payload.description }}
           WEIGHT: ${{ github.event.client_payload.weight }}
           BID_PRICE: ${{ github.event.client_payload.bidPrice }}
           VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
-
-          PHOTO_FILE_NAME: ${{ github.event.client_payload.photoFileName }}
-          PHOTO_CONTENT: ${{ github.event.client_payload.photoContent }}
-          PHOTO_CONTENT_TYPE: ${{ github.event.client_payload.photoContentType }}
+          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
+          PHOTO_CHUNK_COUNT: ${{ github.event.client_payload.photoChunkCount }}
 
         run: |
-          set -e
 
-          for attempt in 1 2 3 4 5
-          do
-            echo "======================================"
-            echo "MetaBid update attempt $attempt"
-            echo "======================================"
+          mkdir -p data
+          mkdir -p images
+          mkdir -p .metabid-chunks
 
-            git fetch origin main
-            git reset --hard origin/main
+          python3 <<'PY'
 
-            python3 /tmp/update_metabid.py
+          import json
+          import os
+          from pathlib import Path
 
-            git add -A
 
-            if git diff --cached --quiet
-            then
-              echo "No repository changes detected."
-              exit 0
-            fi
+          item_id = os.environ.get(
+              "ITEM_ID",
+              ""
+          ).strip()
 
-            git commit -m "Update MetaBid item $ITEM_ID"
+          description = os.environ.get(
+              "DESCRIPTION",
+              ""
+          )
 
-            if git push origin main
-            then
-              echo "MetaBid update pushed successfully."
-              exit 0
-            fi
+          weight = os.environ.get(
+              "WEIGHT",
+              ""
+          )
 
-            echo "Another update reached GitHub first."
-            echo "Refreshing repository and retrying..."
-            sleep 2
-          done
+          bid_price = os.environ.get(
+              "BID_PRICE",
+              ""
+          )
 
-          echo "Unable to push update after 5 attempts."
-          exit 1
+          vendor_name = os.environ.get(
+              "VENDOR_NAME",
+              ""
+          )
+
+          photo_filename = os.environ.get(
+              "PHOTO_FILENAME",
+              ""
+          ).strip()
+
+          photo_chunk_count = os.environ.get(
+              "PHOTO_CHUNK_COUNT",
+              ""
+          ).strip()
+
+
+          if not item_id:
+
+              raise SystemExit(
+                  "No itemId supplied."
+              )
+
+
+          data_file = Path(
+              "data/items.json"
+          )
+
+
+          # ------------------------------------------
+          # Load existing inventory
+          # ------------------------------------------
+
+          if data_file.exists():
+
+              try:
+
+                  items = json.loads(
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
+                  )
+
+              except Exception:
+
+                  items = []
+
+          else:
+
+              items = []
+
+
+          if not isinstance(
+              items,
+              list
+          ):
+
+              items = []
+
+
+          # ------------------------------------------
+          # Preserve existing photo until replacement
+          # photo is completely rebuilt.
+          # ------------------------------------------
+
+          existing_photo = ""
+
+
+          for item in items:
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ) == item_id:
+
+                  existing_photo = item.get(
+                      "photo",
+                      ""
+                  )
+
+                  break
+
+
+          new_item = {
+
+              "id": item_id,
+
+              "description": description,
+
+              "weight": weight,
+
+              "bidPrice": bid_price,
+
+              "vendorName": vendor_name,
+
+              "photo": existing_photo
+
+          }
+
+
+          found = False
+
+
+          for index, item in enumerate(
+              items
+          ):
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ) == item_id:
+
+                  items[index] = new_item
+
+                  found = True
+
+                  break
+
+
+          if not found:
+
+              items.append(
+                  new_item
+              )
+
+
+          # ------------------------------------------
+          # Sort by SharePoint ID
+          # ------------------------------------------
+
+          def sort_key(item):
+
+              value = str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              )
+
+              if value.isdigit():
+
+                  return int(
+                      value
+                  )
+
+              return 999999999
+
+
+          items.sort(
+              key=sort_key
+          )
+
+
+          data_file.write_text(
+
+              json.dumps(
+                  items,
+                  indent=2
+              ),
+
+              encoding="utf-8"
+
+          )
+
+
+          # ------------------------------------------
+          # Start clean chunk folder for this photo
+          # ------------------------------------------
+
+          if photo_chunk_count:
+
+              chunk_folder = Path(
+                  ".metabid-chunks"
+              ) / item_id
+
+
+              if chunk_folder.exists():
+
+                  for file in chunk_folder.iterdir():
+
+                      if file.is_file():
+
+                          file.unlink()
+
+
+              chunk_folder.mkdir(
+                  parents=True,
+                  exist_ok=True
+              )
+
+
+              info = {
+
+                  "photoFileName":
+                      photo_filename,
+
+                  "chunkCount":
+                      photo_chunk_count
+
+              }
+
+
+              (
+                  chunk_folder /
+                  "info.json"
+              ).write_text(
+
+                  json.dumps(
+                      info,
+                      indent=2
+                  ),
+
+                  encoding="utf-8"
+
+              )
+
+
+          print(
+              f"Updated MetaBid item {item_id}"
+          )
+
+          PY
+
+
+      # ==========================================================
+      # PHOTO CHUNK
+      # ==========================================================
+
+      - name: Save photo chunk
+        if: github.event.action == 'metabid_photo_chunk'
+
+        env:
+          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          CHUNK_INDEX: ${{ github.event.client_payload.chunkIndex }}
+          CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
+          CHUNK_DATA: ${{ github.event.client_payload.chunkData }}
+          PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
+
+        run: |
+
+          mkdir -p data
+          mkdir -p images
+          mkdir -p .metabid-chunks
+
+          python3 <<'PY'
+
+          import os
+          import json
+          import base64
+
+          from pathlib import Path
+
+
+          item_id = os.environ.get(
+              "ITEM_ID",
+              ""
+          ).strip()
+
+          chunk_index = os.environ.get(
+              "CHUNK_INDEX",
+              ""
+          ).strip()
+
+          chunk_count_raw = os.environ.get(
+              "CHUNK_COUNT",
+              ""
+          ).strip()
+
+          chunk_data = os.environ.get(
+              "CHUNK_DATA",
+              ""
+          )
+
+          photo_filename = os.environ.get(
+              "PHOTO_FILENAME",
+              ""
+          ).strip()
+
+
+          if not item_id:
+
+              raise SystemExit(
+                  "Missing itemId."
+              )
+
+
+          if chunk_index == "":
+
+              raise SystemExit(
+                  "Missing chunkIndex."
+              )
+
+
+          try:
+
+              chunk_count = int(
+                  chunk_count_raw
+              )
+
+          except Exception:
+
+              raise SystemExit(
+                  "Invalid chunkCount."
+              )
+
+
+          # ------------------------------------------
+          # Create item chunk folder
+          # ------------------------------------------
+
+          chunk_folder = (
+
+              Path(
+                  ".metabid-chunks"
+              )
+
+              / item_id
+
+          )
+
+
+          chunk_folder.mkdir(
+              parents=True,
+              exist_ok=True
+          )
+
+
+          # ------------------------------------------
+          # Save chunk
+          # ------------------------------------------
+
+          chunk_file = (
+
+              chunk_folder /
+
+              f"chunk_{int(chunk_index):06d}.txt"
+
+          )
+
+
+          chunk_file.write_text(
+
+              chunk_data,
+
+              encoding="utf-8"
+
+          )
+
+
+          print(
+              "Saved:",
+              chunk_file
+          )
+
+
+          # ------------------------------------------
+          # Save/update photo information
+          # ------------------------------------------
+
+          info_file = (
+
+              chunk_folder /
+              "info.json"
+
+          )
+
+
+          info = {
+
+              "photoFileName":
+                  photo_filename,
+
+              "chunkCount":
+                  chunk_count
+
+          }
+
+
+          info_file.write_text(
+
+              json.dumps(
+                  info,
+                  indent=2
+              ),
+
+              encoding="utf-8"
+
+          )
+
+
+          # ------------------------------------------
+          # Count received chunks
+          # ------------------------------------------
+
+          chunks = sorted(
+
+              chunk_folder.glob(
+                  "chunk_*.txt"
+              )
+
+          )
+
+
+          print(
+              f"Received {len(chunks)} "
+              f"of {chunk_count} chunks."
+          )
+
+
+          # ------------------------------------------
+          # Not finished yet
+          # ------------------------------------------
+
+          if len(chunks) < chunk_count:
+
+              print(
+                  "Waiting for remaining chunks."
+              )
+
+              raise SystemExit(0)
+
+
+          # ------------------------------------------
+          # Verify every expected chunk exists
+          # ------------------------------------------
+
+          expected_files = [
+
+              chunk_folder /
+
+              f"chunk_{index:06d}.txt"
+
+              for index in range(
+                  chunk_count
+              )
+
+          ]
+
+
+          missing = [
+
+              str(file)
+
+              for file in expected_files
+
+              if not file.exists()
+
+          ]
+
+
+          if missing:
+
+              print(
+                  "Still missing chunks:",
+                  missing
+              )
+
+              raise SystemExit(0)
+
+
+          # ------------------------------------------
+          # Rebuild Base64 string
+          # ------------------------------------------
+
+          complete_base64 = "".join(
+
+              file.read_text(
+                  encoding="utf-8"
+              )
+
+              for file in expected_files
+
+          )
+
+
+          print(
+              "Complete Base64 length:",
+              len(
+                  complete_base64
+              )
+          )
+
+
+          # ------------------------------------------
+          # Determine extension
+          # ------------------------------------------
+
+          extension = (
+
+              Path(
+                  photo_filename
+              ).suffix.lower()
+
+              if photo_filename
+
+              else ".png"
+
+          )
+
+
+          allowed_extensions = {
+
+              ".png",
+              ".jpg",
+              ".jpeg",
+              ".gif",
+              ".webp"
+
+          }
+
+
+          if extension not in allowed_extensions:
+
+              extension = ".png"
+
+
+          # ------------------------------------------
+          # Remove old image for this item
+          # ------------------------------------------
+
+          image_folder = Path(
+              "images"
+          )
+
+
+          image_folder.mkdir(
+              exist_ok=True
+          )
+
+
+          for old_image in image_folder.glob(
+              f"{item_id}.*"
+          ):
+
+              old_image.unlink()
+
+
+          # ------------------------------------------
+          # Decode and save finished image
+          # ------------------------------------------
+
+          image_file = (
+
+              image_folder /
+
+              f"{item_id}{extension}"
+
+          )
+
+
+          try:
+
+              image_bytes = base64.b64decode(
+                  complete_base64,
+                  validate=True
+              )
+
+          except Exception as error:
+
+              raise SystemExit(
+                  f"Could not decode photo: {error}"
+              )
+
+
+          image_file.write_bytes(
+              image_bytes
+          )
+
+
+          photo_path = (
+
+              f"images/"
+              f"{item_id}"
+              f"{extension}"
+
+          )
+
+
+          print(
+              "Created photo:",
+              photo_path
+          )
+
+
+          # ------------------------------------------
+          # Update items.json with completed photo
+          # ------------------------------------------
+
+          data_file = Path(
+              "data/items.json"
+          )
+
+
+          if data_file.exists():
+
+              try:
+
+                  items = json.loads(
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
+                  )
+
+              except Exception:
+
+                  items = []
+
+          else:
+
+              items = []
+
+
+          if not isinstance(
+              items,
+              list
+          ):
+
+              items = []
+
+
+          found = False
+
+
+          for item in items:
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ) == item_id:
+
+                  item[
+                      "photo"
+                  ] = photo_path
+
+                  found = True
+
+                  break
+
+
+          if not found:
+
+              items.append({
+
+                  "id":
+                      item_id,
+
+                  "description":
+                      "",
+
+                  "weight":
+                      "",
+
+                  "bidPrice":
+                      "",
+
+                  "vendorName":
+                      "",
+
+                  "photo":
+                      photo_path
+
+              })
+
+
+          data_file.write_text(
+
+              json.dumps(
+                  items,
+                  indent=2
+              ),
+
+              encoding="utf-8"
+
+          )
+
+
+          # ------------------------------------------
+          # Delete temporary chunks
+          # ------------------------------------------
+
+          for file in chunk_folder.iterdir():
+
+              if file.is_file():
+
+                  file.unlink()
+
+
+          chunk_folder.rmdir()
+
+
+          print(
+              "Photo assembly complete."
+          )
+
+          PY
+
+
+      # ==========================================================
+      # COMMIT
+      # ==========================================================
+
+      - name: Commit changes
+        run: |
+
+          git config user.name \
+            "MetaBid Automation"
+
+          git config user.email \
+            "actions@github.com"
+
+          git add -A
+
+
+          if git diff --cached --quiet
+          then
+
+            echo "No changes to commit."
+
+            exit 0
+
+          fi
+
+
+          git commit \
+            -m "Update MetaBid ${{ github.event.client_payload.itemId }}"
+
+
+          # Remote could have changed while this run was queued.
+          # Rebase before pushing.
+
+          git pull \
+            --rebase \
+            origin main
+
+
+          git push \
+            origin main
