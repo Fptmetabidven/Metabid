@@ -70,6 +70,16 @@
     "photo": "images/76.jpeg"
   },
   {
+    "id": "77",
+    "description": "test8 ",
+    "weight": "",
+    "bidPrice": "",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
+  },
+  {
     "id": "78",
     "description": "test 9",
     "weight": "",
