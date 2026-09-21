@@ -29,6 +29,25 @@ jobs:
 
 
       # ======================================================
+      # PHOTO CHUNKS:
+      # WAIT FOR THE NORMAL ITEM UPDATE TO REACH MAIN,
+      # THEN START FROM THE LATEST COPY OF MAIN
+      # ======================================================
+
+      - name: Wait for previous MetaBid update
+        if: github.event.action == 'metabid_photo_chunk'
+        run: |
+          echo "Waiting for the item update to finish..."
+          sleep 10
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "Using latest main:"
+          git log -1 --oneline
+
+
+      # ======================================================
       # PROCESS EVENT
       # ======================================================
 
@@ -90,7 +109,6 @@ jobs:
 
 
           if not item_id:
-
               raise SystemExit(
                   "No itemId received."
               )
@@ -157,11 +175,9 @@ jobs:
               try:
 
                   items = json.loads(
-
                       data_file.read_text(
                           encoding="utf-8"
                       )
-
                   )
 
               except Exception:
@@ -182,7 +198,7 @@ jobs:
 
 
           # ==================================================
-          # ITEM UPDATE
+          # NORMAL ITEM UPDATE
           # ==================================================
 
           if event_type == "metabid_update":
@@ -223,6 +239,9 @@ jobs:
                   ""
               )
 
+
+              # Preserve an existing photo when only
+              # the item's text information changes.
 
               existing_photo = ""
 
@@ -303,6 +322,10 @@ jobs:
                   )
 
 
+              # ==============================================
+              # SORT BY SHAREPOINT ITEM ID
+              # ==============================================
+
               def sort_key(item):
 
                   value = str(
@@ -327,6 +350,10 @@ jobs:
                   key=sort_key
               )
 
+
+              # ==============================================
+              # SAVE ITEMS.JSON
+              # ==============================================
 
               data_file.write_text(
 
@@ -407,6 +434,18 @@ jobs:
               )
 
 
+              print(
+                  "Photo chunk:",
+                  chunk_index + 1,
+                  "of",
+                  chunk_count
+              )
+
+
+              # ==============================================
+              # CREATE ITEM CHUNK FOLDER
+              # ==============================================
+
               item_chunk_folder = (
 
                   chunk_root /
@@ -469,7 +508,7 @@ jobs:
 
 
               # ==============================================
-              # CHECK WHETHER ALL CHUNKS EXIST
+              # CHECK WHETHER ALL EXPECTED CHUNKS EXIST
               # ==============================================
 
               expected_names = [
@@ -495,7 +534,12 @@ jobs:
               )
 
 
+              # ==============================================
+              # NOT ALL CHUNKS YET
+              # ==============================================
+
               if not all_present:
+
 
                   actual_chunks = [
 
@@ -527,7 +571,12 @@ jobs:
                   )
 
 
+              # ==============================================
+              # ALL CHUNKS RECEIVED
+              # ==============================================
+
               else:
+
 
                   print(
                       "All photo chunks received."
@@ -545,18 +594,26 @@ jobs:
                       chunk_count
                   ):
 
-                      complete_base64 += (
+
+                      current_chunk = (
 
                           item_chunk_folder /
                           f"{index:06d}.txt"
 
-                      ).read_text(
-                          encoding="utf-8"
-                      ).strip()
+                      )
+
+
+                      complete_base64 += (
+
+                          current_chunk.read_text(
+                              encoding="utf-8"
+                          ).strip()
+
+                      )
 
 
                   # ==========================================
-                  # DETERMINE IMAGE TYPE
+                  # DETERMINE ORIGINAL IMAGE EXTENSION
                   # ==========================================
 
                   filename_file = (
@@ -602,30 +659,15 @@ jobs:
                       extension = ".jpg"
 
 
-                  # ==========================================
-                  # REMOVE PREVIOUS IMAGE
-                  # ==========================================
-
-                  for old_image in (
-                      images_folder.glob(
-                          f"{item_id}.*"
-                      )
-                  ):
-
-                      old_image.unlink()
-
-
-                  # ==========================================
-                  # DECODE IMAGE
-                  # ==========================================
-
-                  image_file = (
-
-                      images_folder /
-                      f"{item_id}{extension}"
-
+                  print(
+                      "Image extension:",
+                      extension
                   )
 
+
+                  # ==========================================
+                  # DECODE IMAGE BEFORE REMOVING OLD IMAGE
+                  # ==========================================
 
                   try:
 
@@ -643,6 +685,44 @@ jobs:
                           f"Could not decode image: {error}"
 
                       )
+
+
+                  if not image_bytes:
+
+                      raise SystemExit(
+                          "Decoded image was empty."
+                      )
+
+
+                  print(
+                      "Decoded photo bytes:",
+                      len(image_bytes)
+                  )
+
+
+                  # ==========================================
+                  # REMOVE PREVIOUS IMAGE FOR THIS ITEM
+                  # ==========================================
+
+                  for old_image in (
+                      images_folder.glob(
+                          f"{item_id}.*"
+                      )
+                  ):
+
+                      old_image.unlink()
+
+
+                  # ==========================================
+                  # WRITE NEW IMAGE
+                  # ==========================================
+
+                  image_file = (
+
+                      images_folder /
+                      f"{item_id}{extension}"
+
+                  )
 
 
                   image_file.write_bytes(
@@ -666,7 +746,7 @@ jobs:
 
 
                   # ==========================================
-                  # RELOAD INVENTORY
+                  # RELOAD ITEMS.JSON
                   # ==========================================
 
                   if data_file.exists():
@@ -699,7 +779,7 @@ jobs:
 
 
                   # ==========================================
-                  # UPDATE PHOTO PATH
+                  # UPDATE PHOTO PATH FOR ITEM
                   # ==========================================
 
                   found = False
@@ -722,6 +802,10 @@ jobs:
 
                           break
 
+
+                  # If item doesn't exist for some reason,
+                  # create a basic entry rather than losing
+                  # the photo.
 
                   if not found:
 
@@ -754,6 +838,10 @@ jobs:
                       })
 
 
+                  # ==========================================
+                  # SORT ITEMS
+                  # ==========================================
+
                   def sort_key(item):
 
                       value = str(
@@ -779,6 +867,10 @@ jobs:
                   )
 
 
+                  # ==========================================
+                  # SAVE ITEMS.JSON
+                  # ==========================================
+
                   data_file.write_text(
 
                       json.dumps(
@@ -792,7 +884,7 @@ jobs:
 
 
                   # ==========================================
-                  # DELETE TEMP CHUNKS
+                  # DELETE TEMPORARY CHUNKS
                   # ==========================================
 
                   shutil.rmtree(
@@ -810,6 +902,12 @@ jobs:
           # ==================================================
 
           elif event_type == "metabid_remove":
+
+
+              print(
+                  "Removing item:",
+                  item_id
+              )
 
 
               items = [
@@ -840,6 +938,8 @@ jobs:
               )
 
 
+              # Remove item's image.
+
               for old_image in (
                   images_folder.glob(
                       f"{item_id}.*"
@@ -848,6 +948,8 @@ jobs:
 
                   old_image.unlink()
 
+
+              # Remove any unfinished photo chunks.
 
               item_chunk_folder = (
 
@@ -870,6 +972,10 @@ jobs:
               )
 
 
+          # ==================================================
+          # UNKNOWN EVENT
+          # ==================================================
+
           else:
 
               raise SystemExit(
@@ -883,7 +989,7 @@ jobs:
 
 
       # ======================================================
-      # COMMIT / PUSH
+      # COMMIT CHANGES
       # ======================================================
 
       - name: Commit MetaBid changes
@@ -907,6 +1013,10 @@ jobs:
           git add -A
 
 
+          # --------------------------------------------------
+          # NOTHING CHANGED
+          # --------------------------------------------------
+
           if git diff --cached --quiet
           then
 
@@ -917,46 +1027,87 @@ jobs:
           fi
 
 
+          # --------------------------------------------------
+          # CREATE COMMIT
+          # --------------------------------------------------
+
           git commit \
             -m "MetaBid ${EVENT_TYPE} item ${ITEM_ID}"
 
 
-          for attempt in 1 2 3 4 5
-          do
-
-            echo \
-              "Push attempt ${attempt}"
+          echo "Pushing MetaBid change..."
 
 
-            if git pull \
-              --rebase \
-              origin \
-              main
+          # --------------------------------------------------
+          # FIRST PUSH ATTEMPT
+          # --------------------------------------------------
+
+          if git push origin HEAD:main
+          then
+
+            echo "Push successful."
+
+            exit 0
+
+          fi
+
+
+          # --------------------------------------------------
+          # MAIN CHANGED WHILE THIS JOB WAS RUNNING
+          # --------------------------------------------------
+
+          echo ""
+          echo "Main changed before this run could push."
+          echo "Fetching newest main..."
+          echo ""
+
+
+          git fetch origin main
+
+
+          # --------------------------------------------------
+          # REBASE ONCE
+          # --------------------------------------------------
+
+          if GIT_EDITOR=true git rebase origin/main
+          then
+
+            echo ""
+            echo "Rebase successful."
+            echo ""
+
+
+            # ----------------------------------------------
+            # SECOND PUSH ATTEMPT
+            # ----------------------------------------------
+
+            if git push origin HEAD:main
             then
 
-              if git push \
-                origin \
-                HEAD:main
-              then
+              echo "Push successful after rebase."
 
-                echo "Push successful."
-
-                exit 0
-
-              fi
-
-            else
-
-              git rebase --abort || true
+              exit 0
 
             fi
 
 
-            sleep 2
+            echo "Push failed after successful rebase."
 
-          done
+            exit 1
 
 
-          echo "Unable to push changes."
+          else
 
-          exit 1
+            echo ""
+            echo "A merge conflict occurred."
+            echo "Aborting rebase instead of retrying"
+            echo "the same conflict repeatedly."
+            echo ""
+
+
+            git rebase --abort || true
+
+
+            exit 1
+
+          fi
