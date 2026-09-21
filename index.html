@@ -1,68 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MetaBid</title>
+    <title>MetaBid | Ferrous Processing & Trading</title>
 
     <style>
+        :root {
+            --navy: #071f4a;
+            --blue: #006fc9;
+            --blue-dark: #00558f;
+            --blue-light: #eef7fd;
+            --border: #d7e4ee;
+            --text: #0b2855;
+            --muted: #536b88;
+            --background: #f5f9fc;
+            --white: #ffffff;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            padding: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            color: #111;
+            color: var(--text);
+            background:
+                linear-gradient(
+                    180deg,
+                    #eef6fb 0%,
+                    #f8fbfd 45%,
+                    #ffffff 100%
+                );
         }
 
-        .page-container {
-            width: 100%;
-            padding: 12px 10px 40px 10px;
+        /* =========================================
+           HEADER
+           ========================================= */
+
+        .site-header {
+            background:
+                linear-gradient(
+                    110deg,
+                    #ffffff 0%,
+                    #ffffff 58%,
+                    #eaf6ff 100%
+                );
+
+            border-bottom: 1px solid #dbe7ef;
         }
 
-        .table-container {
+        .header-inner {
+            max-width: 1500px;
+            min-height: 190px;
+
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+
+            padding: 30px 40px;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative industrial-style background */
+
+        .header-inner::after {
+            content: "";
+
+            position: absolute;
+            right: -50px;
+            top: 0;
+
+            width: 45%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,1) 0%,
+                    rgba(255,255,255,0.4) 35%,
+                    rgba(0,111,201,0.08) 100%
+                );
+
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-box {
+            padding-right: 32px;
+            border-right: 2px solid #173b68;
+        }
+
+        .logo-box img {
+            display: block;
+
+            width: 360px;
+            max-width: 40vw;
+            height: auto;
+        }
+
+        .metabid-title {
+            white-space: nowrap;
+        }
+
+        .metabid-title h1 {
+            margin: 0;
+
+            font-size: 58px;
+            line-height: 1;
+
+            letter-spacing: -2px;
+
+            color: var(--navy);
+        }
+
+        .metabid-title h1 span {
+            color: var(--blue);
+        }
+
+        .metabid-title p {
+            margin: 8px 0 0;
+
+            font-size: 27px;
+            color: var(--navy);
+        }
+
+        /* =========================================
+           MAIN AREA
+           ========================================= */
+
+        .main-container {
+            max-width: 1500px;
+
+            margin: 0 auto;
+
+            padding: 32px 30px 55px;
+        }
+
+        .inventory-card {
+            background: var(--white);
+
+            border: 1px solid #e2ebf2;
+
+            border-radius: 14px;
+
+            padding: 24px 20px 20px;
+
+            box-shadow:
+                0 7px 28px
+                rgba(24, 69, 103, 0.10);
+        }
+
+        /* =========================================
+           TITLE + SEARCH
+           ========================================= */
+
+        .inventory-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+
+            margin-bottom: 24px;
+        }
+
+        .inventory-heading h2 {
+            margin: 0;
+
+            font-size: 43px;
+            line-height: 1.1;
+
+            letter-spacing: -1px;
+
+            color: var(--navy);
+        }
+
+        .inventory-heading p {
+            margin: 6px 0 0;
+
+            color: var(--muted);
+
+            font-size: 17px;
+        }
+
+        .search-wrapper {
+            width: 465px;
+            max-width: 100%;
+
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+
+            left: 17px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 20px;
+            height: 20px;
+
+            pointer-events: none;
+        }
+
+        .search-icon::before {
+            content: "";
+
+            position: absolute;
+
+            width: 10px;
+            height: 10px;
+
+            border: 2px solid #496987;
+            border-radius: 50%;
+
+            left: 0;
+            top: 0;
+        }
+
+        .search-icon::after {
+            content: "";
+
+            position: absolute;
+
+            width: 8px;
+            height: 2px;
+
+            background: #496987;
+
+            transform: rotate(45deg);
+
+            left: 11px;
+            top: 13px;
+
+            border-radius: 2px;
+        }
+
+        #searchInput {
             width: 100%;
+            height: 48px;
+
+            padding:
+                0
+                18px
+                0
+                50px;
+
+            border:
+                1px solid
+                #b8cfe0;
+
+            border-radius: 7px;
+
             background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+
+            color: var(--navy);
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        #searchInput:focus {
+            border-color: var(--blue);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(0,111,201,0.12);
+        }
+
+        #searchInput::placeholder {
+            color: #8194a8;
+        }
+
+        /* =========================================
+           TABLE
+           ========================================= */
+
+        .table-wrapper {
+            width: 100%;
+
             overflow-x: auto;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+
+            border-collapse: separate;
+            border-spacing: 0;
+
             table-layout: fixed;
+
+            min-width: 1200px;
         }
 
         thead {
-            background: #2b678e;
+            background:
+                linear-gradient(
+                    180deg,
+                    #0874b7 0%,
+                    #005991 100%
+                );
+
             color: white;
         }
 
         th {
+            padding: 17px 16px;
+
             text-align: left;
-            padding: 12px 10px;
-            font-size: 14px;
-            font-weight: bold;
+
+            font-size: 15px;
+            font-weight: 700;
+
+            border-right:
+                1px solid
+                rgba(255,255,255,0.18);
+        }
+
+        th:last-child {
+            border-right: none;
         }
 
         td {
-            padding: 14px 10px;
-            border-bottom: 1px solid #dddddd;
+            padding: 12px 16px;
+
+            font-size: 15px;
+
             vertical-align: middle;
-            font-size: 14px;
+
+            border-right:
+                1px solid
+                var(--border);
+
+            border-bottom:
+                1px solid
+                var(--border);
+
             overflow-wrap: anywhere;
         }
 
-        tbody tr:hover {
-            background: #f8fafc;
+        td:last-child {
+            border-right: none;
         }
 
-        /* Column widths */
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f3f9fd;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: #ffffff;
+        }
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #e9f5fc;
+        }
+
+        /* =========================================
+           COLUMNS
+           ========================================= */
 
         .col-id {
             width: 5%;
@@ -70,11 +399,11 @@
         }
 
         .col-photo {
-            width: 8%;
+            width: 10%;
         }
 
         .col-description {
-            width: 20%;
+            width: 18%;
         }
 
         .col-weight {
@@ -82,85 +411,122 @@
         }
 
         .col-bid {
-            width: 11%;
+            width: 10%;
         }
 
         .col-vendor {
-            width: 13%;
+            width: 14%;
         }
 
         .col-email {
-            width: 15%;
+            width: 17%;
         }
 
         .col-notes {
-            width: 19%;
+            width: 17%;
         }
 
-        /* Photo */
+        td.col-id {
+            font-weight: bold;
+        }
+
+        /* =========================================
+           PHOTO
+           ========================================= */
 
         .photo-wrapper {
-            width: 70px;
-            height: 70px;
+            width: 110px;
+            height: 75px;
+
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .item-photo {
-            width: 70px;
-            height: 70px;
+            width: 110px;
+            height: 75px;
+
             object-fit: cover;
-            border-radius: 5px;
-            border: 1px solid #cccccc;
+
+            border-radius: 7px;
+
+            border:
+                1px solid
+                #ccd9e2;
+
             cursor: zoom-in;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
         }
 
         .item-photo:hover {
-            transform: scale(1.07);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+            transform: scale(1.06);
+
+            box-shadow:
+                0 5px 14px
+                rgba(0,0,0,0.22);
         }
 
         .no-photo {
-            width: 70px;
-            height: 70px;
+            width: 110px;
+            height: 75px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            background: #eeeeee;
-            border: 1px solid #cccccc;
-            border-radius: 5px;
-            font-size: 11px;
-            color: #333333;
+
+            border:
+                1px dashed
+                #c4d2dd;
+
+            border-radius: 7px;
+
+            background: #f1f4f6;
+
+            color: #718191;
+
+            font-size: 12px;
         }
 
-        /* Vendor email */
+        /* =========================================
+           EMAIL
+           ========================================= */
 
         .vendor-email {
-            color: #1769aa;
-            text-decoration: none;
-            font-weight: 500;
+            color: #006cd8;
+
+            text-decoration: underline;
+
+            text-underline-offset: 2px;
         }
 
         .vendor-email:hover {
-            text-decoration: underline;
+            color: #004d9b;
         }
 
-        /* Vendor notes */
+        /* =========================================
+           NOTES
+           ========================================= */
 
         .vendor-notes {
             white-space: pre-wrap;
-            line-height: 1.4;
+
+            line-height: 1.45;
         }
 
-        /* Status messages */
+        /* =========================================
+           EMPTY / ERROR
+           ========================================= */
 
         .status-row td {
+            padding: 50px 20px;
+
             text-align: center;
-            padding: 40px;
-            color: #555555;
+
+            color: #63778a;
         }
 
         .error-message {
@@ -174,15 +540,19 @@
 
         .image-modal {
             display: none;
+
             position: fixed;
+
             z-index: 99999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.88);
+
+            inset: 0;
+
+            background:
+                rgba(4,17,35,0.90);
+
             align-items: center;
             justify-content: center;
+
             padding: 35px;
         }
 
@@ -190,75 +560,132 @@
             display: flex;
         }
 
-        .modal-image-container {
-            position: relative;
-            max-width: 95%;
-            max-height: 95%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .image-modal-content {
-            max-width: 90vw;
+            max-width: 92vw;
             max-height: 88vh;
+
             width: auto;
             height: auto;
+
             object-fit: contain;
+
+            border-radius: 10px;
+
             background: white;
-            border-radius: 7px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.75);
+
+            box-shadow:
+                0 15px 60px
+                rgba(0,0,0,0.65);
         }
 
         .image-modal-close {
             position: fixed;
-            top: 18px;
-            right: 28px;
-            color: white;
-            font-size: 44px;
-            line-height: 1;
-            cursor: pointer;
-            user-select: none;
+
+            top: 20px;
+            right: 30px;
+
             z-index: 100000;
+
+            color: white;
+
+            font-size: 48px;
+            line-height: 1;
+
+            cursor: pointer;
+
+            user-select: none;
         }
 
         .image-modal-close:hover {
-            color: #dddddd;
+            color: #dce9f3;
         }
 
         .preview-hint {
             position: fixed;
-            bottom: 18px;
+
+            bottom: 20px;
             left: 50%;
+
             transform: translateX(-50%);
+
+            padding: 8px 14px;
+
+            background:
+                rgba(0,0,0,0.45);
+
+            border-radius: 6px;
+
             color: white;
+
             font-size: 13px;
-            background: rgba(0,0,0,0.50);
-            padding: 7px 12px;
-            border-radius: 5px;
-            text-align: center;
         }
 
-        /* Mobile */
+        /* =========================================
+           RESPONSIVE
+           ========================================= */
 
         @media (max-width: 900px) {
-            table {
-                min-width: 1250px;
+
+            .header-inner {
+                min-height: auto;
+
+                padding: 25px;
+
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .image-modal {
-                padding: 15px;
+            .brand {
+                width: 100%;
+
+                flex-direction: column;
+                align-items: flex-start;
+
+                gap: 20px;
             }
 
-            .image-modal-content {
-                max-width: 96vw;
-                max-height: 85vh;
+            .logo-box {
+                border-right: none;
+                padding-right: 0;
             }
 
-            .image-modal-close {
-                top: 12px;
-                right: 18px;
-                font-size: 40px;
+            .logo-box img {
+                width: 300px;
+                max-width: 90vw;
+            }
+
+            .metabid-title h1 {
+                font-size: 46px;
+            }
+
+            .metabid-title p {
+                font-size: 22px;
+            }
+
+            .main-container {
+                padding:
+                    20px
+                    12px
+                    40px;
+            }
+
+            .inventory-card {
+                padding:
+                    20px
+                    12px;
+            }
+
+            .inventory-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .inventory-heading h2 {
+                font-size: 34px;
+            }
+
+            .search-wrapper {
+                width: 100%;
             }
         }
     </style>
@@ -266,43 +693,158 @@
 
 <body>
 
-    <div class="page-container">
+    <!-- =========================================
+         HEADER
+         ========================================= -->
 
-        <div class="table-container">
+    <header class="site-header">
 
-            <table>
+        <div class="header-inner">
 
-                <thead>
-                    <tr>
-                        <th class="col-id">ID</th>
-                        <th class="col-photo">Photo</th>
-                        <th class="col-description">Description</th>
-                        <th class="col-weight">Weight</th>
-                        <th class="col-bid">Bid Price</th>
-                        <th class="col-vendor">Vendor Name</th>
-                        <th class="col-email">Vendor Email</th>
-                        <th class="col-notes">Vendor Notes</th>
-                    </tr>
-                </thead>
+            <div class="brand">
 
-                <tbody id="inventoryBody">
-                    <tr class="status-row">
-                        <td colspan="8">
-                            Loading MetaBid items...
-                        </td>
-                    </tr>
-                </tbody>
+                <div class="logo-box">
 
-            </table>
+                    <img
+                        src="images/ferrous-logo.png"
+                        alt="Ferrous Processing & Trading"
+                    >
+
+                </div>
+
+                <div class="metabid-title">
+
+                    <h1>
+                        Meta<span>Bid</span>
+                    </h1>
+
+                    <p>
+                        Vendor Bid Portal
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
-    </div>
+    </header>
 
 
-    <!-- IMAGE PREVIEW -->
+    <!-- =========================================
+         INVENTORY
+         ========================================= -->
 
-    <div id="imageModal" class="image-modal">
+    <main class="main-container">
+
+        <section class="inventory-card">
+
+            <div class="inventory-toolbar">
+
+                <div class="inventory-heading">
+
+                    <h2>
+                        Available Items
+                    </h2>
+
+                    <p>
+                        Browse the items below and contact the listed vendor to submit your bid.
+                    </p>
+
+                </div>
+
+
+                <div class="search-wrapper">
+
+                    <span class="search-icon"></span>
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search items..."
+                        autocomplete="off"
+                        aria-label="Search available items"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="col-id">
+                                ID
+                            </th>
+
+                            <th class="col-photo">
+                                Photo
+                            </th>
+
+                            <th class="col-description">
+                                Description
+                            </th>
+
+                            <th class="col-weight">
+                                Weight
+                            </th>
+
+                            <th class="col-bid">
+                                Bid Price
+                            </th>
+
+                            <th class="col-vendor">
+                                Vendor Name
+                            </th>
+
+                            <th class="col-email">
+                                Vendor Email
+                            </th>
+
+                            <th class="col-notes">
+                                Vendor Notes
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="inventoryBody">
+
+                        <tr class="status-row">
+
+                            <td colspan="8">
+                                Loading available items...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         LARGE IMAGE PREVIEW
+         ========================================= -->
+
+    <div
+        id="imageModal"
+        class="image-modal"
+    >
 
         <span
             id="imageModalClose"
@@ -312,14 +854,14 @@
             &times;
         </span>
 
-        <div class="modal-image-container">
-            <img
-                id="imageModalImage"
-                class="image-modal-content"
-                src=""
-                alt="Item photo preview"
-            >
-        </div>
+
+        <img
+            id="imageModalImage"
+            class="image-modal-content"
+            src=""
+            alt="Item photo preview"
+        >
+
 
         <div class="preview-hint">
             Click outside the image or press Esc to close
@@ -330,14 +872,28 @@
 
     <script>
 
-        const DATA_FILE = "data/items.json";
+        /* =========================================
+           DATA
+           ========================================= */
+
+        const DATA_FILE =
+            "data/items.json";
 
         const inventoryBody =
-            document.getElementById("inventoryBody");
+            document.getElementById(
+                "inventoryBody"
+            );
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+        let inventoryItems = [];
 
 
         /* =========================================
-           LOAD INVENTORY
+           LOAD ITEMS
            ========================================= */
 
         async function loadInventory() {
@@ -349,6 +905,7 @@
                     "?v=" +
                     Date.now();
 
+
                 const response =
                     await fetch(
                         url,
@@ -357,30 +914,51 @@
                         }
                     );
 
+
                 if (!response.ok) {
+
                     throw new Error(
                         "Could not load MetaBid inventory."
                     );
+
                 }
+
 
                 const data =
                     await response.json();
 
-                let items = [];
 
                 if (Array.isArray(data)) {
-                    items = data;
+
+                    inventoryItems =
+                        data;
+
                 }
+
                 else if (
                     data &&
                     Array.isArray(data.items)
                 ) {
-                    items = data.items;
+
+                    inventoryItems =
+                        data.items;
+
                 }
 
-                renderInventory(items);
+                else {
+
+                    inventoryItems =
+                        [];
+
+                }
+
+
+                renderInventory(
+                    inventoryItems
+                );
 
             }
+
             catch (error) {
 
                 console.error(
@@ -388,26 +966,107 @@
                     error
                 );
 
+
                 inventoryBody.innerHTML = `
+
                     <tr class="status-row">
+
                         <td colspan="8">
+
                             <span class="error-message">
-                                Unable to load MetaBid inventory.
+
+                                Unable to load available items.
+
                             </span>
+
                         </td>
+
                     </tr>
+
                 `;
+
             }
+
         }
 
 
         /* =========================================
-           RENDER INVENTORY
+           SEARCH
+           ========================================= */
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                const search =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!search) {
+
+                    renderInventory(
+                        inventoryItems
+                    );
+
+                    return;
+
+                }
+
+
+                const filtered =
+                    inventoryItems.filter(
+                        function (item) {
+
+                            const searchable =
+                                [
+                                    item.id,
+                                    item.description,
+                                    item.weight,
+                                    item.bidPrice,
+                                    item.vendorName,
+                                    item.vendorEmail,
+                                    item.vendorNotes
+                                ]
+                                .map(
+                                    function (value) {
+
+                                        return safeValue(
+                                            value
+                                        );
+
+                                    }
+                                )
+                                .join(" ")
+                                .toLowerCase();
+
+
+                            return searchable.includes(
+                                search
+                            );
+
+                        }
+                    );
+
+
+                renderInventory(
+                    filtered
+                );
+
+            }
+        );
+
+
+        /* =========================================
+           RENDER ITEMS
            ========================================= */
 
         function renderInventory(items) {
 
-            inventoryBody.innerHTML = "";
+            inventoryBody.innerHTML =
+                "";
+
 
             if (
                 !items ||
@@ -415,125 +1074,191 @@
             ) {
 
                 inventoryBody.innerHTML = `
+
                     <tr class="status-row">
+
                         <td colspan="8">
-                            No MetaBid items found.
+
+                            No available items found.
+
                         </td>
+
                     </tr>
+
                 `;
 
                 return;
+
             }
 
 
-            /* Sort by SharePoint ID */
+            const sortedItems =
+                [...items].sort(
+                    function (a, b) {
 
-            items.sort(function(a, b) {
-
-                const aId =
-                    parseInt(a.id, 10) || 0;
-
-                const bId =
-                    parseInt(b.id, 10) || 0;
-
-                return aId - bId;
-            });
+                        const aId =
+                            parseInt(
+                                a.id,
+                                10
+                            ) || 0;
 
 
-            items.forEach(function(item) {
+                        const bId =
+                            parseInt(
+                                b.id,
+                                10
+                            ) || 0;
 
-                const row =
-                    document.createElement("tr");
+
+                        return aId - bId;
+
+                    }
+                );
 
 
-                const id =
-                    safeValue(item.id);
+            sortedItems.forEach(
+                function (item) {
 
-                const description =
-                    safeValue(item.description);
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
 
-                const weight =
-                    safeValue(item.weight);
 
-                const vendorName =
-                    safeValue(item.vendorName);
+                    const id =
+                        safeValue(
+                            item.id
+                        );
 
-                /*
-                    Supports our preferred property name
-                    plus a few capitalization variations.
-                */
 
-                const vendorEmail =
-                    safeValue(
-                        item.vendorEmail ||
-                        item.VendorEmail ||
-                        item.vendoremail ||
-                        ""
+                    const description =
+                        safeValue(
+                            item.description
+                        );
+
+
+                    const weight =
+                        safeValue(
+                            item.weight
+                        );
+
+
+                    const vendorName =
+                        safeValue(
+                            item.vendorName
+                        );
+
+
+                    const vendorEmail =
+                        safeValue(
+                            item.vendorEmail ||
+                            item.VendorEmail ||
+                            item.vendoremail ||
+                            ""
+                        );
+
+
+                    const vendorNotes =
+                        safeValue(
+                            item.vendorNotes ||
+                            item.VendorNotes ||
+                            item.vendornotes ||
+                            ""
+                        );
+
+
+                    const bidPrice =
+                        formatBidPrice(
+                            item.bidPrice
+                        );
+
+
+                    const photo =
+                        getPhotoPath(
+                            item
+                        );
+
+
+                    const photoHTML =
+                        createPhotoHTML(
+                            photo,
+                            id
+                        );
+
+
+                    const emailHTML =
+                        createEmailHTML(
+                            vendorEmail
+                        );
+
+
+                    row.innerHTML = `
+
+                        <td class="col-id">
+
+                            ${escapeHTML(id)}
+
+                        </td>
+
+
+                        <td class="col-photo">
+
+                            ${photoHTML}
+
+                        </td>
+
+
+                        <td class="col-description">
+
+                            ${escapeHTML(description)}
+
+                        </td>
+
+
+                        <td class="col-weight">
+
+                            ${escapeHTML(weight)}
+
+                        </td>
+
+
+                        <td class="col-bid">
+
+                            ${escapeHTML(bidPrice)}
+
+                        </td>
+
+
+                        <td class="col-vendor">
+
+                            ${escapeHTML(vendorName)}
+
+                        </td>
+
+
+                        <td class="col-email">
+
+                            ${emailHTML}
+
+                        </td>
+
+
+                        <td class="col-notes vendor-notes">
+
+                            ${escapeHTML(vendorNotes)}
+
+                        </td>
+
+                    `;
+
+
+                    inventoryBody.appendChild(
+                        row
                     );
 
-                const vendorNotes =
-                    safeValue(
-                        item.vendorNotes ||
-                        item.VendorNotes ||
-                        item.vendornotes ||
-                        ""
-                    );
+                }
+            );
 
-                const bidPrice =
-                    formatBidPrice(item.bidPrice);
-
-                const photo =
-                    getPhotoPath(item);
-
-                const photoHTML =
-                    createPhotoHTML(
-                        photo,
-                        id
-                    );
-
-                const emailHTML =
-                    createEmailHTML(
-                        vendorEmail
-                    );
-
-
-                row.innerHTML = `
-
-                    <td class="col-id">
-                        ${escapeHTML(id)}
-                    </td>
-
-                    <td class="col-photo">
-                        ${photoHTML}
-                    </td>
-
-                    <td class="col-description">
-                        ${escapeHTML(description)}
-                    </td>
-
-                    <td class="col-weight">
-                        ${escapeHTML(weight)}
-                    </td>
-
-                    <td class="col-bid">
-                        ${escapeHTML(bidPrice)}
-                    </td>
-
-                    <td class="col-vendor">
-                        ${escapeHTML(vendorName)}
-                    </td>
-
-                    <td class="col-email">
-                        ${emailHTML}
-                    </td>
-
-                    <td class="col-notes vendor-notes">
-                        ${escapeHTML(vendorNotes)}
-                    </td>
-                `;
-
-                inventoryBody.appendChild(row);
-            });
         }
 
 
@@ -544,29 +1269,42 @@
         function createEmailHTML(email) {
 
             if (!email) {
+
                 return "";
+
             }
 
+
             const safeEmail =
-                escapeHTML(email);
+                escapeHTML(
+                    email
+                );
+
 
             const mailtoEmail =
-                encodeURIComponent(email);
+                encodeURIComponent(
+                    email
+                );
+
 
             return `
+
                 <a
                     class="vendor-email"
                     href="mailto:${mailtoEmail}"
-                    title="Email ${safeEmail}"
                 >
+
                     ${safeEmail}
+
                 </a>
+
             `;
+
         }
 
 
         /* =========================================
-           PHOTO PATH
+           PHOTO
            ========================================= */
 
         function getPhotoPath(item) {
@@ -581,20 +1319,13 @@
                 item.Image ||
                 "";
 
-            if (
-                photo === null ||
-                photo === undefined
-            ) {
-                return "";
-            }
 
-            return String(photo).trim();
+            return safeValue(
+                photo
+            ).trim();
+
         }
 
-
-        /* =========================================
-           CREATE PHOTO
-           ========================================= */
 
         function createPhotoHTML(
             photo,
@@ -604,24 +1335,39 @@
             if (!photo) {
 
                 return `
+
                     <div class="photo-wrapper">
+
                         <div class="no-photo">
+
                             No Photo
+
                         </div>
+
                     </div>
+
                 `;
+
             }
 
+
             const safePhoto =
-                escapeAttribute(photo);
+                escapeAttribute(
+                    photo
+                );
+
 
             const safeId =
-                escapeAttribute(itemId);
+                escapeAttribute(
+                    itemId
+                );
+
 
             const separator =
                 photo.includes("?")
                     ? "&"
                     : "?";
+
 
             const displayPhoto =
                 safePhoto +
@@ -629,7 +1375,9 @@
                 "v=" +
                 Date.now();
 
+
             return `
+
                 <div class="photo-wrapper">
 
                     <img
@@ -643,7 +1391,9 @@
                     >
 
                 </div>
+
             `;
+
         }
 
 
@@ -652,14 +1402,21 @@
             const wrapper =
                 image.parentElement;
 
+
             if (wrapper) {
 
                 wrapper.innerHTML = `
+
                     <div class="no-photo">
+
                         No Photo
+
                     </div>
+
                 `;
+
             }
+
         }
 
 
@@ -674,18 +1431,48 @@
                 value === undefined ||
                 String(value).trim() === ""
             ) {
+
                 return "";
+
             }
+
+
+            const text =
+                String(value).trim();
+
+
+            /*
+                If SharePoint already sent something
+                such as $3.50/lb, leave it alone.
+            */
+
+            if (
+                text.includes("/") ||
+                /[a-zA-Z]/.test(text)
+            ) {
+
+                return text;
+
+            }
+
 
             const number =
                 Number(
-                    String(value)
-                        .replace(/[$,]/g, "")
+                    text.replace(
+                        /[$,]/g,
+                        ""
+                    )
                 );
 
-            if (Number.isNaN(number)) {
-                return String(value);
+
+            if (
+                Number.isNaN(number)
+            ) {
+
+                return text;
+
             }
+
 
             return new Intl.NumberFormat(
                 "en-US",
@@ -693,12 +1480,15 @@
                     style: "currency",
                     currency: "USD"
                 }
-            ).format(number);
+            ).format(
+                number
+            );
+
         }
 
 
         /* =========================================
-           SAFE VALUES
+           SAFE TEXT
            ========================================= */
 
         function safeValue(value) {
@@ -707,10 +1497,16 @@
                 value === null ||
                 value === undefined
             ) {
+
                 return "";
+
             }
 
-            return String(value);
+
+            return String(
+                value
+            );
+
         }
 
 
@@ -718,21 +1514,45 @@
 
             return String(value)
 
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
         }
 
 
         function escapeAttribute(value) {
-            return escapeHTML(value);
+
+            return escapeHTML(
+                value
+            );
+
         }
 
 
         /* =========================================
-           IMAGE PREVIEW
+           LARGE PHOTO PREVIEW
            ========================================= */
 
         const imageModal =
@@ -740,10 +1560,12 @@
                 "imageModal"
             );
 
+
         const imageModalImage =
             document.getElementById(
                 "imageModalImage"
             );
+
 
         const imageModalClose =
             document.getElementById(
@@ -753,16 +1575,20 @@
 
         document.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 const image =
                     event.target.closest(
                         ".item-photo"
                     );
 
+
                 if (!image) {
+
                     return;
+
                 }
+
 
                 const fullImage =
                     image.getAttribute(
@@ -770,9 +1596,11 @@
                     ) ||
                     image.src;
 
+
                 openImagePreview(
                     fullImage
                 );
+
             }
         );
 
@@ -782,13 +1610,17 @@
         ) {
 
             if (!imageSource) {
+
                 return;
+
             }
+
 
             const separator =
                 imageSource.includes("?")
                     ? "&"
                     : "?";
+
 
             imageModalImage.src =
                 imageSource +
@@ -796,12 +1628,15 @@
                 "preview=" +
                 Date.now();
 
+
             imageModal.classList.add(
                 "open"
             );
 
+
             document.body.style.overflow =
                 "hidden";
+
         }
 
 
@@ -811,47 +1646,59 @@
                 "open"
             );
 
-            imageModalImage.src = "";
+
+            imageModalImage.src =
+                "";
+
 
             document.body.style.overflow =
                 "";
+
         }
 
 
         imageModalClose.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 event.stopPropagation();
 
                 closeImagePreview();
+
             }
         );
 
 
         imageModal.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 if (
                     event.target ===
                     imageModal
                 ) {
+
                     closeImagePreview();
+
                 }
+
             }
         );
 
 
         document.addEventListener(
             "keydown",
-            function(event) {
+            function (event) {
 
                 if (
-                    event.key === "Escape"
+                    event.key ===
+                    "Escape"
                 ) {
+
                     closeImagePreview();
+
                 }
+
             }
         );
 
