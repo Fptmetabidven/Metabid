@@ -8,5 +8,15 @@
     "vendorEmail": "",
     "vendorNotes": "",
     "photo": "images/70.png"
+  },
+  {
+    "id": "71",
+    "description": "test 2",
+    "weight": "",
+    "bidPrice": "",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": "images/71.jpeg"
   }
 ]
