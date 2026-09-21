@@ -7,62 +7,50 @@ on:
 permissions:
   contents: write
 
-# Prevent two SharePoint updates from trying to write to main at the same time
-concurrency:
-  group: metabid-main-updates
-  cancel-in-progress: false
-
 jobs:
   update-metabid:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------------------------------------------------------
-      # 1. CHECK OUT REPOSITORY
-      # ---------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ---------------------------------------------------------
-      # 2. MAKE SURE WE HAVE THE LATEST MAIN
-      # ---------------------------------------------------------
-      - name: Sync with latest main
+      - name: Configure Git
         run: |
-          git fetch origin main
-          git checkout main
-          git pull --rebase origin main
+          git config user.name "MetaBid Automation"
+          git config user.email "actions@github.com"
 
-      # ---------------------------------------------------------
-      # 3. CREATE DATA FOLDER IF IT DOES NOT EXIST
-      # ---------------------------------------------------------
-      - name: Create data folder
+      - name: Create MetaBid update script
         run: |
-          mkdir -p data
-
-      # ---------------------------------------------------------
-      # 4. UPDATE ITEMS.JSON
-      # ---------------------------------------------------------
-      - name: Update MetaBid inventory
-        env:
-          ITEM_ID: ${{ github.event.client_payload.itemId }}
-          DESCRIPTION: ${{ github.event.client_payload.description }}
-          WEIGHT: ${{ github.event.client_payload.weight }}
-          BID_PRICE: ${{ github.event.client_payload.bidPrice }}
-          VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
-          PHOTO_FILE_NAME: ${{ github.event.client_payload.photoFileName }}
-        run: |
-          python3 <<'PY'
-          import json
+          cat > /tmp/update_metabid.py <<'PY'
           import os
+          import json
+          import base64
           from pathlib import Path
 
-          file_path = Path("data/items.json")
+          item_id = os.environ.get("ITEM_ID", "").strip()
+          description = os.environ.get("DESCRIPTION", "")
+          weight = os.environ.get("WEIGHT", "")
+          bid_price = os.environ.get("BID_PRICE", "")
+          vendor_name = os.environ.get("VENDOR_NAME", "")
 
-          # -----------------------------------------------------
-          # Load existing items
-          # -----------------------------------------------------
+          photo_file_name = os.environ.get("PHOTO_FILE_NAME", "").strip()
+          photo_content = os.environ.get("PHOTO_CONTENT", "").strip()
+          photo_content_type = os.environ.get("PHOTO_CONTENT_TYPE", "").strip()
+
+          if not item_id:
+              raise SystemExit("No SharePoint item ID was supplied.")
+
+          data_dir = Path("data")
+          image_dir = Path("images")
+
+          data_dir.mkdir(parents=True, exist_ok=True)
+          image_dir.mkdir(parents=True, exist_ok=True)
+
+          file_path = data_dir / "items.json"
+
           if file_path.exists():
               try:
                   items = json.loads(
@@ -73,77 +61,96 @@ jobs:
           else:
               items = []
 
-          # Make sure data is a list
-          if isinstance(items, dict):
-              if "items" in items and isinstance(items["items"], list):
-                  items = items["items"]
-              else:
-                  items = []
-
           if not isinstance(items, list):
               items = []
 
-          # -----------------------------------------------------
-          # Read SharePoint / Power Automate values
-          # -----------------------------------------------------
-          item_id = os.environ.get("ITEM_ID", "").strip()
-          description = os.environ.get("DESCRIPTION", "")
-          weight = os.environ.get("WEIGHT", "")
-          bid_price = os.environ.get("BID_PRICE", "")
-          vendor_name = os.environ.get("VENDOR_NAME", "")
-          photo_file_name = os.environ.get("PHOTO_FILE_NAME", "")
+          existing_item = None
 
-          print(f"Processing MetaBid item: {item_id}")
-          print(f"Description: {description}")
-          print(f"Weight: {weight}")
-          print(f"Bid Price: {bid_price}")
-          print(f"Vendor Name: {vendor_name}")
-          print(f"Photo File Name: {photo_file_name}")
+          for existing in items:
+              if str(existing.get("id", "")) == item_id:
+                  existing_item = existing
+                  break
 
-          # -----------------------------------------------------
-          # Build updated item
-          # -----------------------------------------------------
-          new_item = {
+          existing_photo = ""
+
+          if existing_item:
+              existing_photo = existing_item.get("photo", "")
+
+          photo_path = existing_photo
+
+          # -------------------------------------------------
+          # Save SharePoint image into GitHub
+          # -------------------------------------------------
+          if photo_content:
+
+              extension = ""
+
+              if photo_file_name:
+                  extension = Path(photo_file_name).suffix.lower()
+
+              if not extension:
+                  if photo_content_type == "image/jpeg":
+                      extension = ".jpg"
+                  elif photo_content_type == "image/gif":
+                      extension = ".gif"
+                  elif photo_content_type == "image/webp":
+                      extension = ".webp"
+                  else:
+                      extension = ".png"
+
+              destination = image_dir / f"{item_id}{extension}"
+
+              try:
+                  image_bytes = base64.b64decode(photo_content)
+
+                  # Remove an older image for the same item
+                  # if its extension changed.
+                  for old_image in image_dir.glob(f"{item_id}.*"):
+                      if old_image != destination:
+                          old_image.unlink()
+
+                  destination.write_bytes(image_bytes)
+
+                  photo_path = destination.as_posix()
+
+                  print(
+                      f"Saved image for item {item_id}: "
+                      f"{photo_path} ({len(image_bytes)} bytes)"
+                  )
+
+              except Exception as exc:
+                  raise SystemExit(
+                      f"Could not decode/save photo: {exc}"
+                  )
+
+          else:
+              print("No photo content supplied. Keeping existing photo.")
+
+          # -------------------------------------------------
+          # Build MetaBid item
+          # -------------------------------------------------
+          item = {
               "id": item_id,
               "description": description,
               "weight": weight,
               "bidPrice": bid_price,
               "vendorName": vendor_name,
-              "photoFileName": photo_file_name
+              "photo": photo_path
           }
 
-          # -----------------------------------------------------
-          # Preserve existing photo path if one already exists
-          # -----------------------------------------------------
           updated = False
 
           for index, existing in enumerate(items):
-              if str(existing.get("id", "")).strip() == item_id:
-
-                  # Keep existing photo URL/path if already stored
-                  existing_photo = existing.get("photo", "")
-
-                  items[index] = new_item
-
-                  if existing_photo:
-                      items[index]["photo"] = existing_photo
-
+              if str(existing.get("id", "")) == item_id:
+                  items[index] = item
                   updated = True
-                  print(f"Updated existing item {item_id}")
                   break
 
-          # -----------------------------------------------------
-          # If item does not exist, add it
-          # -----------------------------------------------------
           if not updated:
-              items.append(new_item)
-              print(f"Added new item {item_id}")
+              items.append(item)
 
-          # -----------------------------------------------------
-          # Sort by SharePoint item ID
-          # -----------------------------------------------------
           def sort_key(record):
-              value = str(record.get("id", "")).strip()
+              value = str(record.get("id", ""))
 
               if value.isdigit():
                   return (0, int(value))
@@ -152,32 +159,62 @@ jobs:
 
           items.sort(key=sort_key)
 
-          # -----------------------------------------------------
-          # Save items.json
-          # -----------------------------------------------------
           file_path.write_text(
-              json.dumps(items, indent=2, ensure_ascii=False),
+              json.dumps(items, indent=2),
               encoding="utf-8"
           )
 
-          print(f"Successfully wrote {file_path}")
+          print(f"Updated MetaBid item {item_id}")
+          print(f"Photo path: {photo_path}")
+
           PY
 
-      # ---------------------------------------------------------
-      # 5. COMMIT AND PUSH
-      # ---------------------------------------------------------
-      - name: Commit MetaBid update
+      - name: Update repository and push
+        env:
+          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          DESCRIPTION: ${{ github.event.client_payload.description }}
+          WEIGHT: ${{ github.event.client_payload.weight }}
+          BID_PRICE: ${{ github.event.client_payload.bidPrice }}
+          VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
+
+          PHOTO_FILE_NAME: ${{ github.event.client_payload.photoFileName }}
+          PHOTO_CONTENT: ${{ github.event.client_payload.photoContent }}
+          PHOTO_CONTENT_TYPE: ${{ github.event.client_payload.photoContentType }}
+
         run: |
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
+          set -e
 
-          git add data/items.json
+          for attempt in 1 2 3 4 5
+          do
+            echo "======================================"
+            echo "MetaBid update attempt $attempt"
+            echo "======================================"
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
+            git fetch origin main
+            git reset --hard origin/main
 
-          git commit -m "Update MetaBid item ${{ github.event.client_payload.itemId }}"
+            python3 /tmp/update_metabid.py
 
-          git push origin main
+            git add -A
+
+            if git diff --cached --quiet
+            then
+              echo "No repository changes detected."
+              exit 0
+            fi
+
+            git commit -m "Update MetaBid item $ITEM_ID"
+
+            if git push origin main
+            then
+              echo "MetaBid update pushed successfully."
+              exit 0
+            fi
+
+            echo "Another update reached GitHub first."
+            echo "Refreshing repository and retrying..."
+            sleep 2
+          done
+
+          echo "Unable to push update after 5 attempts."
+          exit 1
