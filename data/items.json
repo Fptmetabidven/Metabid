@@ -30,5 +30,13 @@
     "bidPrice": "",
     "vendorName": "",
     "photo": ""
+  },
+  {
+    "id": "62",
+    "description": "Test 7",
+    "weight": "1",
+    "bidPrice": "",
+    "vendorName": "",
+    "photo": ""
   }
 ]
