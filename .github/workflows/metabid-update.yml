@@ -63,6 +63,8 @@ jobs:
 
           WEIGHT: ${{ github.event.client_payload.weight }}
 
+          CURRENT_PRICE: ${{ github.event.client_payload.currentPrice }}
+
           BID_PRICE: ${{ github.event.client_payload.bidPrice }}
 
           VENDOR_NAME: ${{ github.event.client_payload.vendorName }}
@@ -215,6 +217,10 @@ jobs:
                   ""
               )
 
+              current_price = os.environ.get(
+                   "CURRENT_PRICE",
+                   ""
+              )
 
               bid_price = os.environ.get(
                   "BID_PRICE",
