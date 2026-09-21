@@ -316,7 +316,7 @@
 
             table-layout: fixed;
 
-            min-width: 1200px;
+            min-width: 1550px;
         }
 
         thead {
@@ -410,9 +410,9 @@
             width: 9%;
         }
 
-        .col-bid {
-            width: 10%;
-        }
+        .col-bid { width: 10%; }
+        .col-current { width: 10%; }
+        .col-submit { width: 10%; }
 
         .col-vendor {
             width: 14%;
@@ -429,6 +429,16 @@
         td.col-id {
             font-weight: bold;
         }
+
+
+        .current-price { font-weight: 700; color: #138a43; font-size: 16px; }
+        .bid-input { width:100%; padding:9px 10px; border:1px solid #b8cfe0; border-radius:6px; background:#fff; color:var(--navy); font:inherit; outline:none; }
+        .bid-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,111,201,.12); }
+        .submit-bid { width:100%; padding:10px 12px; border:0; border-radius:6px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
+        .submit-bid:hover { background:var(--blue-dark); }
+        .bid-message { margin-top:6px; font-size:12px; line-height:1.25; }
+        .bid-message.error { color:#b00020; }
+        .bid-message.success { color:#138a43; }
 
         /* =========================================
            PHOTO
@@ -748,7 +758,7 @@
                     </h2>
 
                     <p>
-                        Browse the items below and contact the listed vendor to submit your bid.
+                        Browse available items and enter your bid directly in the table below.
                     </p>
 
                 </div>
@@ -795,21 +805,12 @@
                                 Weight
                             </th>
 
-                            <th class="col-bid">
-                                Bid Price
-                            </th>
-
-                            <th class="col-vendor">
-                                Vendor Name
-                            </th>
-
-                            <th class="col-email">
-                                Vendor Email
-                            </th>
-
-                            <th class="col-notes">
-                                Vendor Notes
-                            </th>
+                            <th class="col-current">Current Bid</th>
+                            <th class="col-bid">Your Bid</th>
+                            <th class="col-vendor">Company Name</th>
+                            <th class="col-email">Email</th>
+                            <th class="col-notes">Notes</th>
+                            <th class="col-submit">Submit</th>
 
                         </tr>
 
@@ -820,7 +821,7 @@
 
                         <tr class="status-row">
 
-                            <td colspan="8">
+                            <td colspan="10">
                                 Loading available items...
                             </td>
 
@@ -971,7 +972,7 @@
 
                     <tr class="status-row">
 
-                        <td colspan="8">
+                        <td colspan="10">
 
                             <span class="error-message">
 
@@ -1025,6 +1026,7 @@
                                     item.description,
                                     item.weight,
                                     item.bidPrice,
+                                    item.currentPrice,
                                     item.vendorName,
                                     item.vendorEmail,
                                     item.vendorNotes
@@ -1077,7 +1079,7 @@
 
                     <tr class="status-row">
 
-                        <td colspan="8">
+                        <td colspan="10">
 
                             No available items found.
 
@@ -1143,33 +1145,9 @@
                         );
 
 
-                    const vendorName =
-                        safeValue(
-                            item.vendorName
-                        );
-
-
-                    const vendorEmail =
-                        safeValue(
-                            item.vendorEmail ||
-                            item.VendorEmail ||
-                            item.vendoremail ||
-                            ""
-                        );
-
-
-                    const vendorNotes =
-                        safeValue(
-                            item.vendorNotes ||
-                            item.VendorNotes ||
-                            item.vendornotes ||
-                            ""
-                        );
-
-
-                    const bidPrice =
+                    const currentPrice =
                         formatBidPrice(
-                            item.bidPrice
+                            item.currentPrice
                         );
 
 
@@ -1183,12 +1161,6 @@
                         createPhotoHTML(
                             photo,
                             id
-                        );
-
-
-                    const emailHTML =
-                        createEmailHTML(
-                            vendorEmail
                         );
 
 
@@ -1222,31 +1194,29 @@
                         </td>
 
 
-                        <td class="col-bid">
-
-                            ${escapeHTML(bidPrice)}
-
+                        <td class="col-current current-price">
+                            ${escapeHTML(currentPrice || "—")}
                         </td>
 
+                        <td class="col-bid">
+                            <input class="bid-input js-bid-price" type="number" min="0.01" step="0.01" placeholder="$0.00">
+                        </td>
 
                         <td class="col-vendor">
-
-                            ${escapeHTML(vendorName)}
-
+                            <input class="bid-input js-vendor-name" type="text" maxlength="120" placeholder="Company name">
                         </td>
-
 
                         <td class="col-email">
-
-                            ${emailHTML}
-
+                            <input class="bid-input js-vendor-email" type="email" maxlength="200" placeholder="name@company.com">
                         </td>
 
+                        <td class="col-notes">
+                            <input class="bid-input js-vendor-notes" type="text" maxlength="500" placeholder="Optional notes">
+                        </td>
 
-                        <td class="col-notes vendor-notes">
-
-                            ${escapeHTML(vendorNotes)}
-
+                        <td class="col-submit">
+                            <button class="submit-bid js-submit-bid" type="button" data-item-id="${escapeAttribute(id)}">Submit Bid</button>
+                            <div class="bid-message" aria-live="polite"></div>
                         </td>
 
                     `;
@@ -1302,6 +1272,16 @@
 
         }
 
+
+
+        .current-price { font-weight: 700; color: #138a43; font-size: 16px; }
+        .bid-input { width:100%; padding:9px 10px; border:1px solid #b8cfe0; border-radius:6px; background:#fff; color:var(--navy); font:inherit; outline:none; }
+        .bid-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,111,201,.12); }
+        .submit-bid { width:100%; padding:10px 12px; border:0; border-radius:6px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
+        .submit-bid:hover { background:var(--blue-dark); }
+        .bid-message { margin-top:6px; font-size:12px; line-height:1.25; }
+        .bid-message.error { color:#b00020; }
+        .bid-message.success { color:#138a43; }
 
         /* =========================================
            PHOTO
@@ -1701,6 +1681,50 @@
 
             }
         );
+
+
+        /* =========================================
+           BID FORM
+           ========================================= */
+
+        document.addEventListener("click", function (event) {
+            const button = event.target.closest(".js-submit-bid");
+            if (!button) return;
+
+            const row = button.closest("tr");
+            const message = row.querySelector(".bid-message");
+            const bid = row.querySelector(".js-bid-price").value.trim();
+            const vendorName = row.querySelector(".js-vendor-name").value.trim();
+            const emailField = row.querySelector(".js-vendor-email");
+            const vendorEmail = emailField.value.trim();
+            const vendorNotes = row.querySelector(".js-vendor-notes").value.trim();
+            const itemId = button.dataset.itemId;
+
+            message.className = "bid-message";
+
+            if (!bid || Number(bid) <= 0) {
+                message.textContent = "Enter a valid bid.";
+                message.classList.add("error");
+                return;
+            }
+
+            if (!vendorName) {
+                message.textContent = "Enter your company name.";
+                message.classList.add("error");
+                return;
+            }
+
+            if (!vendorEmail || !emailField.checkValidity()) {
+                message.textContent = "Enter a valid email.";
+                message.classList.add("error");
+                return;
+            }
+
+            // Secure submission endpoint will be connected in the next step.
+            console.log({ itemId, bidPrice: bid, vendorName, vendorEmail, vendorNotes });
+            message.textContent = "Bid form ready — submission connection is the next step.";
+            message.classList.add("success");
+        });
 
 
         /* =========================================
