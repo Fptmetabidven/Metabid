@@ -48,5 +48,15 @@
     "vendorEmail": "",
     "vendorNotes": "",
     "photo": "images/74.jpeg"
+  },
+  {
+    "id": "75",
+    "description": "Test 6",
+    "weight": "",
+    "bidPrice": "",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
   }
 ]
