@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   receive-bid:
@@ -20,7 +21,8 @@ jobs:
           SUBMITTED_AT: ${{ github.event.client_payload.submittedAt }}
           COMPANY_NAME: ${{ github.event.client_payload.companyName }}
           VENDOR_EMAIL: ${{ github.event.client_payload.vendorEmail }}
-          BID_COUNT: ${{ toJson(github.event.client_payload.bids) }}
+          GENERAL_NOTES: ${{ github.event.client_payload.generalNotes }}
+          BIDS_JSON: ${{ toJson(github.event.client_payload.bids) }}
         run: |
           echo "======================================"
           echo "MetaBid bid submission received"
@@ -31,7 +33,7 @@ jobs:
           echo "Vendor Email:  $VENDOR_EMAIL"
           echo ""
           echo "Bid payload received:"
-          echo "$BID_COUNT"
+          echo "$BIDS_JSON"
           echo "======================================"
 
       - name: Validate required fields
@@ -63,3 +65,41 @@ jobs:
           fi
 
           echo "MetaBid submission passed validation."
+
+      - name: Create Power Automate bid issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUBMISSION_ID: ${{ github.event.client_payload.submissionId }}
+          SUBMITTED_AT: ${{ github.event.client_payload.submittedAt }}
+          COMPANY_NAME: ${{ github.event.client_payload.companyName }}
+          VENDOR_EMAIL: ${{ github.event.client_payload.vendorEmail }}
+          GENERAL_NOTES: ${{ github.event.client_payload.generalNotes }}
+          BIDS_JSON: ${{ toJson(github.event.client_payload.bids) }}
+        run: |
+          cat > /tmp/metabid-issue.txt <<EOF
+          METABID_BID_SUBMISSION
+
+          SubmissionID: $SUBMISSION_ID
+          SubmittedAt: $SUBMITTED_AT
+          CompanyName: $COMPANY_NAME
+          VendorEmail: $VENDOR_EMAIL
+
+          GENERAL_NOTES_START
+          $GENERAL_NOTES
+          GENERAL_NOTES_END
+
+          BIDS_JSON_START
+          $BIDS_JSON
+          BIDS_JSON_END
+          EOF
+
+          echo "Creating GitHub issue for Power Automate..."
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "MetaBid Bid - $SUBMISSION_ID" \
+            --body-file /tmp/metabid-issue.txt \
+            --assignee "${{ github.repository_owner }}"
+
+          echo "GitHub issue created successfully."
