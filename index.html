@@ -295,21 +295,8 @@ tbody tr.selected{background:#edf8ff}
 <script>
 const DATA_FILE = "data/items.json";
 
-/*
-  IMPORTANT:
-  The visual batch-bid page is complete.
-  To connect SUBMIT BID to Microsoft Forms, paste a Microsoft Forms
-  PRE-FILLED link into BATCH_FORM_PREFILL_URL after we generate that link.
-  Until then the button validates and prepares the batch, but will not
-  send anything silently.
-*/
-const BATCH_FORM_PREFILL_URL = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=5sY8ai7bLUycRAVY3gOFbzxPPFNku7xBjCVVFut8wsFUQ0YwWlhUNlc5VDdXNlgyVURQRkI2TE43Ri4u";
-const FORM_FIELDS = {
-  companyName: "rbf0aad01e7f14413adb3a89408a5b957",
-  vendorEmail: "r1f420dbe20e24e1eb7c4915de09b38d7",
-  generalNotes: "r6a5a02c0be9040f3a280704871429466",
-  batchBidData: "rcf359975a642422db2be84831db3f55e"
-};
+/* MetaBid secure Cloudflare bid endpoint */
+const BID_API_URL = "https://metabid-submit-api.fptmetabid.workers.dev/submit-bid";
 
 let inventoryItems = [];
 let showSelectedOnly = false;
@@ -477,29 +464,40 @@ function collectBatch(){
   return {companyName,vendorEmail,generalNotes,bids};
 }
 
-function batchText(batch){
-  const lines = batch.bids.map(b => `Item ${b.itemId} | ${b.bidPrice} | ${b.itemNotes || ""}`);
-  return lines.join("\n");
-}
-
 document.getElementById("submitBid").addEventListener("click", async () => {
+  const submitButton = document.getElementById("submitBid");
   pageMessage.className = "message";
   pageMessage.textContent = "";
   try{
     const batch = collectBatch();
-
-    const url = new URL(BATCH_FORM_PREFILL_URL);
-    url.searchParams.set(FORM_FIELDS.companyName, batch.companyName);
-    url.searchParams.set(FORM_FIELDS.vendorEmail, batch.vendorEmail);
-    url.searchParams.set(FORM_FIELDS.generalNotes, batch.generalNotes);
-    url.searchParams.set(FORM_FIELDS.batchBidData, batchText(batch));
-
+    submitButton.disabled = true;
+    submitButton.textContent = "SUBMITTING...";
+    const response = await fetch(BID_API_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(batch)
+    });
+    let result = {};
+    try { result = await response.json(); } catch {}
+    if(!response.ok || !result.ok){
+      throw new Error(result.error || "Your bid could not be submitted. Please try again.");
+    }
     pageMessage.className = "message success";
-    pageMessage.textContent = "Your batch is ready. Complete the final Submit step in Microsoft Forms.";
-    window.open(url.toString(), "_blank", "noopener");
+    pageMessage.textContent = "✓ Bid submitted successfully.";
+    document.querySelectorAll("tr[data-item-id]").forEach(row => {
+      const check=row.querySelector(".row-check"), bid=row.querySelector(".bid-input"), note=row.querySelector(".note-input");
+      check.checked=false; bid.value=""; note.value=""; bid.disabled=true; note.disabled=true; row.classList.remove("selected");
+    });
+    document.getElementById("companyName").value="";
+    document.getElementById("vendorEmail").value="";
+    document.getElementById("generalNotes").value="";
+    showSelectedOnly=false; filterButton.textContent="FILTER"; updateSummary();
   }catch(err){
-    pageMessage.className = "message error";
-    pageMessage.textContent = err.message;
+    pageMessage.className="message error";
+    pageMessage.textContent=err.message;
+  }finally{
+    submitButton.disabled=false;
+    submitButton.innerHTML="➤ &nbsp; SUBMIT BID";
   }
 });
 
