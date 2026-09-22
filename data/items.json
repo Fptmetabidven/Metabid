@@ -63,10 +63,11 @@
     "id": "76",
     "description": "test7",
     "weight": "",
-    "bidPrice": "",
-    "vendorName": "",
-    "vendorEmail": "",
-    "vendorNotes": "",
+    "bidPrice": "1",
+    "currentPrice": "1",
+    "vendorName": "test",
+    "vendorEmail": "test",
+    "vendorNotes": "test",
     "photo": "images/76.jpeg"
   },
   {
