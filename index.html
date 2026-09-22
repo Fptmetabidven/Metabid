@@ -303,7 +303,13 @@ const DATA_FILE = "data/items.json";
   Until then the button validates and prepares the batch, but will not
   send anything silently.
 */
-const BATCH_FORM_PREFILL_URL = "";
+const BATCH_FORM_PREFILL_URL = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=5sY8ai7bLUycRAVY3gOFbzxPPFNku7xBjCVVFut8wsFUQ0YwWlhUNlc5VDdXNlgyVURQRkI2TE43Ri4u";
+const FORM_FIELDS = {
+  companyName: "rbf0aad01e7f14413adb3a89408a5b957",
+  vendorEmail: "r1f420dbe20e24e1eb7c4915de09b38d7",
+  generalNotes: "r6a5a02c0be9040f3a280704871429466",
+  batchBidData: "rcf359975a642422db2be84831db3f55e"
+};
 
 let inventoryItems = [];
 let showSelectedOnly = false;
@@ -482,19 +488,15 @@ document.getElementById("submitBid").addEventListener("click", async () => {
   try{
     const batch = collectBatch();
 
-    if(!BATCH_FORM_PREFILL_URL){
-      // Keep the user's entered data intact. This is intentionally not a fake submission.
-      console.log("MetaBid batch prepared:", batch);
-      console.log("Batch Bid Data:\\n" + batchText(batch));
-      pageMessage.className = "message error";
-      pageMessage.textContent = "Batch form connection is not configured yet. Your bid entries have been kept on this page.";
-      return;
-    }
+    const url = new URL(BATCH_FORM_PREFILL_URL);
+    url.searchParams.set(FORM_FIELDS.companyName, batch.companyName);
+    url.searchParams.set(FORM_FIELDS.vendorEmail, batch.vendorEmail);
+    url.searchParams.set(FORM_FIELDS.generalNotes, batch.generalNotes);
+    url.searchParams.set(FORM_FIELDS.batchBidData, batchText(batch));
 
-    // The pre-filled Forms URL will be connected in the next step after its
-    // field parameters are known. Never put passwords, SharePoint credentials,
-    // or GitHub tokens in this file.
-    window.open(BATCH_FORM_PREFILL_URL, "_blank", "noopener");
+    pageMessage.className = "message success";
+    pageMessage.textContent = "Your batch is ready. Complete the final Submit step in Microsoft Forms.";
+    window.open(url.toString(), "_blank", "noopener");
   }catch(err){
     pageMessage.className = "message error";
     pageMessage.textContent = err.message;
