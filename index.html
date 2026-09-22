@@ -1,1730 +1,399 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>MetaBid | Ferrous Processing & Trading</title>
-
-    <style>
-        :root {
-            --navy: #071f4a;
-            --blue: #006fc9;
-            --blue-dark: #00558f;
-            --blue-light: #eef7fd;
-            --border: #d7e4ee;
-            --text: #0b2855;
-            --muted: #536b88;
-            --background: #f5f9fc;
-            --white: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--text);
-            background:
-                linear-gradient(
-                    180deg,
-                    #eef6fb 0%,
-                    #f8fbfd 45%,
-                    #ffffff 100%
-                );
-        }
-
-        /* =========================================
-           HEADER
-           ========================================= */
-
-        .site-header {
-            background:
-                linear-gradient(
-                    110deg,
-                    #ffffff 0%,
-                    #ffffff 58%,
-                    #eaf6ff 100%
-                );
-
-            border-bottom: 1px solid #dbe7ef;
-        }
-
-        .header-inner {
-            max-width: 1900px;
-            min-height: 190px;
-
-            margin: auto;
-
-            display: flex;
-            align-items: center;
-
-            padding: 30px 40px;
-
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Decorative industrial-style background */
-
-        .header-inner::after {
-            content: "";
-
-            position: absolute;
-            right: -50px;
-            top: 0;
-
-            width: 45%;
-            height: 100%;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(255,255,255,1) 0%,
-                    rgba(255,255,255,0.4) 35%,
-                    rgba(0,111,201,0.08) 100%
-                );
-
-            pointer-events: none;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-box {
-            padding-right: 32px;
-            border-right: 2px solid #173b68;
-        }
-
-        .logo-box img {
-            display: block;
-
-            width: 360px;
-            max-width: 40vw;
-            height: auto;
-        }
-
-        .metabid-title {
-            white-space: nowrap;
-        }
-
-        .metabid-title h1 {
-            margin: 0;
-
-            font-size: 58px;
-            line-height: 1;
-
-            letter-spacing: -2px;
-
-            color: var(--navy);
-        }
-
-        .metabid-title h1 span {
-            color: var(--blue);
-        }
-
-        .metabid-title p {
-            margin: 8px 0 0;
-
-            font-size: 27px;
-            color: var(--navy);
-        }
-
-        /* =========================================
-           MAIN AREA
-           ========================================= */
-
-        .main-container {
-            max-width: 1900px;
-
-            margin: 0 auto;
-
-            padding: 24px 16px 45px;
-        }
-
-        .inventory-card {
-            background: var(--white);
-
-            border: 1px solid #e2ebf2;
-
-            border-radius: 14px;
-
-            padding: 22px 12px 18px;
-
-            box-shadow:
-                0 7px 28px
-                rgba(24, 69, 103, 0.10);
-        }
-
-        /* =========================================
-           TITLE + SEARCH
-           ========================================= */
-
-        .inventory-toolbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 30px;
-
-            margin-bottom: 24px;
-        }
-
-        .inventory-heading h2 {
-            margin: 0;
-
-            font-size: 43px;
-            line-height: 1.1;
-
-            letter-spacing: -1px;
-
-            color: var(--navy);
-        }
-
-        .inventory-heading p {
-            margin: 6px 0 0;
-
-            color: var(--muted);
-
-            font-size: 17px;
-        }
-
-        .search-wrapper {
-            width: 465px;
-            max-width: 100%;
-
-            position: relative;
-        }
-
-        .search-icon {
-            position: absolute;
-
-            left: 17px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            width: 20px;
-            height: 20px;
-
-            pointer-events: none;
-        }
-
-        .search-icon::before {
-            content: "";
-
-            position: absolute;
-
-            width: 10px;
-            height: 10px;
-
-            border: 2px solid #496987;
-            border-radius: 50%;
-
-            left: 0;
-            top: 0;
-        }
-
-        .search-icon::after {
-            content: "";
-
-            position: absolute;
-
-            width: 8px;
-            height: 2px;
-
-            background: #496987;
-
-            transform: rotate(45deg);
-
-            left: 11px;
-            top: 13px;
-
-            border-radius: 2px;
-        }
-
-        #searchInput {
-            width: 100%;
-            height: 48px;
-
-            padding:
-                0
-                18px
-                0
-                50px;
-
-            border:
-                1px solid
-                #b8cfe0;
-
-            border-radius: 7px;
-
-            background: white;
-
-            color: var(--navy);
-
-            font-size: 16px;
-
-            outline: none;
-
-            transition:
-                border-color 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        #searchInput:focus {
-            border-color: var(--blue);
-
-            box-shadow:
-                0 0 0 3px
-                rgba(0,111,201,0.12);
-        }
-
-        #searchInput::placeholder {
-            color: #8194a8;
-        }
-
-        /* =========================================
-           TABLE
-           ========================================= */
-
-        .table-wrapper {
-            width: 100%;
-
-            overflow-x: auto;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 8px;
-        }
-
-        table {
-            width: 100%;
-
-            border-collapse: separate;
-            border-spacing: 0;
-
-            table-layout: fixed;
-
-            min-width: 0;
-        }
-
-        thead {
-            background:
-                linear-gradient(
-                    180deg,
-                    #0874b7 0%,
-                    #005991 100%
-                );
-
-            color: white;
-        }
-
-        th {
-            padding: 15px 10px;
-
-            text-align: left;
-
-            font-size: 15px;
-            font-weight: 700;
-
-            border-right:
-                1px solid
-                rgba(255,255,255,0.18);
-        }
-
-        th:last-child {
-            border-right: none;
-        }
-
-        td {
-            padding: 12px 10px;
-
-            font-size: 15px;
-
-            vertical-align: middle;
-
-            border-right:
-                1px solid
-                var(--border);
-
-            border-bottom:
-                1px solid
-                var(--border);
-
-            overflow-wrap: anywhere;
-        }
-
-        td:last-child {
-            border-right: none;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr:nth-child(even) {
-            background: #f3f9fd;
-        }
-
-        tbody tr:nth-child(odd) {
-            background: #ffffff;
-        }
-
-        tbody tr {
-            transition: background 0.15s ease;
-        }
-
-        tbody tr:hover {
-            background: #e9f5fc;
-        }
-
-        /* =========================================
-           COLUMNS
-           ========================================= */
-
-        .col-id {
-            width: 4%;
-            text-align: center;
-        }
-
-        .col-photo {
-            width: 8%;
-        }
-
-        .col-description {
-            width: 14%;
-        }
-
-        .col-weight {
-            width: 7%;
-        }
-
-        .col-bid { width: 9%; }
-        .col-current { width: 8%; }
-        .col-submit { width: 9%; }
-
-        .col-vendor {
-            width: 12%;
-        }
-
-        .col-email {
-            width: 13%;
-        }
-
-        .col-notes {
-            width: 16%;
-        }
-
-        td.col-id {
-            font-weight: bold;
-        }
-
-
-        .current-price { font-weight: 700; color: #138a43; font-size: 16px; }
-        .bid-input { width:100%; padding:9px 10px; border:1px solid #b8cfe0; border-radius:6px; background:#fff; color:var(--navy); font:inherit; outline:none; }
-        .bid-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,111,201,.12); }
-        .submit-bid { width:100%; white-space:nowrap; padding:10px 12px; border:0; border-radius:6px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
-        .submit-bid:hover { background:var(--blue-dark); }
-        .bid-message { margin-top:6px; font-size:12px; line-height:1.25; }
-        .bid-message.error { color:#b00020; }
-        .bid-message.success { color:#138a43; }
-
-        /* =========================================
-           PHOTO
-           ========================================= */
-
-        .photo-wrapper {
-            width: 100%;
-            height: 75px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .item-photo {
-            width: 100%;
-            height: 75px;
-
-            object-fit: cover;
-
-            border-radius: 7px;
-
-            border:
-                1px solid
-                #ccd9e2;
-
-            cursor: zoom-in;
-
-            transition:
-                transform 0.18s ease,
-                box-shadow 0.18s ease;
-        }
-
-        .item-photo:hover {
-            transform: scale(1.06);
-
-            box-shadow:
-                0 5px 14px
-                rgba(0,0,0,0.22);
-        }
-
-        .no-photo {
-            width: 100%;
-            height: 75px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border:
-                1px dashed
-                #c4d2dd;
-
-            border-radius: 7px;
-
-            background: #f1f4f6;
-
-            color: #718191;
-
-            font-size: 12px;
-        }
-
-        /* =========================================
-           EMAIL
-           ========================================= */
-
-        .vendor-email {
-            color: #006cd8;
-
-            text-decoration: underline;
-
-            text-underline-offset: 2px;
-        }
-
-        .vendor-email:hover {
-            color: #004d9b;
-        }
-
-        /* =========================================
-           NOTES
-           ========================================= */
-
-        .vendor-notes {
-            white-space: pre-wrap;
-
-            line-height: 1.45;
-        }
-
-        /* =========================================
-           EMPTY / ERROR
-           ========================================= */
-
-        .status-row td {
-            padding: 50px 20px;
-
-            text-align: center;
-
-            color: #63778a;
-        }
-
-        .error-message {
-            color: #b00020;
-            font-weight: bold;
-        }
-
-        /* =========================================
-           IMAGE PREVIEW
-           ========================================= */
-
-        .image-modal {
-            display: none;
-
-            position: fixed;
-
-            z-index: 99999;
-
-            inset: 0;
-
-            background:
-                rgba(4,17,35,0.90);
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 35px;
-        }
-
-        .image-modal.open {
-            display: flex;
-        }
-
-        .image-modal-content {
-            max-width: 92vw;
-            max-height: 88vh;
-
-            width: auto;
-            height: auto;
-
-            object-fit: contain;
-
-            border-radius: 10px;
-
-            background: white;
-
-            box-shadow:
-                0 15px 60px
-                rgba(0,0,0,0.65);
-        }
-
-        .image-modal-close {
-            position: fixed;
-
-            top: 20px;
-            right: 30px;
-
-            z-index: 100000;
-
-            color: white;
-
-            font-size: 48px;
-            line-height: 1;
-
-            cursor: pointer;
-
-            user-select: none;
-        }
-
-        .image-modal-close:hover {
-            color: #dce9f3;
-        }
-
-        .preview-hint {
-            position: fixed;
-
-            bottom: 20px;
-            left: 50%;
-
-            transform: translateX(-50%);
-
-            padding: 8px 14px;
-
-            background:
-                rgba(0,0,0,0.45);
-
-            border-radius: 6px;
-
-            color: white;
-
-            font-size: 13px;
-        }
-
-        /* =========================================
-           RESPONSIVE
-           ========================================= */
-
-        @media (max-width: 900px) {
-
-            .header-inner {
-                min-height: auto;
-
-                padding: 25px;
-
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .brand {
-                width: 100%;
-
-                flex-direction: column;
-                align-items: flex-start;
-
-                gap: 20px;
-            }
-
-            .logo-box {
-                border-right: none;
-                padding-right: 0;
-            }
-
-            .logo-box img {
-                width: 300px;
-                max-width: 90vw;
-            }
-
-            .metabid-title h1 {
-                font-size: 46px;
-            }
-
-            .metabid-title p {
-                font-size: 22px;
-            }
-
-            .main-container {
-                padding:
-                    20px
-                    12px
-                    40px;
-            }
-
-            .inventory-card {
-                padding:
-                    20px
-                    12px;
-            }
-
-            .inventory-toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .inventory-heading h2 {
-                font-size: 34px;
-            }
-
-            .search-wrapper {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MetaBid | Ferrous Processing & Trading</title>
+<style>
+:root{
+  --navy:#062a5e; --navy2:#0a4f88; --blue:#0877d8; --pale:#edf7ff;
+  --line:#d3e1ec; --text:#082b5d; --green:#10963c; --muted:#6d8196;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{min-width:320px}
+.hero{
+  min-height:165px; position:relative; overflow:hidden;
+  background:
+    linear-gradient(100deg,rgba(255,255,255,.99) 0%,rgba(255,255,255,.94) 34%,rgba(224,243,255,.78) 60%,rgba(208,237,255,.72) 100%);
+  border-bottom:1px solid #dbe8f2;
+}
+.hero:after{
+  content:"";position:absolute;inset:0 0 0 42%;opacity:.17;pointer-events:none;
+  background:linear-gradient(155deg,transparent 35%,#87b9dc 36%,transparent 37%),
+             radial-gradient(ellipse at 58% 110%,#497b9d 0 18%,transparent 19%),
+             linear-gradient(110deg,transparent 65%,#407ca7 66% 68%,transparent 69%);
+}
+.hero-inner{position:relative;z-index:1;max-width:1900px;margin:auto;padding:24px 48px;display:flex;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:28px}
+.brand img{width:330px;max-height:86px;object-fit:contain;object-position:left center}
+.brand-divider{height:82px;width:2px;background:#173c70}
+.metabid-title{font-size:54px;line-height:.95;font-weight:800;letter-spacing:-2px;color:#092b5c}
+.metabid-title span{color:#0877d8}
+.metabid-sub{font-size:25px;margin-top:9px;color:#092b5c}
+
+main{max-width:1900px;margin:auto;padding:12px 44px 22px}
+.toolbar{display:flex;justify-content:space-between;gap:25px;align-items:end;margin-bottom:14px}
+.toolbar h1{font-size:40px;line-height:1;margin:0 0 5px;letter-spacing:-1px}
+.toolbar p{font-size:18px;margin:0}
+.tools{display:flex;gap:14px;align-items:center}
+.search{position:relative}
+.search input{width:330px;height:50px;border:1px solid #bdd1e1;border-radius:6px;padding:0 46px 0 16px;font-size:16px;color:var(--text);outline:none}
+.search:after{content:"⌕";position:absolute;right:15px;top:6px;font-size:31px;color:#183f6d}
+.filter-btn{height:50px;border:1px solid #b8d8f0;background:#e9f5ff;color:#0870c9;border-radius:6px;padding:0 24px;font-weight:800;font-size:17px;cursor:pointer}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:7px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:1120px}
+thead th{background:linear-gradient(#0d5b94,#06487d);color:white;padding:10px 8px;font-size:15px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.18)}
+tbody td{border-right:1px solid var(--line);border-top:1px solid var(--line);padding:5px 9px;height:52px;vertical-align:middle}
+tbody tr:nth-child(odd){background:#f3f9fd}
+tbody tr:nth-child(even){background:#fff}
+tbody tr.selected{background:#edf8ff}
+.col-check{width:54px;text-align:center}.col-id{width:70px;text-align:center}.col-photo{width:120px;text-align:center}
+.col-description{width:240px}.col-weight{width:140px;text-align:center}.col-current{width:155px;text-align:center}
+.col-bid{width:180px}.col-notes{width:390px}
+.row-check,.select-all{width:24px;height:24px;accent-color:#0877d8;cursor:pointer}
+.photo{width:88px;height:46px;object-fit:cover;border-radius:5px;cursor:pointer;display:block;margin:auto}
+.no-photo{width:88px;height:46px;border:1px dashed #a8bac8;border-radius:5px;margin:auto;display:flex;align-items:center;justify-content:center;color:#8ba0b2;font-size:11px}
+.current-price{font-weight:800;color:var(--green);font-size:17px}
+.bid-input,.note-input,.info-input,.general-notes{
+  width:100%;border:1px solid #b9cddd;border-radius:6px;background:white;color:#102e55;
+  padding:9px 11px;font:inherit;outline:none
+}
+.bid-input:focus,.note-input:focus,.info-input:focus,.general-notes:focus{border-color:#0877d8;box-shadow:0 0 0 3px rgba(8,119,216,.10)}
+.bid-input:disabled,.note-input:disabled{background:#f6f8fa;color:#a1afbc}
+.note-input{height:39px}.bid-input{height:39px}
+.status-row td{text-align:center;padding:25px;color:#6b8194}
+
+.info-panel{margin-top:14px;background:linear-gradient(100deg,#edf8ff,#e6f4ff);border:1px solid #d7e9f5;border-radius:7px;padding:14px 18px}
+.info-title{font-size:27px;font-weight:800;margin:0}.info-sub{margin:2px 0 10px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr 1.45fr 1.25fr;gap:22px;align-items:end}
+.field label{display:block;font-weight:800;margin-bottom:5px}.required{color:#c92e38}
+.general-notes{height:56px;resize:vertical}
+.submit-wrap{display:flex;flex-direction:column;gap:7px}
+.submit-btn{height:70px;border:0;border-radius:5px;background:linear-gradient(#18a33d,#0b8a31);color:white;font-size:27px;font-weight:800;cursor:pointer}
+.submit-btn:hover{filter:brightness(.96)}.submit-btn:disabled{opacity:.55;cursor:not-allowed}
+.summary{font-size:13px;color:#31516e;text-align:center;min-height:16px}
+.message{margin-top:10px;padding:10px 12px;border-radius:5px;display:none}
+.message.error{display:block;background:#fff0f1;color:#9d1c27;border:1px solid #f1c3c7}
+.message.success{display:block;background:#edf9f0;color:#176b30;border:1px solid #bfe1c7}
+
+.image-modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,20,45,.88);align-items:center;justify-content:center;padding:30px}
+.image-modal.open{display:flex}.image-modal img{max-width:92vw;max-height:88vh;border-radius:8px;box-shadow:0 15px 60px #000}
+.image-close{position:absolute;right:28px;top:15px;color:#fff;font-size:42px;cursor:pointer}
+
+@media(max-width:1050px){
+ .hero-inner{padding:22px}.brand img{width:260px}.metabid-title{font-size:43px}
+ main{padding:12px 18px}.toolbar{align-items:stretch;flex-direction:column}.tools{width:100%}.search{flex:1}.search input{width:100%}
+ .info-grid{grid-template-columns:1fr 1fr}.submit-wrap{grid-column:1/-1}
+}
+@media(max-width:650px){
+ .brand{gap:14px}.brand img{width:190px}.brand-divider{height:62px}.metabid-title{font-size:34px}.metabid-sub{font-size:18px}
+ .hero{min-height:125px}.toolbar h1{font-size:32px}.tools{flex-direction:column}.filter-btn,.search{width:100%}
+ .info-grid{grid-template-columns:1fr}.submit-wrap{grid-column:auto}
+}
+</style>
 </head>
-
 <body>
 
-    <!-- =========================================
-         HEADER
-         ========================================= -->
-
-    <header class="site-header">
-
-        <div class="header-inner">
-
-            <div class="brand">
-
-                <div class="logo-box">
-
-                    <img
-                        src="images/ferrous-logo.png"
-                        alt="Ferrous Processing & Trading"
-                    >
-
-                </div>
-
-                <div class="metabid-title">
-
-                    <h1>
-                        Meta<span>Bid</span>
-                    </h1>
-
-                    <p>
-                        Vendor Bid Portal
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-    <!-- =========================================
-         INVENTORY
-         ========================================= -->
-
-    <main class="main-container">
-
-        <section class="inventory-card">
-
-            <div class="inventory-toolbar">
-
-                <div class="inventory-heading">
-
-                    <h2>
-                        Available Items
-                    </h2>
-
-                    <p>
-                        Browse available items and enter your bid directly in the table below.
-                    </p>
-
-                </div>
-
-
-                <div class="search-wrapper">
-
-                    <span class="search-icon"></span>
-
-                    <input
-                        type="search"
-                        id="searchInput"
-                        placeholder="Search items..."
-                        autocomplete="off"
-                        aria-label="Search available items"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th class="col-id">
-                                ID
-                            </th>
-
-                            <th class="col-photo">
-                                Photo
-                            </th>
-
-                            <th class="col-description">
-                                Description
-                            </th>
-
-                            <th class="col-weight">
-                                Weight
-                            </th>
-
-                            <th class="col-current">Current Bid</th>
-                            <th class="col-bid">Your Bid</th>
-                            <th class="col-vendor">Company Name</th>
-                            <th class="col-email">Email</th>
-                            <th class="col-notes">Notes</th>
-                            <th class="col-submit">Submit</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="inventoryBody">
-
-                        <tr class="status-row">
-
-                            <td colspan="10">
-                                Loading available items...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =========================================
-         LARGE IMAGE PREVIEW
-         ========================================= -->
-
-    <div
-        id="imageModal"
-        class="image-modal"
-    >
-
-        <span
-            id="imageModalClose"
-            class="image-modal-close"
-            title="Close"
-        >
-            &times;
-        </span>
-
-
-        <img
-            id="imageModalImage"
-            class="image-modal-content"
-            src=""
-            alt="Item photo preview"
-        >
-
-
-        <div class="preview-hint">
-            Click outside the image or press Esc to close
-        </div>
-
+<header class="hero">
+  <div class="hero-inner">
+    <div class="brand">
+      <img src="images/ferrous-logo.png" alt="Ferrous Processing & Trading">
+      <div class="brand-divider"></div>
+      <div>
+        <div class="metabid-title">Meta<span>Bid</span></div>
+        <div class="metabid-sub">Vendor Bid Portal</div>
+      </div>
     </div>
-
-
-    <script>
-
-        /* =========================================
-           DATA
-           ========================================= */
-
-        const DATA_FILE =
-            "data/items.json";
-
-        const inventoryBody =
-            document.getElementById(
-                "inventoryBody"
-            );
-
-        const searchInput =
-            document.getElementById(
-                "searchInput"
-            );
-
-        let inventoryItems = [];
-
-
-        /* =========================================
-           LOAD ITEMS
-           ========================================= */
-
-        async function loadInventory() {
-
-            try {
-
-                const url =
-                    DATA_FILE +
-                    "?v=" +
-                    Date.now();
-
-
-                const response =
-                    await fetch(
-                        url,
-                        {
-                            cache: "no-store"
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Could not load MetaBid inventory."
-                    );
-
-                }
-
-
-                const data =
-                    await response.json();
-
-
-                if (Array.isArray(data)) {
-
-                    inventoryItems =
-                        data;
-
-                }
-
-                else if (
-                    data &&
-                    Array.isArray(data.items)
-                ) {
-
-                    inventoryItems =
-                        data.items;
-
-                }
-
-                else {
-
-                    inventoryItems =
-                        [];
-
-                }
-
-
-                renderInventory(
-                    inventoryItems
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "MetaBid loading error:",
-                    error
-                );
-
-
-                inventoryBody.innerHTML = `
-
-                    <tr class="status-row">
-
-                        <td colspan="10">
-
-                            <span class="error-message">
-
-                                Unable to load available items.
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-        }
-
-
-        /* =========================================
-           SEARCH
-           ========================================= */
-
-        searchInput.addEventListener(
-            "input",
-            function () {
-
-                const search =
-                    this.value
-                        .trim()
-                        .toLowerCase();
-
-
-                if (!search) {
-
-                    renderInventory(
-                        inventoryItems
-                    );
-
-                    return;
-
-                }
-
-
-                const filtered =
-                    inventoryItems.filter(
-                        function (item) {
-
-                            const searchable =
-                                [
-                                    item.id,
-                                    item.description,
-                                    item.weight,
-                                    item.bidPrice,
-                                    item.currentPrice,
-                                    item.vendorName,
-                                    item.vendorEmail,
-                                    item.vendorNotes
-                                ]
-                                .map(
-                                    function (value) {
-
-                                        return safeValue(
-                                            value
-                                        );
-
-                                    }
-                                )
-                                .join(" ")
-                                .toLowerCase();
-
-
-                            return searchable.includes(
-                                search
-                            );
-
-                        }
-                    );
-
-
-                renderInventory(
-                    filtered
-                );
-
-            }
-        );
-
-
-        /* =========================================
-           RENDER ITEMS
-           ========================================= */
-
-        function renderInventory(items) {
-
-            inventoryBody.innerHTML =
-                "";
-
-
-            if (
-                !items ||
-                items.length === 0
-            ) {
-
-                inventoryBody.innerHTML = `
-
-                    <tr class="status-row">
-
-                        <td colspan="10">
-
-                            No available items found.
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-                return;
-
-            }
-
-
-            const sortedItems =
-                [...items].sort(
-                    function (a, b) {
-
-                        const aId =
-                            parseInt(
-                                a.id,
-                                10
-                            ) || 0;
-
-
-                        const bId =
-                            parseInt(
-                                b.id,
-                                10
-                            ) || 0;
-
-
-                        return aId - bId;
-
-                    }
-                );
-
-
-            sortedItems.forEach(
-                function (item) {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    const id =
-                        safeValue(
-                            item.id
-                        );
-
-
-                    const description =
-                        safeValue(
-                            item.description
-                        );
-
-
-                    const weight =
-                        safeValue(
-                            item.weight
-                        );
-
-
-                    const currentPrice =
-                        formatBidPrice(
-                            item.currentPrice
-                        );
-
-
-                    const photo =
-                        getPhotoPath(
-                            item
-                        );
-
-
-                    const photoHTML =
-                        createPhotoHTML(
-                            photo,
-                            id
-                        );
-
-
-                    row.innerHTML = `
-
-                        <td class="col-id">
-
-                            ${escapeHTML(id)}
-
-                        </td>
-
-
-                        <td class="col-photo">
-
-                            ${photoHTML}
-
-                        </td>
-
-
-                        <td class="col-description">
-
-                            ${escapeHTML(description)}
-
-                        </td>
-
-
-                        <td class="col-weight">
-
-                            ${escapeHTML(weight)}
-
-                        </td>
-
-
-                        <td class="col-current current-price">
-                            ${escapeHTML(currentPrice || "—")}
-                        </td>
-
-                        <td class="col-bid">
-                            <input class="bid-input js-bid-price" type="number" min="0.01" step="0.01" placeholder="$0.00">
-                        </td>
-
-                        <td class="col-vendor">
-                            <input class="bid-input js-vendor-name" type="text" maxlength="120" placeholder="Company name">
-                        </td>
-
-                        <td class="col-email">
-                            <input class="bid-input js-vendor-email" type="email" maxlength="200" placeholder="name@company.com">
-                        </td>
-
-                        <td class="col-notes">
-                            <input class="bid-input js-vendor-notes" type="text" maxlength="500" placeholder="Optional notes">
-                        </td>
-
-                        <td class="col-submit">
-                            <button class="submit-bid js-submit-bid" type="button" data-item-id="${escapeAttribute(id)}">Submit Bid</button>
-                            <div class="bid-message" aria-live="polite"></div>
-                        </td>
-
-                    `;
-
-
-                    inventoryBody.appendChild(
-                        row
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =========================================
-           EMAIL
-           ========================================= */
-
-        function createEmailHTML(email) {
-
-            if (!email) {
-
-                return "";
-
-            }
-
-
-            const safeEmail =
-                escapeHTML(
-                    email
-                );
-
-
-            const mailtoEmail =
-                encodeURIComponent(
-                    email
-                );
-
-
-            return `
-
-                <a
-                    class="vendor-email"
-                    href="mailto:${mailtoEmail}"
-                >
-
-                    ${safeEmail}
-
-                </a>
-
-            `;
-
-        }
-
-
-
-        /* =========================================
-           PHOTO
-           ========================================= */
-
-        function getPhotoPath(item) {
-
-            const photo =
-                item.photo ||
-                item.Photo ||
-                item.photoUrl ||
-                item.PhotoUrl ||
-                item.PhotoURL ||
-                item.image ||
-                item.Image ||
-                "";
-
-
-            return safeValue(
-                photo
-            ).trim();
-
-        }
-
-
-        function createPhotoHTML(
-            photo,
-            itemId
-        ) {
-
-            if (!photo) {
-
-                return `
-
-                    <div class="photo-wrapper">
-
-                        <div class="no-photo">
-
-                            No Photo
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            const safePhoto =
-                escapeAttribute(
-                    photo
-                );
-
-
-            const safeId =
-                escapeAttribute(
-                    itemId
-                );
-
-
-            const separator =
-                photo.includes("?")
-                    ? "&"
-                    : "?";
-
-
-            const displayPhoto =
-                safePhoto +
-                separator +
-                "v=" +
-                Date.now();
-
-
-            return `
-
-                <div class="photo-wrapper">
-
-                    <img
-                        src="${displayPhoto}"
-                        data-full-image="${safePhoto}"
-                        class="item-photo"
-                        alt="Photo for item ${safeId}"
-                        title="Click to enlarge"
-                        loading="lazy"
-                        onerror="handleImageError(this)"
-                    >
-
-                </div>
-
-            `;
-
-        }
-
-
-        function handleImageError(image) {
-
-            const wrapper =
-                image.parentElement;
-
-
-            if (wrapper) {
-
-                wrapper.innerHTML = `
-
-                    <div class="no-photo">
-
-                        No Photo
-
-                    </div>
-
-                `;
-
-            }
-
-        }
-
-
-        /* =========================================
-           BID PRICE
-           ========================================= */
-
-        function formatBidPrice(value) {
-
-            if (
-                value === null ||
-                value === undefined ||
-                String(value).trim() === ""
-            ) {
-
-                return "";
-
-            }
-
-
-            const text =
-                String(value).trim();
-
-
-            /*
-                If SharePoint already sent something
-                such as $3.50/lb, leave it alone.
-            */
-
-            if (
-                text.includes("/") ||
-                /[a-zA-Z]/.test(text)
-            ) {
-
-                return text;
-
-            }
-
-
-            const number =
-                Number(
-                    text.replace(
-                        /[$,]/g,
-                        ""
-                    )
-                );
-
-
-            if (
-                Number.isNaN(number)
-            ) {
-
-                return text;
-
-            }
-
-
-            return new Intl.NumberFormat(
-                "en-US",
-                {
-                    style: "currency",
-                    currency: "USD"
-                }
-            ).format(
-                number
-            );
-
-        }
-
-
-        /* =========================================
-           SAFE TEXT
-           ========================================= */
-
-        function safeValue(value) {
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
-
-            }
-
-
-            return String(
-                value
-            );
-
-        }
-
-
-        function escapeHTML(value) {
-
-            return String(value)
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
-
-        function escapeAttribute(value) {
-
-            return escapeHTML(
-                value
-            );
-
-        }
-
-
-        /* =========================================
-           LARGE PHOTO PREVIEW
-           ========================================= */
-
-        const imageModal =
-            document.getElementById(
-                "imageModal"
-            );
-
-
-        const imageModalImage =
-            document.getElementById(
-                "imageModalImage"
-            );
-
-
-        const imageModalClose =
-            document.getElementById(
-                "imageModalClose"
-            );
-
-
-        document.addEventListener(
-            "click",
-            function (event) {
-
-                const image =
-                    event.target.closest(
-                        ".item-photo"
-                    );
-
-
-                if (!image) {
-
-                    return;
-
-                }
-
-
-                const fullImage =
-                    image.getAttribute(
-                        "data-full-image"
-                    ) ||
-                    image.src;
-
-
-                openImagePreview(
-                    fullImage
-                );
-
-            }
-        );
-
-
-        function openImagePreview(
-            imageSource
-        ) {
-
-            if (!imageSource) {
-
-                return;
-
-            }
-
-
-            const separator =
-                imageSource.includes("?")
-                    ? "&"
-                    : "?";
-
-
-            imageModalImage.src =
-                imageSource +
-                separator +
-                "preview=" +
-                Date.now();
-
-
-            imageModal.classList.add(
-                "open"
-            );
-
-
-            document.body.style.overflow =
-                "hidden";
-
-        }
-
-
-        function closeImagePreview() {
-
-            imageModal.classList.remove(
-                "open"
-            );
-
-
-            imageModalImage.src =
-                "";
-
-
-            document.body.style.overflow =
-                "";
-
-        }
-
-
-        imageModalClose.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                closeImagePreview();
-
-            }
-        );
-
-
-        imageModal.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    imageModal
-                ) {
-
-                    closeImagePreview();
-
-                }
-
-            }
-        );
-
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    closeImagePreview();
-
-                }
-
-            }
-        );
-
-
-        /* =========================================
-           BID FORM
-           ========================================= */
-
-        document.addEventListener("click", function (event) {
-            const button = event.target.closest(".js-submit-bid");
-            if (!button) return;
-
-            const row = button.closest("tr");
-            const message = row.querySelector(".bid-message");
-            const bid = row.querySelector(".js-bid-price").value.trim();
-            const vendorName = row.querySelector(".js-vendor-name").value.trim();
-            const emailField = row.querySelector(".js-vendor-email");
-            const vendorEmail = emailField.value.trim();
-            const vendorNotes = row.querySelector(".js-vendor-notes").value.trim();
-            const itemId = button.dataset.itemId;
-
-            message.className = "bid-message";
-
-            if (!bid || Number(bid) <= 0) {
-                message.textContent = "Enter a valid bid.";
-                message.classList.add("error");
-                return;
-            }
-
-            if (!vendorName) {
-                message.textContent = "Enter your company name.";
-                message.classList.add("error");
-                return;
-            }
-
-            if (!vendorEmail || !emailField.checkValidity()) {
-                message.textContent = "Enter a valid email.";
-                message.classList.add("error");
-                return;
-            }
-
-            // Secure submission endpoint will be connected in the next step.
-            console.log({ itemId, bidPrice: bid, vendorName, vendorEmail, vendorNotes });
-            message.textContent = "Bid form ready — submission connection is the next step.";
-            message.classList.add("success");
-        });
-
-
-        /* =========================================
-           START
-           ========================================= */
-
-        loadInventory();
-
-    </script>
-
+  </div>
+</header>
+
+<main>
+  <section class="toolbar">
+    <div>
+      <h1>Available Items</h1>
+      <p>Select the items you want to bid on, enter your bid price and notes for each item, then submit once.</p>
+    </div>
+    <div class="tools">
+      <div class="search"><input id="searchInput" type="search" placeholder="Search items..." autocomplete="off"></div>
+      <button id="filterButton" class="filter-btn" type="button">FILTER</button>
+    </div>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-check"><input id="selectAll" class="select-all" type="checkbox" aria-label="Select all visible items"></th>
+          <th class="col-id">ID</th>
+          <th class="col-photo">Photo</th>
+          <th class="col-description">Description</th>
+          <th class="col-weight">Weight<br>(LBS)</th>
+          <th class="col-current">Current Bid<br>(USD)</th>
+          <th class="col-bid">Your Bid<br>(USD)</th>
+          <th class="col-notes">Item Notes<br><span style="font-weight:400">(Optional - Per Item)</span></th>
+        </tr>
+      </thead>
+      <tbody id="inventoryBody">
+        <tr class="status-row"><td colspan="8">Loading available items...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <section class="info-panel">
+    <h2 class="info-title">Your Information</h2>
+    <p class="info-sub">Enter your company details once for all selected bids.</p>
+    <div class="info-grid">
+      <div class="field">
+        <label for="companyName">Company Name <span class="required">*</span></label>
+        <input id="companyName" class="info-input" type="text" maxlength="120" autocomplete="organization">
+      </div>
+      <div class="field">
+        <label for="vendorEmail">Email Address <span class="required">*</span></label>
+        <input id="vendorEmail" class="info-input" type="email" maxlength="200" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="generalNotes">General Notes <span style="font-weight:400">(Optional)</span></label>
+        <textarea id="generalNotes" class="general-notes" maxlength="1000"></textarea>
+      </div>
+      <div class="submit-wrap">
+        <button id="submitBid" class="submit-btn" type="button">➤ &nbsp; SUBMIT BID</button>
+        <div id="selectedSummary" class="summary">No items selected</div>
+      </div>
+    </div>
+    <div id="pageMessage" class="message" aria-live="polite"></div>
+  </section>
+</main>
+
+<div id="imageModal" class="image-modal" aria-hidden="true">
+  <span id="imageClose" class="image-close">&times;</span>
+  <img id="imagePreview" alt="Item photo preview">
+</div>
+
+<script>
+const DATA_FILE = "data/items.json";
+
+/*
+  IMPORTANT:
+  The visual batch-bid page is complete.
+  To connect SUBMIT BID to Microsoft Forms, paste a Microsoft Forms
+  PRE-FILLED link into BATCH_FORM_PREFILL_URL after we generate that link.
+  Until then the button validates and prepares the batch, but will not
+  send anything silently.
+*/
+const BATCH_FORM_PREFILL_URL = "";
+
+let inventoryItems = [];
+let showSelectedOnly = false;
+
+const body = document.getElementById("inventoryBody");
+const searchInput = document.getElementById("searchInput");
+const selectAll = document.getElementById("selectAll");
+const filterButton = document.getElementById("filterButton");
+const selectedSummary = document.getElementById("selectedSummary");
+const pageMessage = document.getElementById("pageMessage");
+
+function safe(v){ return v == null ? "" : String(v); }
+function esc(v){
+  return safe(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function attr(v){ return esc(v).replace(/`/g,"&#96;"); }
+function itemId(item){ return safe(item.id ?? item.ID ?? item.Id).trim(); }
+function description(item){ return safe(item.description ?? item.Description).trim(); }
+function weight(item){ return safe(item.weight ?? item.Weight).trim(); }
+function photo(item){
+  return safe(item.photo ?? item.Photo ?? item.photoUrl ?? item.PhotoUrl ?? item.PhotoURL ?? item.image ?? item.Image).trim();
+}
+function currentPrice(item){
+  const raw = item.currentPrice ?? item.CurrentPrice ?? item["Current Price"] ?? "";
+  if(raw === "" || raw == null) return "—";
+  const text = safe(raw).replace(/[$,]/g,"").trim();
+  const n = Number(text);
+  return Number.isFinite(n) ? "$" + n.toFixed(2) : safe(raw);
+}
+function formatWeight(v){
+  const n = Number(safe(v).replace(/,/g,""));
+  return Number.isFinite(n) ? n.toLocaleString() : safe(v);
+}
+function photoHTML(item){
+  const p = photo(item);
+  if(!p) return '<div class="no-photo">No photo</div>';
+  return `<img class="photo js-photo" src="${attr(p)}" alt="${attr(description(item) || "Item photo")}" loading="lazy">`;
+}
+
+async function loadInventory(){
+  try{
+    const response = await fetch(DATA_FILE + "?v=" + Date.now(), {cache:"no-store"});
+    if(!response.ok) throw new Error("Could not load " + DATA_FILE);
+    const json = await response.json();
+    inventoryItems = Array.isArray(json) ? json : (Array.isArray(json.items) ? json.items : []);
+    render();
+  }catch(err){
+    body.innerHTML = `<tr class="status-row"><td colspan="8">${esc(err.message)}</td></tr>`;
+  }
+}
+
+function filteredItems(){
+  const q = searchInput.value.trim().toLowerCase();
+  return inventoryItems.filter(item => {
+    const matches = !q || [itemId(item),description(item),weight(item),currentPrice(item)].join(" ").toLowerCase().includes(q);
+    const selected = document.querySelector(`.row-check[data-id="${CSS.escape(itemId(item))}"]`)?.checked;
+    return matches && (!showSelectedOnly || selected);
+  });
+}
+
+function saveDraft(){
+  const draft = {};
+  document.querySelectorAll("tr[data-item-id]").forEach(row => {
+    const id = row.dataset.itemId;
+    draft[id] = {
+      checked: row.querySelector(".row-check").checked,
+      bid: row.querySelector(".bid-input").value,
+      note: row.querySelector(".note-input").value
+    };
+  });
+  return draft;
+}
+
+function render(){
+  const draft = saveDraft();
+  const q = searchInput.value.trim().toLowerCase();
+  const items = inventoryItems.filter(item => {
+    const matches = !q || [itemId(item),description(item),weight(item),currentPrice(item)].join(" ").toLowerCase().includes(q);
+    const d = draft[itemId(item)];
+    return matches && (!showSelectedOnly || (d && d.checked));
+  });
+
+  if(!items.length){
+    body.innerHTML = '<tr class="status-row"><td colspan="8">No available items match your search.</td></tr>';
+    updateSummary(); return;
+  }
+
+  body.innerHTML = items.map(item => {
+    const id = itemId(item);
+    const d = draft[id] || {checked:false,bid:"",note:""};
+    return `<tr data-item-id="${attr(id)}" class="${d.checked ? "selected" : ""}">
+      <td class="col-check"><input class="row-check" data-id="${attr(id)}" type="checkbox" ${d.checked?"checked":""}></td>
+      <td class="col-id">${esc(id)}</td>
+      <td class="col-photo">${photoHTML(item)}</td>
+      <td class="col-description">${esc(description(item))}</td>
+      <td class="col-weight">${esc(formatWeight(weight(item)))}</td>
+      <td class="col-current current-price">${esc(currentPrice(item))}</td>
+      <td class="col-bid"><input class="bid-input" type="number" min="0.01" step="0.01" placeholder="0.00" value="${attr(d.bid)}" ${d.checked?"":"disabled"}></td>
+      <td class="col-notes"><input class="note-input" type="text" maxlength="500" placeholder="" value="${attr(d.note)}" ${d.checked?"":"disabled"}></td>
+    </tr>`;
+  }).join("");
+
+  updateSummary();
+}
+
+function updateSummary(){
+  const rows = [...document.querySelectorAll("tr[data-item-id]")];
+  const selected = rows.filter(r => r.querySelector(".row-check").checked);
+  selectedSummary.textContent = selected.length ? `${selected.length} item${selected.length===1?"":"s"} selected` : "No items selected";
+  selectAll.checked = rows.length > 0 && selected.length === rows.length;
+  selectAll.indeterminate = selected.length > 0 && selected.length < rows.length;
+}
+
+body.addEventListener("change", e => {
+  if(e.target.classList.contains("row-check")){
+    const row = e.target.closest("tr");
+    row.classList.toggle("selected", e.target.checked);
+    row.querySelector(".bid-input").disabled = !e.target.checked;
+    row.querySelector(".note-input").disabled = !e.target.checked;
+    if(e.target.checked) row.querySelector(".bid-input").focus();
+    updateSummary();
+  }
+});
+
+body.addEventListener("click", e => {
+  const img = e.target.closest(".js-photo");
+  if(!img) return;
+  document.getElementById("imagePreview").src = img.src;
+  document.getElementById("imageModal").classList.add("open");
+});
+
+selectAll.addEventListener("change", () => {
+  document.querySelectorAll("tr[data-item-id]").forEach(row => {
+    const cb = row.querySelector(".row-check");
+    cb.checked = selectAll.checked;
+    row.classList.toggle("selected", cb.checked);
+    row.querySelector(".bid-input").disabled = !cb.checked;
+    row.querySelector(".note-input").disabled = !cb.checked;
+  });
+  updateSummary();
+});
+
+searchInput.addEventListener("input", render);
+filterButton.addEventListener("click", () => {
+  showSelectedOnly = !showSelectedOnly;
+  filterButton.textContent = showSelectedOnly ? "SHOW ALL" : "FILTER";
+  render();
+});
+
+document.getElementById("imageClose").onclick = () => document.getElementById("imageModal").classList.remove("open");
+document.getElementById("imageModal").addEventListener("click", e => {
+  if(e.target.id === "imageModal") e.currentTarget.classList.remove("open");
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") document.getElementById("imageModal").classList.remove("open");
+});
+
+function collectBatch(){
+  const selectedRows = [...document.querySelectorAll("tr[data-item-id]")].filter(r => r.querySelector(".row-check").checked);
+  const companyName = document.getElementById("companyName").value.trim();
+  const vendorEmail = document.getElementById("vendorEmail").value.trim();
+  const generalNotes = document.getElementById("generalNotes").value.trim();
+
+  if(!selectedRows.length) throw new Error("Select at least one item.");
+  if(!companyName) throw new Error("Enter your company name.");
+  if(!vendorEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(vendorEmail)) throw new Error("Enter a valid email address.");
+
+  const bids = selectedRows.map(row => {
+    const bid = row.querySelector(".bid-input").value.trim();
+    if(!bid || Number(bid) <= 0) throw new Error(`Enter a bid price for Item ${row.dataset.itemId}.`);
+    return {
+      itemId: row.dataset.itemId,
+      bidPrice: Number(bid).toFixed(2),
+      itemNotes: row.querySelector(".note-input").value.trim()
+    };
+  });
+
+  return {companyName,vendorEmail,generalNotes,bids};
+}
+
+function batchText(batch){
+  const lines = batch.bids.map(b => `Item ${b.itemId} | ${b.bidPrice} | ${b.itemNotes || ""}`);
+  return lines.join("\n");
+}
+
+document.getElementById("submitBid").addEventListener("click", async () => {
+  pageMessage.className = "message";
+  pageMessage.textContent = "";
+  try{
+    const batch = collectBatch();
+
+    if(!BATCH_FORM_PREFILL_URL){
+      // Keep the user's entered data intact. This is intentionally not a fake submission.
+      console.log("MetaBid batch prepared:", batch);
+      console.log("Batch Bid Data:\\n" + batchText(batch));
+      pageMessage.className = "message error";
+      pageMessage.textContent = "Batch form connection is not configured yet. Your bid entries have been kept on this page.";
+      return;
+    }
+
+    // The pre-filled Forms URL will be connected in the next step after its
+    // field parameters are known. Never put passwords, SharePoint credentials,
+    // or GitHub tokens in this file.
+    window.open(BATCH_FORM_PREFILL_URL, "_blank", "noopener");
+  }catch(err){
+    pageMessage.className = "message error";
+    pageMessage.textContent = err.message;
+  }
+});
+
+loadInventory();
+</script>
 </body>
 </html>
