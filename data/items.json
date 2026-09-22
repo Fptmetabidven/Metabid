@@ -4,9 +4,9 @@
     "description": "test",
     "weight": "1",
     "bidPrice": "",
-    "currentPrice": "1",
-    "vendorName": "",
-    "vendorEmail": "",
+    "currentPrice": "5",
+    "vendorName": "test",
+    "vendorEmail": "Test@test.com",
     "vendorNotes": "",
     "photo": "images/83.jpg"
   },
