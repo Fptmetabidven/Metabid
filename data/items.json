@@ -65,10 +65,10 @@
     "description": "test7",
     "weight": "",
     "bidPrice": "1",
-    "currentPrice": "1",
+    "currentPrice": "2",
     "vendorName": "test",
-    "vendorEmail": "test",
-    "vendorNotes": "test",
+    "vendorEmail": "test@test.com",
+    "vendorNotes": "test 1\n\nGeneral Notes: test",
     "photo": "images/76.jpeg"
   },
   {
