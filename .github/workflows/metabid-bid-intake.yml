@@ -1,1 +1,65 @@
+name: MetaBid Bid Intake
 
+on:
+  repository_dispatch:
+    types:
+      - metabid_bid_batch
+
+permissions:
+  contents: read
+
+jobs:
+  receive-bid:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Confirm MetaBid bid submission
+        shell: bash
+        env:
+          SUBMISSION_ID: ${{ github.event.client_payload.submissionId }}
+          SUBMITTED_AT: ${{ github.event.client_payload.submittedAt }}
+          COMPANY_NAME: ${{ github.event.client_payload.companyName }}
+          VENDOR_EMAIL: ${{ github.event.client_payload.vendorEmail }}
+          BID_COUNT: ${{ toJson(github.event.client_payload.bids) }}
+        run: |
+          echo "======================================"
+          echo "MetaBid bid submission received"
+          echo "======================================"
+          echo "Submission ID: $SUBMISSION_ID"
+          echo "Submitted At:  $SUBMITTED_AT"
+          echo "Company:       $COMPANY_NAME"
+          echo "Vendor Email:  $VENDOR_EMAIL"
+          echo ""
+          echo "Bid payload received:"
+          echo "$BID_COUNT"
+          echo "======================================"
+
+      - name: Validate required fields
+        shell: bash
+        env:
+          SUBMISSION_ID: ${{ github.event.client_payload.submissionId }}
+          COMPANY_NAME: ${{ github.event.client_payload.companyName }}
+          VENDOR_EMAIL: ${{ github.event.client_payload.vendorEmail }}
+          BIDS_JSON: ${{ toJson(github.event.client_payload.bids) }}
+        run: |
+          if [ -z "$SUBMISSION_ID" ]; then
+            echo "ERROR: Missing submission ID."
+            exit 1
+          fi
+
+          if [ -z "$COMPANY_NAME" ]; then
+            echo "ERROR: Missing company name."
+            exit 1
+          fi
+
+          if [ -z "$VENDOR_EMAIL" ]; then
+            echo "ERROR: Missing vendor email."
+            exit 1
+          fi
+
+          if [ "$BIDS_JSON" = "null" ] || [ "$BIDS_JSON" = "[]" ]; then
+            echo "ERROR: No bids received."
+            exit 1
+          fi
+
+          echo "MetaBid submission passed validation."
