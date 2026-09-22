@@ -12,162 +12,150 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
       - name: Remove deleted SharePoint items
         env:
-          CURRENT_IDS: ${{ github.event.client_payload.currentIds }}
+          CURRENT_IDS: ${{ toJson(github.event.client_payload.currentIds) }}
 
         run: |
           python3 <<'PY'
-
           import json
           import os
           from pathlib import Path
 
-
           # ------------------------------------------
-          # IDs that currently exist in SharePoint
+          # Read IDs currently existing in SharePoint
           # ------------------------------------------
 
-          raw_ids = os.environ.get(
-              "CURRENT_IDS",
-              ""
-          )
+          raw_ids = os.environ.get("CURRENT_IDS", "").strip()
 
-          current_ids = {
-              value.strip()
-              for value in raw_ids.split(",")
-              if value.strip()
-          }
+          print("Raw CURRENT_IDS:", raw_ids)
+
+          if not raw_ids or raw_ids in ("null", '""'):
+              print("ERROR: No currentIds received from Power Automate.")
+              print("Cleanup stopped for safety.")
+              raise SystemExit(1)
+
+          try:
+              parsed = json.loads(raw_ids)
+          except json.JSONDecodeError:
+              parsed = raw_ids
+
+          # Support:
+          # ["1","2","3"]
+          # [1,2,3]
+          # "1,2,3"
+          # "1, 2, 3"
+
+          if isinstance(parsed, list):
+              current_ids = {
+                  str(value).strip()
+                  for value in parsed
+                  if str(value).strip()
+              }
+
+          elif isinstance(parsed, str):
+              current_ids = {
+                  value.strip()
+                  for value in parsed.split(",")
+                  if value.strip()
+              }
+
+          else:
+              current_ids = {str(parsed).strip()}
 
           print(
               "Current SharePoint IDs:",
               sorted(current_ids)
           )
 
+          if not current_ids:
+              print("ERROR: Parsed SharePoint ID list is empty.")
+              print("Cleanup stopped for safety.")
+              raise SystemExit(1)
 
           # ------------------------------------------
-          # Load GitHub inventory
+          # Load MetaBid inventory
           # ------------------------------------------
 
-          data_file = Path(
-              "data/items.json"
-          )
+          data_file = Path("data/items.json")
 
           if not data_file.exists():
-
-              print(
-                  "data/items.json does not exist."
-              )
-
-              raise SystemExit(0)
-
+              print("ERROR: data/items.json does not exist.")
+              raise SystemExit(1)
 
           try:
-
               items = json.loads(
-                  data_file.read_text(
-                      encoding="utf-8"
-                  )
+                  data_file.read_text(encoding="utf-8")
               )
-
           except Exception as error:
-
-              print(
-                  "Could not read items.json:",
-                  error
-              )
-
+              print("Could not read items.json:", error)
               raise SystemExit(1)
 
-
-          if not isinstance(
-              items,
-              list
-          ):
-
-              print(
-                  "items.json is not a list."
-              )
-
+          if not isinstance(items, list):
+              print("ERROR: items.json is not a list.")
               raise SystemExit(1)
 
+          print("Items currently on MetaBid:", len(items))
 
           # ------------------------------------------
-          # Determine which GitHub items were deleted
-          # from SharePoint
+          # Compare MetaBid against SharePoint
           # ------------------------------------------
 
           removed_ids = []
-
           remaining_items = []
-
 
           for item in items:
 
+              # Support both id and SharePoint ID naming
               item_id = str(
                   item.get(
                       "id",
-                      ""
+                      item.get("ID", "")
                   )
               ).strip()
 
+              if not item_id:
+                  print("WARNING: Item has no ID:", item)
+                  remaining_items.append(item)
+                  continue
 
               if item_id in current_ids:
-
-                  remaining_items.append(
-                      item
-                  )
-
+                  remaining_items.append(item)
               else:
+                  removed_ids.append(item_id)
 
-                  if item_id:
-
-                      removed_ids.append(
-                          item_id
-                      )
-
-
-          print(
-              "Deleted SharePoint IDs:",
-              removed_ids
-          )
-
+          print("IDs to remove:", removed_ids)
+          print("Items remaining:", len(remaining_items))
 
           # ------------------------------------------
-          # Save cleaned items.json
+          # Nothing deleted
+          # ------------------------------------------
+
+          if not removed_ids:
+              print("No deleted SharePoint items found.")
+              raise SystemExit(0)
+
+          # ------------------------------------------
+          # Save cleaned inventory
           # ------------------------------------------
 
           data_file.write_text(
-
               json.dumps(
                   remaining_items,
-                  indent=2
-              ),
-
+                  indent=2,
+                  ensure_ascii=False
+              ) + "\n",
               encoding="utf-8"
-
           )
 
-
           # ------------------------------------------
-          # Remove corresponding images
-          #
-          # Handles:
-          # images/53.png
-          # images/53.jpg
-          # images/53.jpeg
-          # etc.
+          # Delete images belonging to deleted items
           # ------------------------------------------
 
-          image_folder = Path(
-              "images"
-          )
-
+          image_folder = Path("images")
 
           if image_folder.exists():
 
@@ -176,45 +164,24 @@ jobs:
                   for image in image_folder.glob(
                       f"{item_id}.*"
                   ):
-
-                      print(
-                          "Deleting image:",
-                          image
-                      )
-
+                      print("Deleting image:", image)
                       image.unlink()
 
-
-          print(
-              "MetaBid cleanup complete."
-          )
+          print("MetaBid cleanup complete.")
 
           PY
 
-
       - name: Commit cleanup
         run: |
-
-          git config user.name \
-            "MetaBid Automation"
-
-          git config user.email \
-            "actions@github.com"
-
+          git config user.name "MetaBid Automation"
+          git config user.email "actions@github.com"
 
           git add -A
 
-
           if git diff --cached --quiet
           then
-
             echo "GitHub already matches SharePoint."
-
           else
-
-            git commit \
-              -m "Sync MetaBid deletions from SharePoint"
-
+            git commit -m "Sync MetaBid deletions from SharePoint"
             git push
-
           fi
