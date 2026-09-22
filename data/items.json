@@ -4,7 +4,7 @@
     "description": "test",
     "weight": "1",
     "bidPrice": "",
-    "currentPrice": "",
+    "currentPrice": "1",
     "vendorName": "",
     "vendorEmail": "",
     "vendorNotes": "",
