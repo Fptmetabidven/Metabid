@@ -54,7 +54,7 @@
     "description": "Test 6",
     "weight": "",
     "bidPrice": "",
-    "currentPrice": "1",
+    "currentPrice": "2",
     "vendorName": "MetaBid Test Company",
     "vendorEmail": "test@example.com",
     "vendorNotes": "TEST ONLY - DO NOT PROCESS\n\nGeneral Notes: Cloudflare to GitHub connection test",
