@@ -1,0 +1,59 @@
+name: Deploy MetaBid Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".metabid_chunks/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  check-ready:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.ready.outputs.ready }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Check for pending MetaBid photos
+        id: ready
+        shell: bash
+        run: |
+          if find .metabid_chunks -maxdepth 1 -type f -name 'pending-*.txt' -print -quit 2>/dev/null | grep -q .
+          then
+            echo "A MetaBid photo is still being received. Skipping deployment."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "No pending MetaBid photos."
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: check-ready
+    if: needs.check-ready.outputs.ready == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload MetaBid site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+      - name: Deploy MetaBid site
+        id: deployment
+        uses: actions/deploy-pages@v4

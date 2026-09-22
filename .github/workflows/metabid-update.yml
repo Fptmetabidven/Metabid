@@ -378,6 +378,22 @@ jobs:
                   current_price
               )
 
+              # Mark the item pending when this update expects photo chunks.
+              photo_chunk_count_text = os.environ.get(
+                  "PHOTO_CHUNK_COUNT",
+                  ""
+              ).strip()
+
+              try:
+                  photo_chunk_count = int(photo_chunk_count_text or "0")
+              except ValueError:
+                  photo_chunk_count = 0
+
+              if photo_chunk_count > 0:
+                  pending_file = chunk_root / f"pending-{item_id}.txt"
+                  pending_file.write_text(str(photo_chunk_count), encoding="utf-8")
+                  print("Photo pending:", photo_chunk_count, "chunks expected.")
+
 
           # ==================================================
           # PHOTO CHUNK
@@ -893,6 +909,9 @@ jobs:
                       item_chunk_folder
                   )
 
+                  pending_file = chunk_root / f"pending-{item_id}.txt"
+                  if pending_file.exists():
+                      pending_file.unlink()
 
                   print(
                       "Photo assembly complete."
@@ -968,6 +987,10 @@ jobs:
                   )
 
 
+              pending_file = chunk_root / f"pending-{item_id}.txt"
+              if pending_file.exists():
+                  pending_file.unlink()
+
               print(
                   "Removed MetaBid item:",
                   item_id
@@ -1032,8 +1055,23 @@ jobs:
           # CREATE COMMIT
           # ==================================================
 
-          git commit \
-            -m "MetaBid ${EVENT_TYPE} item ${ITEM_ID}"
+          NON_CHUNK_CHANGES="$(
+            git diff --cached --name-only |
+            grep -v '^\.metabid_chunks/' || true
+          )"
+
+          if [ "$EVENT_TYPE" = "metabid_photo_chunk" ] && [ -z "$NON_CHUNK_CHANGES" ]
+          then
+            git commit \
+              -m "MetaBid photo chunk item ${ITEM_ID}"
+          elif [ "$EVENT_TYPE" = "metabid_photo_chunk" ]
+          then
+            git commit \
+              -m "MetaBid complete photo item ${ITEM_ID}"
+          else
+            git commit \
+              -m "MetaBid ${EVENT_TYPE} item ${ITEM_ID}"
+          fi
 
 
           echo "Pushing MetaBid change..."
