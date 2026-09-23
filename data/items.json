@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "94",
+    "description": "Test",
+    "weight": "5",
+    "bidPrice": "",
+    "currentPrice": "1",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
+  }
+]
