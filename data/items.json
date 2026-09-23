@@ -20,5 +20,16 @@
     "vendorEmail": "test@test.com",
     "vendorNotes": "",
     "photo": "images/86.jpeg"
+  },
+  {
+    "id": "88",
+    "description": "Test 2",
+    "weight": "5",
+    "bidPrice": "",
+    "currentPrice": "2",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
   }
 ]
