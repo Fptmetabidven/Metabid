@@ -1,187 +1,373 @@
-name: MetaBid SharePoint Sync
+- name: Remove deleted SharePoint items
+  env:
+    CURRENT_IDS: ${{ github.event.client_payload.currentIds }}
 
-on:
-  repository_dispatch:
-    types: [metabid_sync]
+  run: |
+    python3 <<'PY'
 
-permissions:
-  contents: write
+    import json
+    import os
+    from pathlib import Path
 
-jobs:
-  sync-metabid:
-    runs-on: ubuntu-latest
+    # ==========================================
+    # READ CURRENT IDS FROM POWER AUTOMATE
+    # ==========================================
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    raw_ids = os.environ.get(
+        "CURRENT_IDS",
+        ""
+    ).strip()
 
-      - name: Remove deleted SharePoint items
-        env:
-          CURRENT_IDS: ${{ toJson(github.event.client_payload.currentIds) }}
+    print(
+        "Raw CURRENT_IDS:",
+        repr(raw_ids)
+    )
 
-        run: |
-          python3 <<'PY'
-          import json
-          import os
-          from pathlib import Path
 
-          # ------------------------------------------
-          # Read IDs currently existing in SharePoint
-          # ------------------------------------------
+    # ==========================================
+    # SAFETY CHECK
+    # Blank means something went wrong.
+    # DELETE NOTHING.
+    # ==========================================
 
-          raw_ids = os.environ.get("CURRENT_IDS", "").strip()
+    if not raw_ids:
 
-          print("Raw CURRENT_IDS:", raw_ids)
+        print(
+            "ERROR: currentIds was not received "
+            "from Power Automate."
+        )
 
-          if not raw_ids or raw_ids in ("null", '""'):
-              print("ERROR: No currentIds received from Power Automate.")
-              print("Cleanup stopped for safety.")
-              raise SystemExit(1)
+        print(
+            "Cleanup stopped for safety."
+        )
 
-          try:
-              parsed = json.loads(raw_ids)
-          except json.JSONDecodeError:
-              parsed = raw_ids
+        raise SystemExit(1)
 
-          # Support:
-          # ["1","2","3"]
-          # [1,2,3]
-          # "1,2,3"
-          # "1, 2, 3"
 
-          if isinstance(parsed, list):
-              current_ids = {
-                  str(value).strip()
-                  for value in parsed
-                  if str(value).strip()
-              }
+    # ==========================================
+    # BUILD CURRENT SHAREPOINT ID LIST
+    # NONE means SharePoint successfully
+    # returned zero items.
+    # ==========================================
 
-          elif isinstance(parsed, str):
-              current_ids = {
-                  value.strip()
-                  for value in parsed.split(",")
-                  if value.strip()
-              }
+    if raw_ids.upper() == "NONE":
 
-          else:
-              current_ids = {str(parsed).strip()}
+        print(
+            "SharePoint list is confirmed empty."
+        )
 
-          print(
-              "Current SharePoint IDs:",
-              sorted(current_ids)
-          )
+        print(
+            "All MetaBid website items will be removed."
+        )
 
-          if not current_ids:
-              print("ERROR: Parsed SharePoint ID list is empty.")
-              print("Cleanup stopped for safety.")
-              raise SystemExit(1)
+        current_ids = set()
 
-          # ------------------------------------------
-          # Load MetaBid inventory
-          # ------------------------------------------
+    else:
 
-          data_file = Path("data/items.json")
+        current_ids = {
+            value.strip()
+            for value in raw_ids.split(",")
+            if value.strip()
+        }
 
-          if not data_file.exists():
-              print("ERROR: data/items.json does not exist.")
-              raise SystemExit(1)
 
-          try:
-              items = json.loads(
-                  data_file.read_text(encoding="utf-8")
-              )
-          except Exception as error:
-              print("Could not read items.json:", error)
-              raise SystemExit(1)
+    print(
+        "Current SharePoint IDs:",
+        sorted(current_ids)
+    )
 
-          if not isinstance(items, list):
-              print("ERROR: items.json is not a list.")
-              raise SystemExit(1)
 
-          print("Items currently on MetaBid:", len(items))
+    # ==========================================
+    # PATHS
+    # ==========================================
 
-          # ------------------------------------------
-          # Compare MetaBid against SharePoint
-          # ------------------------------------------
+    data_file = Path(
+        "data/items.json"
+    )
 
-          removed_ids = []
-          remaining_items = []
+    images_dir = Path(
+        "images"
+    )
 
-          for item in items:
+    chunks_dir = Path(
+        ".metabid_chunks"
+    )
 
-              # Support both id and SharePoint ID naming
-              item_id = str(
-                  item.get(
-                      "id",
-                      item.get("ID", "")
-                  )
-              ).strip()
 
-              if not item_id:
-                  print("WARNING: Item has no ID:", item)
-                  remaining_items.append(item)
-                  continue
+    # ==========================================
+    # LOAD CURRENT GITHUB INVENTORY
+    # ==========================================
 
-              if item_id in current_ids:
-                  remaining_items.append(item)
-              else:
-                  removed_ids.append(item_id)
+    if not data_file.exists():
 
-          print("IDs to remove:", removed_ids)
-          print("Items remaining:", len(remaining_items))
+        print(
+            "data/items.json does not exist."
+        )
 
-          # ------------------------------------------
-          # Nothing deleted
-          # ------------------------------------------
+        print(
+            "Nothing to clean."
+        )
 
-          if not removed_ids:
-              print("No deleted SharePoint items found.")
-              raise SystemExit(0)
+        raise SystemExit(0)
 
-          # ------------------------------------------
-          # Save cleaned inventory
-          # ------------------------------------------
 
-          data_file.write_text(
-              json.dumps(
-                  remaining_items,
-                  indent=2,
-                  ensure_ascii=False
-              ) + "\n",
-              encoding="utf-8"
-          )
+    try:
 
-          # ------------------------------------------
-          # Delete images belonging to deleted items
-          # ------------------------------------------
+        with data_file.open(
+            "r",
+            encoding="utf-8"
+        ) as file:
 
-          image_folder = Path("images")
+            items = json.load(file)
 
-          if image_folder.exists():
+    except Exception as exc:
 
-              for item_id in removed_ids:
+        print(
+            "ERROR: Could not read data/items.json"
+        )
 
-                  for image in image_folder.glob(
-                      f"{item_id}.*"
-                  ):
-                      print("Deleting image:", image)
-                      image.unlink()
+        print(exc)
 
-          print("MetaBid cleanup complete.")
+        raise SystemExit(1)
 
-          PY
 
-      - name: Commit cleanup
-        run: |
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
+    # ==========================================
+    # SUPPORT BOTH:
+    #
+    # [
+    #   {...},
+    #   {...}
+    # ]
+    #
+    # AND:
+    #
+    # {
+    #   "items": [...]
+    # }
+    # ==========================================
 
-          git add -A
+    wrapped_inventory = False
 
-          if git diff --cached --quiet
-          then
-            echo "GitHub already matches SharePoint."
-          else
-            git commit -m "Sync MetaBid deletions from SharePoint"
-            git push
-          fi
+    if isinstance(items, dict):
+
+        if isinstance(
+            items.get("items"),
+            list
+        ):
+
+            inventory = items["items"]
+
+            wrapped_inventory = True
+
+        else:
+
+            print(
+                "ERROR: Unknown items.json structure."
+            )
+
+            raise SystemExit(1)
+
+    elif isinstance(items, list):
+
+        inventory = items
+
+    else:
+
+        print(
+            "ERROR: items.json is not a list "
+            "or supported object."
+        )
+
+        raise SystemExit(1)
+
+
+    print(
+        "Items currently on website:",
+        len(inventory)
+    )
+
+
+    # ==========================================
+    # FIND ITEMS THAT NO LONGER EXIST
+    # IN SHAREPOINT
+    # ==========================================
+
+    removed_ids = []
+
+    remaining_items = []
+
+
+    for item in inventory:
+
+        item_id = str(
+            item.get(
+                "id",
+                item.get(
+                    "itemId",
+                    ""
+                )
+            )
+        ).strip()
+
+
+        if not item_id:
+
+            # Don't delete malformed records
+            # automatically.
+
+            print(
+                "WARNING: Item without ID preserved:",
+                item
+            )
+
+            remaining_items.append(
+                item
+            )
+
+            continue
+
+
+        if item_id in current_ids:
+
+            print(
+                "KEEP:",
+                item_id
+            )
+
+            remaining_items.append(
+                item
+            )
+
+        else:
+
+            print(
+                "REMOVE:",
+                item_id
+            )
+
+            removed_ids.append(
+                item_id
+            )
+
+
+    # ==========================================
+    # DELETE PHOTOS FOR REMOVED ITEMS
+    # ==========================================
+
+    if images_dir.exists():
+
+        for item_id in removed_ids:
+
+            for image_file in images_dir.glob(
+                f"{item_id}.*"
+            ):
+
+                if image_file.is_file():
+
+                    print(
+                        "Deleting image:",
+                        image_file
+                    )
+
+                    image_file.unlink()
+
+
+    # ==========================================
+    # DELETE UNFINISHED PHOTO CHUNKS
+    # FOR REMOVED ITEMS
+    # ==========================================
+
+    if chunks_dir.exists():
+
+        import shutil
+
+        for item_id in removed_ids:
+
+            item_chunk_dir = (
+                chunks_dir /
+                item_id
+            )
+
+            if item_chunk_dir.exists():
+
+                print(
+                    "Deleting unfinished chunks:",
+                    item_chunk_dir
+                )
+
+                shutil.rmtree(
+                    item_chunk_dir
+                )
+
+
+    # ==========================================
+    # SAVE UPDATED INVENTORY
+    # ==========================================
+
+    if wrapped_inventory:
+
+        items["items"] = (
+            remaining_items
+        )
+
+        output_data = items
+
+    else:
+
+        output_data = (
+            remaining_items
+        )
+
+
+    data_file.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+
+    with data_file.open(
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            output_data,
+            file,
+            indent=2,
+            ensure_ascii=False
+        )
+
+        file.write("\n")
+
+
+    # ==========================================
+    # RESULTS
+    # ==========================================
+
+    print()
+    print(
+        "MetaBid cleanup complete."
+    )
+
+    print(
+        "Removed IDs:",
+        removed_ids
+    )
+
+    print(
+        "Remaining items:",
+        len(remaining_items)
+    )
+
+
+    if not current_ids:
+
+        print(
+            "SharePoint contains zero items."
+        )
+
+        print(
+            "MetaBid public inventory is now empty."
+        )
+
+    PY
