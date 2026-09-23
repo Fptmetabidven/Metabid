@@ -20,5 +20,16 @@
     "vendorEmail": "",
     "vendorNotes": "",
     "photo": "images/92.jpeg"
+  },
+  {
+    "id": "93",
+    "description": "Laptop",
+    "weight": "8",
+    "bidPrice": "",
+    "currentPrice": "",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
   }
 ]
