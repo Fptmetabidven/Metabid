@@ -1,16 +1,5 @@
 [
   {
-    "id": "91",
-    "description": "Test",
-    "weight": "5",
-    "bidPrice": "",
-    "currentPrice": "",
-    "vendorName": "",
-    "vendorEmail": "",
-    "vendorNotes": "",
-    "photo": "images/91.jpeg"
-  },
-  {
     "id": "92",
     "description": "APC",
     "weight": "4",
