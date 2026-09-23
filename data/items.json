@@ -9,5 +9,16 @@
     "vendorEmail": "",
     "vendorNotes": "",
     "photo": "images/91.jpeg"
+  },
+  {
+    "id": "92",
+    "description": "APC",
+    "weight": "4",
+    "bidPrice": "",
+    "currentPrice": "2",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
   }
 ]
