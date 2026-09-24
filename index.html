@@ -80,7 +80,11 @@ tbody tr.selected{background:#edf8ff}
 
 .image-modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,20,45,.88);align-items:center;justify-content:center;padding:30px}
 .image-modal.open{display:flex}.image-modal img{max-width:92vw;max-height:88vh;border-radius:8px;box-shadow:0 15px 60px #000}
-.image-close{position:absolute;right:28px;top:15px;color:#fff;font-size:42px;cursor:pointer}
+.image-close{position:absolute;right:28px;top:15px;color:#fff;font-size:42px;cursor:pointer;z-index:3}
+.image-stage{width:92vw;height:88vh;overflow:auto;display:flex;align-items:center;justify-content:center}
+.image-modal img{transform-origin:center center;transition:transform .12s ease}
+.image-controls{position:absolute;right:82px;top:20px;display:flex;gap:6px;z-index:3;background:rgba(0,20,45,.72);padding:6px;border-radius:7px}
+.image-controls button{height:34px;min-width:38px;border:1px solid rgba(255,255,255,.5);border-radius:4px;background:#fff;color:#082b5d;font-weight:800;cursor:pointer}
 
 @media(max-width:1050px){
  .hero-inner{padding:22px}.brand img{width:260px}.metabid-title{font-size:43px}
@@ -132,7 +136,8 @@ tbody tr.selected{background:#edf8ff}
       "check photo ident"
       "desc desc desc"
       "weight current bid"
-      "fptnotes fptnotes fptnotes"\n      "notes notes notes";
+      "fptnotes fptnotes fptnotes"
+      "notes notes notes";
     gap:8px 10px;
     width:100%;
     height:auto;
@@ -173,7 +178,8 @@ tbody tr.selected{background:#edf8ff}
   .col-weight{grid-area:weight}
   .col-current{grid-area:current}
   .col-bid{grid-area:bid}
-  .col-fpt-notes{grid-area:fptnotes}\n  .col-notes{grid-area:notes}
+  .col-fpt-notes{grid-area:fptnotes}
+  .col-notes{grid-area:notes}
   .col-weight:before,.col-current:before,.col-bid:before,.col-fpt-notes:before,.col-notes:before{
     display:block;
     margin-bottom:4px;
@@ -185,7 +191,8 @@ tbody tr.selected{background:#edf8ff}
   }
   .col-weight:before{content:"Weight (lbs)"}
   .col-current:before{content:"Current Bid"}
-  .col-bid:before{content:"Your Bid"}\n  .col-fpt-notes:before{content:"FPT Notes"}
+  .col-bid:before{content:"Your Bid"}
+  .col-fpt-notes:before{content:"FPT Notes"}
   .col-notes:before{content:"Item Notes (Optional)"}
   .current-price{font-size:17px}
   .bid-input,.note-input{height:44px;font-size:16px}
@@ -253,6 +260,7 @@ tbody tr.selected{background:#edf8ff}
           <th class="col-weight">Weight<br>(LBS)</th>
           <th class="col-current">Current Bid<br>(USD)</th>
           <th class="col-bid">Your Bid<br>(USD)</th>
+          <th class="col-fpt-notes">FPT Notes</th>
           <th class="col-notes">Item Notes<br><span style="font-weight:400">(Optional - Per Item)</span></th>
         </tr>
       </thead>
@@ -289,11 +297,13 @@ tbody tr.selected{background:#edf8ff}
 
 <div id="imageModal" class="image-modal" aria-hidden="true">
   <span id="imageClose" class="image-close">&times;</span>
-  <div class="image-stage"><img id="imagePreview" alt="Item photo preview"></div>
   <div class="image-controls">
-    <button id="zoomOut" type="button">−</button>
-    <button id="zoomReset" type="button">100%</button>
-    <button id="zoomIn" type="button">+</button>
+    <button id="zoomOut" type="button" title="Zoom out">−</button>
+    <button id="zoomReset" type="button" title="Reset zoom">100%</button>
+    <button id="zoomIn" type="button" title="Zoom in">+</button>
+  </div>
+  <div class="image-stage">
+    <img id="imagePreview" alt="Item photo preview">
   </div>
 </div>
 
@@ -320,7 +330,16 @@ function attr(v){ return esc(v).replace(/`/g,"&#96;"); }
 function itemId(item){ return safe(item.id ?? item.ID ?? item.Id).trim(); }
 function description(item){ return safe(item.description ?? item.Description).trim(); }
 function weight(item){ return safe(item.weight ?? item.Weight).trim(); }
-function fptNotes(item){ return safe(item.fptNotes ?? item.FPTNotes ?? item["FPT Notes"] ?? "").trim(); }
+function fptNotes(item){
+  return safe(
+    item.fptNotes ??
+    item.FPTNotes ??
+    item["FPT Notes"] ??
+    item.fpt_notes ??
+    item.FPT_x0020_Notes ??
+    ""
+  ).trim();
+}
 function photo(item){
   return safe(item.photo ?? item.Photo ?? item.photoUrl ?? item.PhotoUrl ?? item.PhotoURL ?? item.image ?? item.Image).trim();
 }
@@ -400,6 +419,7 @@ function render(){
       <td class="col-weight">${esc(formatWeight(weight(item)))}</td>
       <td class="col-current current-price">${esc(currentPrice(item))}</td>
       <td class="col-bid"><input class="bid-input" type="number" min="0.01" step="0.01" placeholder="0.00" value="${attr(d.bid)}" ${d.checked?"":"disabled"}></td>
+      <td class="col-fpt-notes">${esc(fptNotes(item)) || "—"}</td>
       <td class="col-notes"><input class="note-input" type="text" maxlength="500" placeholder="" value="${attr(d.note)}" ${d.checked?"":"disabled"}></td>
     </tr>`;
   }).join("");
@@ -425,21 +445,28 @@ body.addEventListener("change", e => {
 });
 
 let imageZoom = 1;
-function setImageZoom(v){
-  imageZoom=Math.min(4,Math.max(.5,v));
-  document.getElementById("imagePreview").style.transform=`scale(${imageZoom})`;
-  document.getElementById("zoomReset").textContent=`${Math.round(imageZoom*100)}%`;
+
+function setImageZoom(value){
+  imageZoom = Math.min(4, Math.max(0.5, value));
+  document.getElementById("imagePreview").style.transform = `scale(${imageZoom})`;
+  document.getElementById("zoomReset").textContent = `${Math.round(imageZoom * 100)}%`;
 }
+
 function closeImageModal(){
-  const m=document.getElementById("imageModal");
-  m.classList.remove("open"); m.setAttribute("aria-hidden","true"); setImageZoom(1);
-}
-body.addEventListener("click", e => {
-  const img=e.target.closest(".js-photo"); if(!img)return;
-  document.getElementById("imagePreview").src=img.src;
+  const modal = document.getElementById("imageModal");
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
   setImageZoom(1);
-  const m=document.getElementById("imageModal");
-  m.classList.add("open"); m.setAttribute("aria-hidden","false");
+}
+
+body.addEventListener("click", e => {
+  const img = e.target.closest(".js-photo");
+  if(!img) return;
+  document.getElementById("imagePreview").src = img.src;
+  setImageZoom(1);
+  const modal = document.getElementById("imageModal");
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
 });
 
 
@@ -450,13 +477,21 @@ filterButton.addEventListener("click", () => {
   render();
 });
 
-document.getElementById("imageClose").onclick=closeImageModal;
-document.getElementById("zoomIn").onclick=()=>setImageZoom(imageZoom+.25);
-document.getElementById("zoomOut").onclick=()=>setImageZoom(imageZoom-.25);
-document.getElementById("zoomReset").onclick=()=>setImageZoom(1);
-document.getElementById("imageModal").addEventListener("click",e=>{if(e.target.id==="imageModal")closeImageModal();});
-document.getElementById("imageModal").addEventListener("wheel",e=>{e.preventDefault();setImageZoom(imageZoom+(e.deltaY<0?.25:-.25));},{passive:false});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImageModal();});
+document.getElementById("imageClose").onclick = closeImageModal;
+document.getElementById("zoomIn").onclick = () => setImageZoom(imageZoom + 0.25);
+document.getElementById("zoomOut").onclick = () => setImageZoom(imageZoom - 0.25);
+document.getElementById("zoomReset").onclick = () => setImageZoom(1);
+
+document.getElementById("imageModal").addEventListener("click", e => {
+  if(e.target.id === "imageModal") closeImageModal();
+});
+document.getElementById("imageModal").addEventListener("wheel", e => {
+  e.preventDefault();
+  setImageZoom(imageZoom + (e.deltaY < 0 ? 0.25 : -0.25));
+}, {passive:false});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") closeImageModal();
+});
 
 function collectBatch(){
   const selectedRows = [...document.querySelectorAll("tr[data-item-id]")].filter(r => r.querySelector(".row-check").checked);
