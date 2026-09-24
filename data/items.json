@@ -9,5 +9,16 @@
     "vendorEmail": "iwin@winner.com",
     "vendorNotes": "Highest bud\n\nGeneral Notes: Thank you",
     "photo": "images/95.jpeg"
+  },
+  {
+    "id": "96",
+    "description": "Mouse",
+    "weight": "5000",
+    "bidPrice": "",
+    "currentPrice": "",
+    "vendorName": "",
+    "vendorEmail": "",
+    "vendorNotes": "",
+    "photo": ""
   }
 ]
