@@ -4,10 +4,10 @@
     "description": "Copper wire ",
     "weight": "",
     "bidPrice": "",
-    "currentPrice": "",
-    "vendorName": "",
-    "vendorEmail": "",
-    "vendorNotes": "",
+    "currentPrice": "5",
+    "vendorName": "Matt",
+    "vendorEmail": "iwin@winner.com",
+    "vendorNotes": "Highest bud\n\nGeneral Notes: Thank you",
     "photo": "images/95.jpeg"
   }
 ]
