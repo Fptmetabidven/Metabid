@@ -63,7 +63,7 @@ jobs:
 
           WEIGHT: ${{ github.event.client_payload.weight }}
 
-          BID_PRICE: ${{ github.event.client_payload.bidPrice }}
+          FPT_NOTES: ${{ github.event.client_payload.fptNotes }}
 
           CURRENT_PRICE: ${{ github.event.client_payload.currentPrice }}
 
@@ -206,8 +206,8 @@ jobs:
                   ""
               )
 
-              bid_price = os.environ.get(
-                  "BID_PRICE",
+              fpt_notes = os.environ.get(
+                  "FPT_NOTES",
                   ""
               )
 
@@ -271,8 +271,8 @@ jobs:
                   "weight":
                       weight,
 
-                  "bidPrice":
-                      bid_price,
+                  "fptNotes":
+                      fpt_notes,
 
                   "currentPrice":
                       current_price,
@@ -837,7 +837,7 @@ jobs:
                           "weight":
                               "",
 
-                          "bidPrice":
+                          "fptNotes":
                               "",
 
                           "currentPrice":
