@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MetaBid Administration</title>
+<style>
+:root{--navy:#071f4a;--blue:#006fc9;--bg:#f4f8fb;--border:#d7e4ee;--muted:#5c718a}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--navy)}header{background:white;border-bottom:1px solid var(--border);padding:22px 28px}header h1{margin:0;font-size:32px}header p{margin:5px 0 0;color:var(--muted)}main{max-width:1150px;margin:28px auto;padding:0 20px}.card{background:white;border:1px solid var(--border);border-radius:14px;padding:24px;box-shadow:0 7px 28px rgba(24,69,103,.08);margin-bottom:22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.wide{grid-column:1/-1}label{display:block;font-weight:700;margin-bottom:7px}input,textarea,select{width:100%;padding:11px;border:1px solid #bdccda;border-radius:7px;font:inherit}textarea{min-height:90px;resize:vertical}.photo-preview{width:180px;height:130px;object-fit:contain;border:1px solid var(--border);border-radius:8px;background:#f8fafc;display:none;margin-top:10px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:7px;padding:11px 17px;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#e8f2fa;color:var(--navy)}.danger{background:#a4262c;color:white}.message{margin-top:14px;padding:11px;border-radius:7px;display:none}.ok{display:block;background:#e8f6ec;color:#185b2c}.err{display:block;background:#fdecec;color:#8b1e24}.toolbar{display:flex;gap:10px;align-items:end}.toolbar>div{flex:1}.items{width:100%;border-collapse:collapse;margin-top:15px}.items th,.items td{padding:10px;border-bottom:1px solid var(--border);text-align:left}.thumb{width:64px;height:48px;object-fit:contain}.small{font-size:13px;color:var(--muted)}@media(max-width:700px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.items{font-size:13px}}
+</style>
+</head>
+<body>
+<header><h1>MetaBid Administration</h1><p>Create, edit, publish and remove MetaBid inventory without SharePoint.</p></header>
+<main>
+<section class="card">
+<h2>Connection</h2>
+<div class="grid"><div class="wide"><label for="api">MetaBid API URL</label><input id="api" value="https://metabid-submit-api.fptmetabid.workers.dev"></div><div><label for="adminKey">Admin key</label><input id="adminKey" type="password" autocomplete="current-password"></div></div>
+<p class="small">The admin key is sent to the Worker only. Never place your GitHub token in this page.</p>
+</section>
+<section class="card">
+<h2 id="formTitle">Add Inventory Item</h2>
+<form id="itemForm">
+<div class="grid">
+<div><label for="id">Item ID</label><input id="id" inputmode="numeric" placeholder="Leave blank to assign next ID"></div>
+<div><label for="status">Status</label><select id="status"><option value="Open">Open</option><option value="Closed">Closed</option></select></div>
+<div class="wide"><label for="description">Description</label><input id="description" required></div>
+<div><label for="weight">Weight</label><input id="weight"></div>
+<div><label for="currentPrice">Current Price</label><input id="currentPrice" type="number" min="0" step="0.01"></div>
+<div class="wide"><label for="notes">General Notes</label><textarea id="notes"></textarea></div>
+<div class="wide"><label for="photo">Photo</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"><img id="preview" class="photo-preview" alt="Photo preview"></div>
+</div>
+<div class="actions"><button class="primary" type="submit">Save / Publish Item</button><button class="secondary" type="button" id="clear">Clear Form</button><button class="danger" type="button" id="delete" hidden>Delete Item</button></div>
+<div id="message" class="message"></div>
+</form>
+</section>
+<section class="card"><div class="toolbar"><div><label for="search">Inventory</label><input id="search" placeholder="Search items"></div><button class="secondary" id="refresh" type="button">Refresh</button></div><div style="overflow:auto"><table class="items"><thead><tr><th>ID</th><th>Photo</th><th>Description</th><th>Weight</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id); let items=[]; let editing=null;
+function api(path){return $('api').value.replace(/\/$/,'')+path} function headers(json=true){const h={'X-MetaBid-Admin-Key':$('adminKey').value};if(json)h['Content-Type']='application/json';return h}
+function msg(t,ok=true){$('message').textContent=t;$('message').className='message '+(ok?'ok':'err')}
+function clearForm(){editing=null;$('formTitle').textContent='Add Inventory Item';$('itemForm').reset();$('status').value='Open';$('preview').style.display='none';$('preview').src='';$('delete').hidden=true;$('message').className='message'}
+$('clear').onclick=clearForm;$('photo').onchange=()=>{const f=$('photo').files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').style.display='block'}};
+async function load(){try{const r=await fetch('data/items.json?v='+Date.now());if(!r.ok)throw Error('Could not load inventory');const d=await r.json();items=Array.isArray(d)?d:(d.items||[]);render()}catch(e){$('rows').innerHTML='<tr><td colspan="7">'+e.message+'</td></tr>'}}
+function render(){const q=$('search').value.toLowerCase();const list=items.filter(x=>JSON.stringify(x).toLowerCase().includes(q));$('rows').innerHTML=list.map(x=>`<tr><td>${esc(x.id??x.itemId??'')}</td><td>${x.photo?`<img class="thumb" src="${esc(x.photo)}">`:''}</td><td>${esc(x.description??'')}</td><td>${esc(x.weight??'')}</td><td>${x.currentPrice!==undefined?'$'+Number(x.currentPrice||0).toFixed(2):''}</td><td>${esc(x.status??'Open')}</td><td><button class="secondary" onclick="editItem('${esc(String(x.id??x.itemId??''))}')">Edit</button></td></tr>`).join('')||'<tr><td colspan="7">No items.</td></tr>'}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+window.editItem=id=>{const x=items.find(i=>String(i.id??i.itemId)===String(id));if(!x)return;editing=String(id);$('formTitle').textContent='Edit Item #'+id;$('id').value=id;$('description').value=x.description||'';$('weight').value=x.weight||'';$('currentPrice').value=x.currentPrice??'';$('notes').value=x.generalNotes||x.notes||'';$('status').value=x.status||'Open';if(x.photo){$('preview').src=x.photo;$('preview').style.display='block'}$('delete').hidden=false;scrollTo({top:0,behavior:'smooth'})}
+$('search').oninput=render;$('refresh').onclick=load;
+$('itemForm').onsubmit=async e=>{e.preventDefault();try{if(!$('adminKey').value)throw Error('Enter the admin key.');const f=$('photo').files[0];let photo=null;if(f){if(f.size>10*1024*1024)throw Error('Photo must be 10 MB or smaller.');photo={name:f.name,type:f.type,data:await toBase64(f)}}const body={id:$('id').value.trim()||null,description:$('description').value.trim(),weight:$('weight').value.trim(),currentPrice:$('currentPrice').value===''?null:Number($('currentPrice').value),generalNotes:$('notes').value.trim(),status:$('status').value,photo};const r=await fetch(api('/admin/item'),{method:'POST',headers:headers(),body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Save failed');msg('Item saved. GitHub Pages will update shortly.');setTimeout(load,1500)}catch(e){msg(e.message,false)}};
+$('delete').onclick=async()=>{if(!editing||!confirm('Delete item #'+editing+'?'))return;try{const r=await fetch(api('/admin/item/'+encodeURIComponent(editing)),{method:'DELETE',headers:headers(false)});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Delete failed');msg('Item deleted.');clearForm();setTimeout(load,1500)}catch(e){msg(e.message,false)}};
+function toBase64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)})} load();
+</script>
+</body></html>
