@@ -25,11 +25,8 @@
     "id": "99",
     "description": "Oversized aluminum/stainless rads",
     "weight": "12000",
-    "fptNotes": "Paired with alum transformers for one mixed load.",
+    "fptNotes": "Paired with alum transformers for one mixed load",
     "currentPrice": "0.66",
-    "vendorName": "Bhatt International, Inc.",
-    "vendorEmail": "pnb@bhattinternational.com",
-    "vendorNotes": "\n\nGeneral Notes: Updating a prior bid with better numbers recevied",
     "photo": "images/99.jpeg"
   }
 ]
