@@ -16,5 +16,14 @@
     "currentPrice": "",
     "photo": "",
     "photoSourceName": ""
+  },
+  {
+    "id": "104",
+    "description": "Test",
+    "weight": "",
+    "fptNotes": "",
+    "currentPrice": "",
+    "photo": "",
+    "photoSourceName": ""
   }
 ]
