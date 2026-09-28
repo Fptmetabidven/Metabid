@@ -74,6 +74,8 @@ jobs:
 
           PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
 
+          PHOTO_SOURCE_NAME: ${{ github.event.client_payload.photoFileName }}
+
           PHOTO_CHUNK_COUNT: ${{ github.event.client_payload.photoChunkCount }}
 
           CHUNK_INDEX: ${{ github.event.client_payload.chunkIndex }}
@@ -216,12 +218,19 @@ jobs:
               )
 
 
+              photo_source_name = os.environ.get(
+                  "PHOTO_SOURCE_NAME",
+                  ""
+              ).strip()
+
+
 
               # ==============================================
               # PRESERVE EXISTING PHOTO
               # ==============================================
 
               existing_photo = ""
+              existing_photo_source_name = ""
 
 
               for item in items:
@@ -238,7 +247,18 @@ jobs:
                           ""
                       )
 
+                      existing_photo_source_name = item.get(
+                          "photoSourceName",
+                          ""
+                      )
+
                       break
+
+
+              # Lightweight updates do not send photoFileName.
+              # Preserve the last known SharePoint photo identity in that case.
+              if not photo_source_name:
+                  photo_source_name = existing_photo_source_name
 
 
               # ==============================================
@@ -263,7 +283,10 @@ jobs:
                       current_price,
 
                   "photo":
-                      existing_photo
+                      existing_photo,
+
+                  "photoSourceName":
+                      photo_source_name
 
               }
 
@@ -791,6 +814,10 @@ jobs:
                               photo_path
                           )
 
+                          item["photoSourceName"] = (
+                              saved_filename
+                          )
+
                           found = True
 
                           break
@@ -820,7 +847,10 @@ jobs:
                               "",
 
                           "photo":
-                              photo_path
+                              photo_path,
+
+                          "photoSourceName":
+                              saved_filename
 
                       })
 
