@@ -13,6 +13,7 @@ permissions:
 concurrency:
   group: metabid-inventory-write
   cancel-in-progress: false
+  queue: max
 
 jobs:
 
