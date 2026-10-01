@@ -34,25 +34,7 @@ jobs:
           fetch-depth: 0
 
 
-      # ======================================================
-      # PHOTO CHUNKS
-      # Wait for the normal item update to finish,
-      # then reload the latest version of main.
-      # ======================================================
-
-      - name: Wait for previous MetaBid update
-        if: github.event.action == 'metabid_photo_chunk'
-        run: |
-          echo "Waiting for the item update to finish..."
-          sleep 10
-
-          git fetch origin main
-          git reset --hard origin/main
-
-          echo "Using latest main:"
-          git log -1 --oneline
-
-
+   
       # ======================================================
       # PROCESS EVENT
       # ======================================================
