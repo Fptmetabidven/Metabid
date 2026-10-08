@@ -1,0 +1,251 @@
+name: MetaBid Inventory Batch
+
+on:
+  repository_dispatch:
+    types:
+      - metabid_inventory_batch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: metabid-inventory-write
+  cancel-in-progress: false
+
+jobs:
+  sync-inventory:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Process inventory batch
+        env:
+          ITEMS_JSON: ${{ toJson(github.event.client_payload.items) }}
+
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          # ------------------------------------------
+          # Read incoming Open SharePoint items
+          # ------------------------------------------
+
+          raw = os.environ.get("ITEMS_JSON", "[]")
+
+          try:
+              incoming = json.loads(raw)
+          except Exception as error:
+              raise SystemExit(
+                  f"Could not read inventory package: {error}"
+              )
+
+          if not isinstance(incoming, list):
+              raise SystemExit(
+                  "Inventory package was not an array."
+              )
+
+          print(
+              "Open SharePoint items received:",
+              len(incoming)
+          )
+
+          # Safety:
+          # The existing metabid-sync workflow handles
+          # the special case where there are zero Open items.
+          if len(incoming) == 0:
+              print(
+                  "No Open items received."
+              )
+              print(
+                  "Leaving items.json unchanged so the existing "
+                  "empty-list sync can handle that case."
+              )
+              raise SystemExit(0)
+
+          # ------------------------------------------
+          # Load existing public inventory
+          # ------------------------------------------
+
+          data_folder = Path("data")
+          data_folder.mkdir(exist_ok=True)
+
+          data_file = data_folder / "items.json"
+
+          if data_file.exists():
+              try:
+                  existing = json.loads(
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
+                  )
+              except Exception:
+                  existing = []
+          else:
+              existing = []
+
+          if not isinstance(existing, list):
+              existing = []
+
+          existing_by_id = {
+              str(item.get("id", "")): item
+              for item in existing
+              if str(item.get("id", "")).strip()
+          }
+
+          # ------------------------------------------
+          # Build new public inventory
+          # ------------------------------------------
+
+          new_inventory = []
+
+          for source in incoming:
+
+              item_id = str(
+                  source.get(
+                      "itemId",
+                      source.get("id", "")
+                  )
+              ).strip()
+
+              if not item_id:
+                  print(
+                      "Skipping item with no ID:",
+                      source
+                  )
+                  continue
+
+              old_item = existing_by_id.get(
+                  item_id,
+                  {}
+              )
+
+              new_item = {
+                  "id": item_id,
+
+                  "description":
+                      source.get(
+                          "description",
+                          ""
+                      ),
+
+                  "weight":
+                      source.get(
+                          "weight",
+                          ""
+                      ),
+
+                  "fptNotes":
+                      source.get(
+                          "fptNotes",
+                          ""
+                      ),
+
+                  "currentPrice":
+                      source.get(
+                          "currentPrice",
+                          ""
+                      ),
+
+                  # Keep existing photo while the
+                  # separate photo process runs.
+                  "photo":
+                      old_item.get(
+                          "photo",
+                          ""
+                      ),
+
+                  "photoSourceName":
+                      old_item.get(
+                          "photoSourceName",
+                          ""
+                      )
+              }
+
+              new_inventory.append(
+                  new_item
+              )
+
+          # ------------------------------------------
+          # Sort by SharePoint ID
+          # ------------------------------------------
+
+          def sort_key(item):
+              value = str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              )
+
+              if value.isdigit():
+                  return int(value)
+
+              return 999999999
+
+          new_inventory.sort(
+              key=sort_key
+          )
+
+          # ------------------------------------------
+          # Save inventory ONCE
+          # ------------------------------------------
+
+          data_file.write_text(
+              json.dumps(
+                  new_inventory,
+                  indent=2
+              ),
+              encoding="utf-8"
+          )
+
+          print(
+              "Inventory written successfully."
+          )
+
+          print(
+              "Public items:",
+              len(new_inventory)
+          )
+
+          PY
+
+      - name: Commit inventory batch
+        run: |
+          git config user.name "MetaBid Automation"
+          git config user.email "actions@github.com"
+
+          git add data/items.json
+
+          if git diff --cached --quiet
+          then
+            echo "Inventory already up to date."
+            exit 0
+          fi
+
+          git commit -m "MetaBid inventory batch sync"
+
+          echo "Pushing inventory batch..."
+
+          if git push origin HEAD:main
+          then
+            echo "Inventory push successful."
+            exit 0
+          fi
+
+          echo "Main changed. Rebasing once..."
+
+          git fetch origin main
+
+          if GIT_EDITOR=true git rebase origin/main
+          then
+            git push origin HEAD:main
+          else
+            git rebase --abort || true
+            exit 1
+          fi
