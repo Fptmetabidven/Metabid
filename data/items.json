@@ -2,154 +2,667 @@
   {
     "id": "118",
     "description": "Mold Max Turnings",
-    "weight": "1000",
+    "weight": 1000,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/118.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[f5a2f751adfc427eb98d2c86e457a63f][1]_[1].jpeg"
   },
   {
     "id": "119",
     "description": "Aluminum Armor Cable",
-    "weight": "1167",
+    "weight": 1167,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "122",
+    "description": "85/15 bronze",
+    "weight": 2000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": ""
   },
   {
     "id": "124",
     "description": "Copper Weld Tips",
-    "weight": "2000",
+    "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[4d03e5fecd5b4ad4be60cb4d04295861][1]_[1].jpeg"
   },
   {
+    "id": "125",
+    "description": "11% Al / 11% ICW Trays",
+    "weight": 2000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "126",
     "description": "Mixed Transformers",
-    "weight": "1000",
+    "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ac8b24a5f3384662baca560b67f81c59][1]_[1].jpeg"
   },
   {
+    "id": "127",
+    "description": "Cu Transformers - Medium",
+    "weight": 7500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "128",
     "description": "Copper Fuses",
-    "weight": "500",
+    "weight": 500,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[00bcfd05ebe548ac9b60a29ba97a9d4f][1]_[1].jpeg"
   },
   {
     "id": "129",
     "description": "Battery Jump Boxes",
-    "weight": "2000",
+    "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[149bd233fedd481d96dac4c7bced29ff][1]_[1].jpeg"
   },
   {
+    "id": "131",
+    "description": "Laptops",
+    "weight": 650,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "132",
     "description": "Switches",
-    "weight": "1080",
+    "weight": 1080,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[d88ad8dc2f96481d8c3ffb474733aff8][1]_[1].jpeg"
   },
   {
+    "id": "133",
+    "description": "Clean Die Cast",
+    "weight": 1000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "134",
+    "description": "Clean Brass Meters",
+    "weight": 900,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "135",
+    "description": "Brass Shells",
+    "weight": 3500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "136",
     "description": "Small Armatures",
-    "weight": "3000",
+    "weight": 3000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[fb6328d44dcd49e281e6b87efc583bd9][1]_[1].jpeg"
   },
   {
+    "id": "137",
+    "description": "Stator Rings",
+    "weight": 1500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "138",
+    "description": "Copper Windings",
+    "weight": 1800,
+    "fptNotes": "Inkser",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "139",
+    "description": "Open Eye Cable (Hollow Core)",
+    "weight": 5000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "140",
+    "description": "Clean Lead",
+    "weight": 7000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "141",
+    "description": "Mixed Boards",
+    "weight": 500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "142",
+    "description": "Mixed E Scrap",
+    "weight": 500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "143",
+    "description": "Talk Ends",
+    "weight": 2500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "144",
+    "description": "Computer Towers",
+    "weight": 1000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "145",
+    "description": "Cu Transformers - Large",
+    "weight": 3300,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "146",
+    "description": "EV Fuse Box",
+    "weight": 1100,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "147",
     "description": "EV Valve Covers",
-    "weight": "6000",
+    "weight": 6000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[61929c199c4246168d4a13ba0825f670][1]_[1].jpeg"
   },
   {
+    "id": "148",
+    "description": "Orange Bus Bar",
+    "weight": 1700,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "149",
     "description": "#1 Insulated 55%",
-    "weight": "1350",
+    "weight": 1350,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/149.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9dac7381b9f04cdba51a6c29dc239049][1]_[1].jpeg"
   },
   {
+    "id": "150",
+    "description": "#1 Insulated 60%",
+    "weight": 1980,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "151",
     "description": "#3 Copper with Light Tar",
-    "weight": "630",
+    "weight": 630,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/151.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[21c2b0f5724045aea2fecd8ca756e1e3][1]_[1].jpeg"
   },
   {
+    "id": "152",
+    "description": "Talk Ends",
+    "weight": 20000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "153",
     "description": "AL/BX Wire",
-    "weight": "550",
+    "weight": 550,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/153.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[09378aeaa587448e8e1d2e68073d84ac][1]_[1].jpeg"
   },
   {
+    "id": "154",
+    "description": "Al/Cu URD",
+    "weight": 1050,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "155",
     "description": "Ampco Solids",
-    "weight": "2060",
+    "weight": 2060,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b91319f309a04ccc9322d071abf9e8c8][1]_[1].jpeg"
   },
   {
+    "id": "156",
+    "description": "Ampco Turnings",
+    "weight": 5200,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "157",
     "description": "Battery Jump Boxes",
-    "weight": "570",
+    "weight": 570,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "158",
+    "description": "Brass Breakage",
+    "weight": 4380,
+    "fptNotes": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": ""
   },
   {
     "id": "159",
     "description": "Brass Shells",
-    "weight": "1530",
+    "weight": 1530,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b1617e713f9a483e9212b7e95a404746][1]_[1].jpeg"
   },
   {
+    "id": "160",
+    "description": "CAT Wire",
+    "weight": 10700,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "161",
+    "description": "Clean Brass Rads",
+    "weight": 12000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "162",
     "description": "Clean Zinc/Diecast",
-    "weight": "2773",
+    "weight": 2773,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[024bc193b6794c3f87a67639db0250ca][1]_[1].jpeg"
   },
   {
+    "id": "163",
+    "description": "Communication Wire",
+    "weight": 1000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "164",
+    "description": "Computer Towers",
+    "weight": 2200,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "165",
+    "description": "Computer Wire",
+    "weight": 1000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "166",
+    "description": "Copper Bearing 60%",
+    "weight": 1800,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "167",
+    "description": "Copper Bearing 93%",
+    "weight": 850,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "168",
     "description": "Copper Breakage",
-    "weight": "3275",
+    "weight": 3275,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[35db79c2b1b14142bed84d4fc7c10b0e][1]_[1].jpeg"
+  },
+  {
+    "id": "169",
+    "description": "Mixed Copper Transformers",
+    "weight": 13000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "170",
+    "description": "Copper Windings with Paper",
+    "weight": 21500,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "171",
+    "description": "Cu/Cu URD 40%",
+    "weight": 1075,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "172",
+    "description": "Cu/Cu URD 60%",
+    "weight": 1000,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "173",
+    "description": "Dirty Brass Rads",
+    "weight": 5700,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "174",
+    "description": "Double Insulated AL/BX Wire",
+    "weight": 1100,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "175",
+    "description": "EDM Wire",
+    "weight": 6800,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "176",
+    "description": "Elevator Wire w/Fe",
+    "weight": 3800,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "177",
+    "description": "Fe Conduit W/Heavy Wire",
+    "weight": 2100,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "178",
+    "description": "Ferro-Titanium",
+    "weight": 17900,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "179",
+    "description": "Green Boards",
+    "weight": 700,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "180",
+    "description": "Mixed Insulated and Bare AL/BX Wire ",
+    "weight": 850,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "181",
+    "description": "Insulated Copper Welding Cable",
+    "weight": 900,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "182",
+    "description": "Irony Brass 98%",
+    "weight": 9200,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "183",
+    "description": "Irony Brass",
+    "weight": 3900,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "184",
+    "description": "Irony Bronze 85%",
+    "weight": 3900,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "185",
+    "description": "Lead Copper Cable",
+    "weight": 6600,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "186",
+    "description": "Medium Copper Transformers",
+    "weight": 2900,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "187",
+    "description": "Mixed Armoured Cable",
+    "weight": 950,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "188",
+    "description": "Mixed Bronze Turnings",
+    "weight": 780,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "189",
+    "description": "Plug Ends",
+    "weight": 1275,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "190",
+    "description": "Range Lead",
+    "weight": 7800,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "191",
+    "description": "Refinery Copper",
+    "weight": 4300,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "192",
+    "description": "Rod Borings",
+    "weight": 7100,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "193",
+    "description": "Wheel Weights",
+    "weight": 9500,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "194",
+    "description": "Window Motors",
+    "weight": 675,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "195",
+    "description": "Zinc Strips",
+    "weight": 500,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
   }
 ]
