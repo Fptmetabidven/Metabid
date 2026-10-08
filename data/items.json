@@ -90,15 +90,6 @@
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[21c2b0f5724045aea2fecd8ca756e1e3][1]_[1].jpeg"
   },
   {
-    "id": "152",
-    "description": "Talk Ends",
-    "weight": "20000",
-    "fptNotes": "",
-    "currentPrice": "",
-    "photo": "images/152.jpeg",
-    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[3508bdb4dfe64eab8df1f3c398a456c3][1]_[1].jpeg"
-  },
-  {
     "id": "153",
     "description": "AL/BX Wire",
     "weight": "550",
