@@ -7,10 +7,10 @@ on:
 
 permissions:
   contents: write
-
+  
 concurrency:
   group: metabid-inventory-write
-  cancel-in-progress: false
+  queue: max
 
 jobs:
   sync-inventory:
