@@ -128,11 +128,11 @@
   {
     "id": "136",
     "description": "Small Armatures",
-    "weight": 3000,
+    "weight": "3000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[fb6328d44dcd49e281e6b87efc583bd9][1]_[1].jpeg"
   },
   {
     "id": "137",
