@@ -110,9 +110,9 @@
   {
     "id": "134",
     "description": "Clean Brass Meters",
-    "weight": "900",
+    "weight": 900,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[539b7db150714c2f93472131d468d3d1][1]_[1].jpeg"
   },
