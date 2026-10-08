@@ -56,9 +56,9 @@
   {
     "id": "127",
     "description": "Cu Transformers - Medium",
-    "weight": "7500",
+    "weight": 7500,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ddd367811b7f4a9199223e0350e6b2dc][1]_[1].jpeg"
   },
