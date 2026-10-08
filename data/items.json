@@ -119,11 +119,11 @@
   {
     "id": "135",
     "description": "Brass Shells",
-    "weight": 3500,
+    "weight": "3500",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6a3e7bfd0c954999a252b4675573d4e1][1]_[1].jpeg"
   },
   {
     "id": "136",
