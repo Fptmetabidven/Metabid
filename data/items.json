@@ -83,9 +83,9 @@
   {
     "id": "131",
     "description": "Laptops",
-    "weight": "650",
+    "weight": 650,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[0f021decb5064a33bf85f63093ad2093][1]_[1].jpeg"
   },
