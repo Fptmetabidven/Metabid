@@ -101,9 +101,9 @@
   {
     "id": "133",
     "description": "Clean Die Cast",
-    "weight": "1000",
+    "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/133.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2cfa9aaaa68c4c018be9dd812eb313c4][1]_[1].jpeg"
   },
