@@ -380,9 +380,9 @@
   {
     "id": "164",
     "description": "Computer Towers",
-    "weight": "2200",
+    "weight": 2200,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/164.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[236c02f53c924c6ba5bbccbe0252230b][1]_[1].jpeg"
   },
