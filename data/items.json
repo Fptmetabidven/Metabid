@@ -281,9 +281,9 @@
   {
     "id": "153",
     "description": "AL/BX Wire",
-    "weight": "550",
+    "weight": 550,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/153.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[09378aeaa587448e8e1d2e68073d84ac][1]_[1].jpeg"
   },
