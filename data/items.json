@@ -506,9 +506,9 @@
   {
     "id": "176",
     "description": "Elevator Wire w/Fe",
-    "weight": 3800,
+    "weight": "3800",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[fda3789ca56c48f194b1f1a3fa5bb88f][1]_[1].jpeg"
   },
