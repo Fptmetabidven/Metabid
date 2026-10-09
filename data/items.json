@@ -587,9 +587,9 @@
   {
     "id": "187",
     "description": "Mixed Armoured Cable",
-    "weight": "950",
+    "weight": 950,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[00836d330fe6443b81917a4a691471eb][1]_[1].jpeg"
   },
