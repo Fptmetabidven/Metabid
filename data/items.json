@@ -218,9 +218,9 @@
   {
     "id": "146",
     "description": "EV Fuse Box",
-    "weight": "1100",
+    "weight": 1100,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/146.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ec1cc73dc4ec4b17b40458d7ed461b1b][1]_[1].jpeg"
   },
