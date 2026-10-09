@@ -20,9 +20,9 @@
   {
     "id": "120",
     "description": "Small Microwave Cable",
-    "weight": 450,
+    "weight": "450",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[56a776aae3f341bcaccb3dc1a5d6c961][1]_[1].jpeg"
   },
