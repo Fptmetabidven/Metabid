@@ -740,11 +740,11 @@
   {
     "id": "202",
     "description": "Clean Brass Rads",
-    "weight": 1000,
+    "weight": "1000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[71f12c6b7acb4d5f9ad01d7589309539][1]_[1].jpeg"
   },
   {
     "id": "203",
