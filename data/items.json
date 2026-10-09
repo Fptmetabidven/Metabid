@@ -326,9 +326,9 @@
   {
     "id": "158",
     "description": "Brass Breakage",
-    "weight": "4380",
+    "weight": 4380,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/158.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[4ca00b162ffb4650b7d99af798248e21][1]_[1].jpeg"
   },
