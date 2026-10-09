@@ -839,9 +839,9 @@
   {
     "id": "216",
     "description": "Black Electric Meters",
-    "weight": "3200",
+    "weight": 3200,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[617e5c2fdf7b4da6a93bba14a2d18794][1]_[1].jpeg"
   },
