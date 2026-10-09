@@ -371,9 +371,9 @@
   {
     "id": "163",
     "description": "Communication Wire",
-    "weight": "1000",
+    "weight": 1000,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/163.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2f0761b902054245aa8d69aefd4dcb3d][1]_[1].jpeg"
   },
