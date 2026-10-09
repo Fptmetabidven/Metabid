@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   actions: write
+  issues: write
 
 concurrency:
   group: metabid-inventory-write
