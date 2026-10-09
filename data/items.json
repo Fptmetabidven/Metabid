@@ -758,9 +758,9 @@
   {
     "id": "206",
     "description": "70% #2 Copper Wire",
-    "weight": "30000",
+    "weight": 30000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6624a52bea40423d921f1b112985376a][1]_[1].jpeg"
   },
