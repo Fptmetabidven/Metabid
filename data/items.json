@@ -155,9 +155,9 @@
   {
     "id": "139",
     "description": "Open Eye Cable (Hollow Core)",
-    "weight": "5000",
+    "weight": 5000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/139.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[16e86e1fb7474e38b9c68dc8512e4bbc][1]_[1].jpeg"
   },
