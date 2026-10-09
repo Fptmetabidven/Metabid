@@ -209,9 +209,9 @@
   {
     "id": "145",
     "description": "Cu Transformers - Large",
-    "weight": "3300",
+    "weight": 3300,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[729f4a7a39c44a88af8b1189b8a4673f][1]_[1].jpeg"
   },
