@@ -506,9 +506,9 @@
   {
     "id": "178",
     "description": "Ferro-Titanium",
-    "weight": "17900",
+    "weight": 17900,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[8785c9299c4d465b8229b52a17587f70][1]_[1].jpeg"
   },
