@@ -200,9 +200,9 @@
   {
     "id": "144",
     "description": "Computer Towers",
-    "weight": 1000,
+    "weight": "1000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "images/144.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[993c331eb69d4423af107959a0f471ab][1]_[1].jpeg"
   },
