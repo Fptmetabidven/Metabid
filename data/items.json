@@ -794,9 +794,9 @@
   {
     "id": "211",
     "description": "Ins Line Wire (Weatherproof)",
-    "weight": "2000",
+    "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[41f112969f5b4b79839ea984406db026][1]_[1].jpeg"
   },
