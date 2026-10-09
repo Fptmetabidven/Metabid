@@ -497,9 +497,9 @@
   {
     "id": "175",
     "description": "EDM Wire",
-    "weight": "6800",
+    "weight": 6800,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/175.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[429fc431fa034c67bc5262915075cb82][1]_[1].jpeg"
   },
@@ -786,6 +786,33 @@
     "id": "207",
     "description": "50% Cu Ins Al BX",
     "weight": 1900,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "208",
+    "description": "45% #2 Copper Wire",
+    "weight": 10000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "209",
+    "description": "Well Pump Motors",
+    "weight": 5000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "210",
+    "description": "Donut Transformers",
+    "weight": 300,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
