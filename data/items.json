@@ -722,9 +722,9 @@
   {
     "id": "200",
     "description": "Al/Cu Windings Bale",
-    "weight": "1600",
+    "weight": 1600,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/200.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[39690096bd55479f828c14b885b12ef4][1]_[1].jpeg"
   },
@@ -759,15 +759,6 @@
     "id": "204",
     "description": "Well Pump Wire",
     "weight": 1800,
-    "fptNotes": "Inkster",
-    "currentPrice": 0,
-    "photo": "",
-    "photoSourceName": ""
-  },
-  {
-    "id": "205",
-    "description": "Harness Wire",
-    "weight": 10000,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
@@ -894,6 +885,15 @@
     "id": "219",
     "description": "Grey Electric Meters",
     "weight": 1000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "220",
+    "description": "Aluminum BX",
+    "weight": 2000,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
