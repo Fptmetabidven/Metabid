@@ -353,9 +353,9 @@
   {
     "id": "161",
     "description": "Clean Brass Rads",
-    "weight": "12000",
+    "weight": 12000,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ef535fa6f0dc4d9cbf90435d613f5684][1]_[1].jpeg"
   },
