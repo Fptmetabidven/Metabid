@@ -623,9 +623,9 @@
   {
     "id": "189",
     "description": "Plug Ends",
-    "weight": 1275,
+    "weight": "1275",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[1ae367f4efb547508e028202ca235761][1]_[1].jpeg"
   },
