@@ -551,9 +551,9 @@
   {
     "id": "181",
     "description": "Insulated Copper Welding Cable",
-    "weight": "900",
+    "weight": 900,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/181.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[46d4355007824f2089c33fdf23637f14][1]_[1].jpeg"
   },
