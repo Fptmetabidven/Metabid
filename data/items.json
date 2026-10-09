@@ -650,9 +650,9 @@
   {
     "id": "192",
     "description": "Rod Borings",
-    "weight": 7100,
+    "weight": "7100",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[d59e4d6663df4ce08fdc51a49d35c21f][1]_[1].jpeg"
   },
