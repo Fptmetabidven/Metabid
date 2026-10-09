@@ -236,11 +236,11 @@
   {
     "id": "148",
     "description": "Orange Bus Bar",
-    "weight": 1700,
+    "weight": "1700",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[37dc46a4324e4aab940f30ebcfe12704][1]_[1].jpeg"
   },
   {
     "id": "149",
