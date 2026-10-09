@@ -722,11 +722,11 @@
   {
     "id": "200",
     "description": "Al/Cu Windings Bale",
-    "weight": 1600,
+    "weight": "1600",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[39690096bd55479f828c14b885b12ef4][1]_[1].jpeg"
   },
   {
     "id": "201",
