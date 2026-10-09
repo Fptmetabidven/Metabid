@@ -416,11 +416,11 @@
   {
     "id": "168",
     "description": "Copper Breakage",
-    "weight": 3275,
+    "weight": "3275",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[35db79c2b1b14142bed84d4fc7c10b0e][1]_[1].jpeg"
   },
   {
     "id": "169",
