@@ -479,11 +479,11 @@
   {
     "id": "175",
     "description": "EDM Wire",
-    "weight": 6800,
+    "weight": "6800",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[429fc431fa034c67bc5262915075cb82][1]_[1].jpeg"
   },
   {
     "id": "176",
