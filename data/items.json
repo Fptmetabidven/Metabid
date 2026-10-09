@@ -668,9 +668,9 @@
   {
     "id": "194",
     "description": "Window Motors",
-    "weight": 675,
+    "weight": "675",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[46a82350b8d54f7eaf05461e66fed7e6][1]_[1].jpeg"
   },
