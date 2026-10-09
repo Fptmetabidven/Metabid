@@ -812,9 +812,9 @@
   {
     "id": "213",
     "description": "#2 70% Copper Welding Cable",
-    "weight": "8000",
+    "weight": 8000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[e338f586e8134777b6bb78c97508b8c2][1]_[1].jpeg"
   },
