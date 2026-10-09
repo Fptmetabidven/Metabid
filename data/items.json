@@ -272,9 +272,9 @@
   {
     "id": "152",
     "description": "Talk Ends",
-    "weight": "20000",
+    "weight": 20000,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[3508bdb4dfe64eab8df1f3c398a456c3][1]_[1].jpeg"
   },
