@@ -641,9 +641,9 @@
   {
     "id": "191",
     "description": "Refinery Copper",
-    "weight": 4300,
+    "weight": "4300",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[154769a5f71c41a3bf3d7281f088da44][1]_[1].jpeg"
   },
