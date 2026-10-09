@@ -749,9 +749,9 @@
   {
     "id": "203",
     "description": "#3 Copper ",
-    "weight": "3000",
+    "weight": 3000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[af7a48adfd3f43b3b596b811f229e83c][1]_[1].jpeg"
   },
@@ -873,15 +873,6 @@
     "photoSourceName": ""
   },
   {
-    "id": "218",
-    "description": "26% Cu w Fe & Plastic",
-    "weight": 200,
-    "fptNotes": "Inkster",
-    "currentPrice": 0,
-    "photo": "",
-    "photoSourceName": ""
-  },
-  {
     "id": "219",
     "description": "Grey Electric Meters",
     "weight": 1000,
@@ -894,6 +885,15 @@
     "id": "220",
     "description": "Aluminum BX",
     "weight": 2000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "221",
+    "description": "Manganese Bronze Solids",
+    "weight": 3000,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
