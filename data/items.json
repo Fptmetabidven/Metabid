@@ -344,9 +344,9 @@
   {
     "id": "160",
     "description": "CAT Wire",
-    "weight": 10700,
+    "weight": "10700",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[407d8f4db1f84ef29274d4a4b82add5e][1]_[1].jpeg"
   },
