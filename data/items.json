@@ -290,9 +290,9 @@
   {
     "id": "154",
     "description": "Al/Cu URD",
-    "weight": 1050,
+    "weight": "1050",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[90ad817060214930befb5c4dbb44d0e8][1]_[1].jpeg"
   },
