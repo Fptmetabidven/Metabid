@@ -407,9 +407,9 @@
   {
     "id": "167",
     "description": "Copper Bearing 93%",
-    "weight": 850,
+    "weight": "850",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9f05c2253f1a4fb6afa01984970aa40c][1]_[1].jpeg"
   },
