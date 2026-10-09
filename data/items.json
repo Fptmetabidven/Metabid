@@ -515,9 +515,9 @@
   {
     "id": "179",
     "description": "Green Boards",
-    "weight": "700",
+    "weight": 700,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2e18f5ea7e394074896620a9e2874bdf][1]_[1].jpeg"
   },
