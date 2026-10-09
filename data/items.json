@@ -317,11 +317,11 @@
   {
     "id": "157",
     "description": "Battery Jump Boxes",
-    "weight": 570,
+    "weight": "570",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2c2b37967f4c43fb8e96e2c5e6e5fb4b][1]_[1].jpeg"
   },
   {
     "id": "158",
