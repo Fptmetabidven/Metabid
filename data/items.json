@@ -659,9 +659,9 @@
   {
     "id": "193",
     "description": "Wheel Weights",
-    "weight": 9500,
+    "weight": "9500",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[d4ff2a4c837340f1a6ee58953fdc6549][1]_[1].jpeg"
   },
