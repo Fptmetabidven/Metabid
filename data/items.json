@@ -767,9 +767,9 @@
   {
     "id": "207",
     "description": "50% Cu Ins Al BX",
-    "weight": "1900",
+    "weight": 1900,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/207.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[8ed36f85232243e4a6e626da0301fa11][1]_[1].jpeg"
   },
