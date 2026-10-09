@@ -362,9 +362,9 @@
   {
     "id": "162",
     "description": "Clean Zinc/Diecast",
-    "weight": "2773",
+    "weight": 2773,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/162.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[024bc193b6794c3f87a67639db0250ca][1]_[1].jpeg"
   },
