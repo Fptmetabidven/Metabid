@@ -182,9 +182,9 @@
   {
     "id": "142",
     "description": "Mixed E Scrap",
-    "weight": "500",
+    "weight": 500,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/142.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[7aaf8bb0adcf4f9084caa930cd31fdff][1]_[1].jpeg"
   },
