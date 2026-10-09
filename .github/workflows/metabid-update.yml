@@ -1190,10 +1190,11 @@ jobs:
           EOF
           )
 
-          gh issue create \
+            gh issue create \
             --repo "$GITHUB_REPOSITORY" \
             --title "MetaBid Photo Complete - Item ${ITEM_ID}" \
-            --body "$BODY"
+            --body "$BODY" \
+            --assignee "Fptmetabidven"
 
           echo "Photo completion acknowledgement created."
 
