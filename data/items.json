@@ -137,11 +137,11 @@
   {
     "id": "137",
     "description": "Stator Rings",
-    "weight": 1500,
+    "weight": "1500",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[494e76989cef4ca8bbb5f5f9b6234bc7][1]_[1].jpeg"
   },
   {
     "id": "138",
