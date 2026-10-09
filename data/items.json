@@ -691,5 +691,59 @@
     "currentPrice": 0,
     "photo": "",
     "photoSourceName": ""
+  },
+  {
+    "id": "197",
+    "description": "Starters - Aluminum Nose",
+    "weight": 13000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "198",
+    "description": "13% Cu Transformers w FE",
+    "weight": 1000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "199",
+    "description": "Red Copper Powder",
+    "weight": 5000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "200",
+    "description": "Al/Cu Windings Bale",
+    "weight": 1600,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "201",
+    "description": "Clean Brass Turnings",
+    "weight": 9000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "202",
+    "description": "Auto Rads - Clean",
+    "weight": 1000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
   }
 ]
