@@ -542,11 +542,11 @@
   {
     "id": "182",
     "description": "Irony Brass 98%",
-    "weight": 9200,
+    "weight": "9200",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[afbbdaf84d7b4f038e53ea8071287fa8][1]_[1].jpeg"
   },
   {
     "id": "183",
