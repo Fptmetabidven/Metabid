@@ -614,9 +614,9 @@
   {
     "id": "188",
     "description": "Mixed Bronze Turnings",
-    "weight": "780",
+    "weight": 780,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/188.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6f104af262e14589b8011622193dd9f7][1]_[1].jpeg"
   },
@@ -840,6 +840,33 @@
     "id": "213",
     "description": "#2 70% Copper Welding Cable",
     "weight": 8000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "214",
+    "description": "CAT 5 Copper Wire",
+    "weight": 1600,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "215",
+    "description": "Mixed Al/Cu URD",
+    "weight": 500,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "216",
+    "description": "Black Electric Meters",
+    "weight": 3200,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
