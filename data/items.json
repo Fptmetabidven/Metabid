@@ -569,9 +569,9 @@
   {
     "id": "185",
     "description": "Lead Copper Cable",
-    "weight": "6600",
+    "weight": 6600,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/185.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2618227f8c97410abfe4692e63f87df5][1]_[1].jpeg"
   },
