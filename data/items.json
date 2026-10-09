@@ -452,11 +452,11 @@
   {
     "id": "172",
     "description": "Cu/Cu URD 60%",
-    "weight": 1000,
+    "weight": "1000",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[c21ae032737443909214fde2385593b8][1]_[1].jpeg"
   },
   {
     "id": "173",
