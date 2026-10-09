@@ -875,9 +875,9 @@
   {
     "id": "221",
     "description": "Manganese Bronze Solids",
-    "weight": "3000",
+    "weight": 3000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[18742e76095d4409808a028f49fd2416][1]_[1].jpeg"
   }
