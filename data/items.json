@@ -848,9 +848,9 @@
   {
     "id": "217",
     "description": "Steel BX",
-    "weight": "1000",
+    "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[862a5183804e4651a2c2ea86c0d8944c][1]_[1].jpeg"
   },
