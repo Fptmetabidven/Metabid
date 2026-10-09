@@ -605,9 +605,9 @@
   {
     "id": "187",
     "description": "Mixed Armoured Cable",
-    "weight": "950",
+    "weight": 950,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/187.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[00836d330fe6443b81917a4a691471eb][1]_[1].jpeg"
   },
@@ -776,7 +776,7 @@
   {
     "id": "206",
     "description": "70% #2 Copper Wire",
-    "weight": 20000,
+    "weight": 30000,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
@@ -813,6 +813,33 @@
     "id": "210",
     "description": "Donut Transformers",
     "weight": 300,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "211",
+    "description": "Ins Line Wire (Weatherproof)",
+    "weight": 2000,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "212",
+    "description": "#1 Copper Strips",
+    "weight": 1200,
+    "fptNotes": "Inkster",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
+    "id": "213",
+    "description": "#2 70% Copper Welding Cable",
+    "weight": 8000,
     "fptNotes": "Inkster",
     "currentPrice": 0,
     "photo": "",
