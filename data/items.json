@@ -866,9 +866,9 @@
   {
     "id": "220",
     "description": "Aluminum BX",
-    "weight": "2000",
+    "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/220.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[0799081af4494147b999d2137e6818e8][1]_[1].jpeg"
   },
