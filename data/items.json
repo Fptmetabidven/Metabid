@@ -704,9 +704,9 @@
   {
     "id": "198",
     "description": "13% Cu Transformers w FE",
-    "weight": 1000,
+    "weight": "1000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[8b8f1b88466d42e1b2fd8bbc12a2daba][1]_[1].jpeg"
   },
