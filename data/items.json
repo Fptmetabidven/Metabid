@@ -713,9 +713,9 @@
   {
     "id": "199",
     "description": "Red Copper Powder",
-    "weight": 5000,
+    "weight": "5000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9e94c1dcb25046d8a2be075a33cd4219][1]_[1].jpeg"
   },
