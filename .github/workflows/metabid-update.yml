@@ -110,17 +110,23 @@ jobs:
               item_id
           )
 
-          # Default: do not deploy Pages unless this event
-          # produces a finished public-site change.
-          def set_deploy_pages(value):
+          # Step outputs used after the repository push succeeds.
+          def set_step_output(name, value):
               output_file = os.environ.get("GITHUB_OUTPUT", "")
               if output_file:
+                  safe_value = str(value).replace("\r", " ").replace("\n", " ")
                   with open(output_file, "a", encoding="utf-8") as handle:
-                      handle.write(
-                          f"deploy_pages={'true' if value else 'false'}\n"
-                      )
+                      handle.write(f"{name}={safe_value}\n")
+
+          def set_deploy_pages(value):
+              set_step_output(
+                  "deploy_pages",
+                  "true" if value else "false"
+              )
 
           set_deploy_pages(False)
+          set_step_output("photo_completed", "false")
+          set_step_output("photo_filename", "")
 
 
           # ==================================================
@@ -916,6 +922,10 @@ jobs:
                   )
 
                   # The real image and items.json are now ready.
+                  # Acknowledge this exact SharePoint photo only after
+                  # the completed image is successfully pushed to main.
+                  set_step_output("photo_completed", "true")
+                  set_step_output("photo_filename", saved_filename)
                   set_deploy_pages(True)
 
 
@@ -1161,11 +1171,39 @@ jobs:
 
 
       # ======================================================
+      # ACKNOWLEDGE COMPLETED PHOTO TO POWER AUTOMATE
+      # ======================================================
+
+      - name: Create photo completion acknowledgement
+        if: ${{ steps.process_event.outputs.photo_completed == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          PHOTO_FILENAME: ${{ steps.process_event.outputs.photo_filename }}
+        run: |
+          echo "Creating photo completion acknowledgement..."
+
+          BODY=$(cat <<EOF
+          METABID_PHOTO_COMPLETE
+          ItemID: ${ITEM_ID}
+          PhotoFileName: ${PHOTO_FILENAME}
+          EOF
+          )
+
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "MetaBid Photo Complete - Item ${ITEM_ID}" \
+            --body "$BODY"
+
+          echo "Photo completion acknowledgement created."
+
+
+      # ======================================================
       # DEPLOY PAGES ONLY FOR FINISHED PUBLIC CHANGES
       # ======================================================
 
       - name: Deploy MetaBid Pages
-        if: ${{ steps.process_event.outputs.deploy_pages == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
+        if: ${{ !cancelled() && steps.process_event.outputs.deploy_pages == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
