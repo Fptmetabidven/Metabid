@@ -425,11 +425,11 @@
   {
     "id": "169",
     "description": "Mixed Copper Transformers",
-    "weight": 13000,
+    "weight": "13000",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
-    "photoSourceName": ""
+    "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[7fb5d8cc88a54f4aa3d8eeff62f62e53][1]_[1].jpeg"
   },
   {
     "id": "170",
