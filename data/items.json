@@ -803,9 +803,9 @@
   {
     "id": "212",
     "description": "#1 Copper Strips",
-    "weight": 1200,
+    "weight": "1200",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b9c4ea867f3347cb91ace3d433ec1cd9][1]_[1].jpeg"
   },
