@@ -308,9 +308,9 @@
   {
     "id": "156",
     "description": "Ampco Turnings",
-    "weight": 5200,
+    "weight": "5200",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[5c5514ce793d4ba8a3023ba711e80c7e][1]_[1].jpeg"
   },
