@@ -569,9 +569,9 @@
   {
     "id": "183",
     "description": "Irony Brass",
-    "weight": 3900,
+    "weight": "3900",
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[a659a1a11e8b43e0abcef5d2fb2bbf9a][1]_[1].jpeg"
   },
