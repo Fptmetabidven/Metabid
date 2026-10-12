@@ -18,6 +18,15 @@
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[55154785ea43448fb552440533ff5099][1]_[1].jpeg"
   },
   {
+    "id": "120",
+    "description": "Small Microwave Cable",
+    "weight": 450,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
+  },
+  {
     "id": "121",
     "description": "Water Meters",
     "weight": 2450,
@@ -794,9 +803,9 @@
   {
     "id": "210",
     "description": "Donut Transformers",
-    "weight": "300",
+    "weight": 300,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[bbfdd91b9141416a89e834a534bdabbf][1]_[1].jpeg"
   },
