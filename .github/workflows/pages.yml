@@ -1,6 +1,7 @@
 name: Deploy MetaBid Pages
 
 on:
+  # Deploy when you manually change the website
   push:
     branches:
       - main
@@ -9,6 +10,15 @@ on:
       - "admin.html"
       - "data/**"
       - "images/**"
+
+  # Deploy after the SharePoint sync finishes
+  workflow_run:
+    workflows:
+      - "MetaBid SharePoint Sync"
+    types:
+      - completed
+
+  # Allow manual deployment
   workflow_dispatch:
 
 permissions:
@@ -22,6 +32,14 @@ concurrency:
 
 jobs:
   deploy:
+    # Only deploy if:
+    # 1. This wasn't started by workflow_run
+    # OR
+    # 2. MetaBid SharePoint Sync completed successfully
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -29,16 +47,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # --------------------------------------------------
+      # CHECKOUT CURRENT MAIN BRANCH
+      # --------------------------------------------------
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
+
+
+      # --------------------------------------------------
+      # CONFIGURE GITHUB PAGES
+      # --------------------------------------------------
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+
+
+      # --------------------------------------------------
+      # UPLOAD METABID WEBSITE
+      # --------------------------------------------------
 
       - name: Upload MetaBid site
         uses: actions/upload-pages-artifact@v3
         with:
           path: "."
+
+
+      # --------------------------------------------------
+      # DEPLOY
+      # --------------------------------------------------
 
       - name: Deploy MetaBid site
         id: deployment
