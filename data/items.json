@@ -893,9 +893,9 @@
   {
     "id": "223",
     "description": "Cu Ins Comm Wire w Fe Jacket",
-    "weight": "4500",
+    "weight": 4500,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[1cb1a1acacae47209e8394de5825f910][1]_[1].jpeg"
   },
