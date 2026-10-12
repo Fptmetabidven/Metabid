@@ -902,9 +902,9 @@
   {
     "id": "224",
     "description": "Copper Carbon Foil",
-    "weight": 14000,
+    "weight": "14000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[e06b72e7080146979605efe5bdd21eb6][1]_[1].jpeg"
   },
