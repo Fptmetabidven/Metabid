@@ -956,9 +956,9 @@
   {
     "id": "231",
     "description": "Irony Brass",
-    "weight": "3000",
+    "weight": 3000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2eefba35127d432d896dec0b2c46ca3b][1]_[1].jpeg"
   },
