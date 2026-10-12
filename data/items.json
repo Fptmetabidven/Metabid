@@ -947,9 +947,9 @@
   {
     "id": "230",
     "description": "Al/Cu Microwave Cable",
-    "weight": "2000",
+    "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/230.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[5d6a11bc7d574b4ba53a77672f492e6f][1]_[1].jpeg"
   },
