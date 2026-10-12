@@ -920,9 +920,9 @@
   {
     "id": "227",
     "description": "EDM Wire",
-    "weight": 5000,
+    "weight": "5000",
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": "",
     "photo": "images/227.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b9c7497df357420aa61ab9463473fc5d][1]_[1].jpeg"
   },
