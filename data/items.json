@@ -256,7 +256,7 @@
     "description": "#1 Insulated 55%",
     "weight": 1350,
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": 3.17,
     "photo": "images/149.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9dac7381b9f04cdba51a6c29dc239049][1]_[1].jpeg"
   },
@@ -265,7 +265,7 @@
     "description": "#1 Insulated 60%",
     "weight": 1980,
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": 3.46,
     "photo": "images/150.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[388957ead508429c8f2c6168e469f621][1]_[1].jpeg"
   },
@@ -760,7 +760,7 @@
     "description": "70% #2 Copper Wire",
     "weight": 30000,
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": 4.05,
     "photo": "images/206.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6624a52bea40423d921f1b112985376a][1]_[1].jpeg"
   },
@@ -778,7 +778,7 @@
     "description": "45% #2 Copper Wire",
     "weight": 10000,
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": 2.59,
     "photo": "images/208.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[d1c47f24440d45578eaee386517bb2c3][1]_[1].jpeg"
   },
@@ -814,7 +814,7 @@
     "description": "#2 70% Copper Welding Cable",
     "weight": 8000,
     "fptNotes": "Inkster",
-    "currentPrice": 0,
+    "currentPrice": 4.05,
     "photo": "images/213.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[e338f586e8134777b6bb78c97508b8c2][1]_[1].jpeg"
   },
