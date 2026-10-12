@@ -7,7 +7,8 @@ on:
 
 permissions:
   contents: write
-  
+  actions: write
+
 concurrency:
   group: metabid-inventory-write
   queue: max
@@ -17,10 +18,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # ==========================================================
+      # CHECKOUT
+      # ==========================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+
+      # ==========================================================
+      # PROCESS INVENTORY
+      # ==========================================================
 
       - name: Process inventory batch
         env:
@@ -28,105 +39,201 @@ jobs:
 
         run: |
           python3 <<'PY'
+
           import json
           import os
           from pathlib import Path
 
-          # ------------------------------------------
-          # Read incoming Open SharePoint items
-          # ------------------------------------------
 
-          raw = os.environ.get("ITEMS_JSON", "[]")
+          # ------------------------------------------------------
+          # Read incoming Open SharePoint items
+          # ------------------------------------------------------
+
+          raw = os.environ.get(
+              "ITEMS_JSON",
+              "[]"
+          )
 
           try:
-              incoming = json.loads(raw)
+
+              incoming = json.loads(
+                  raw
+              )
+
           except Exception as error:
+
               raise SystemExit(
                   f"Could not read inventory package: {error}"
               )
 
-          if not isinstance(incoming, list):
+
+          if not isinstance(
+              incoming,
+              list
+          ):
+
               raise SystemExit(
                   "Inventory package was not an array."
               )
+
 
           print(
               "Open SharePoint items received:",
               len(incoming)
           )
 
-          # Safety:
-          # The existing metabid-sync workflow handles
-          # the special case where there are zero Open items.
+
+          # ------------------------------------------------------
+          # ZERO ITEM SAFETY
+          # ------------------------------------------------------
+
+          # Existing metabid-sync handles the special case
+          # where there are zero Open SharePoint items.
+
           if len(incoming) == 0:
+
               print(
                   "No Open items received."
               )
+
               print(
                   "Leaving items.json unchanged so the existing "
                   "empty-list sync can handle that case."
               )
+
               raise SystemExit(0)
 
-          # ------------------------------------------
+
+          # ------------------------------------------------------
           # Load existing public inventory
-          # ------------------------------------------
+          # ------------------------------------------------------
 
-          data_folder = Path("data")
-          data_folder.mkdir(exist_ok=True)
+          data_folder = Path(
+              "data"
+          )
 
-          data_file = data_folder / "items.json"
+          data_folder.mkdir(
+              exist_ok=True
+          )
+
+          data_file = (
+              data_folder /
+              "items.json"
+          )
+
 
           if data_file.exists():
+
               try:
+
                   existing = json.loads(
                       data_file.read_text(
                           encoding="utf-8"
                       )
                   )
+
               except Exception:
+
                   existing = []
+
           else:
+
               existing = []
 
-          if not isinstance(existing, list):
+
+          if not isinstance(
+              existing,
+              list
+          ):
+
               existing = []
+
 
           existing_by_id = {
-              str(item.get("id", "")): item
+
+              str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ):
+              item
+
               for item in existing
-              if str(item.get("id", "")).strip()
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ).strip()
           }
 
-          # ------------------------------------------
+
+          # ------------------------------------------------------
           # Build new public inventory
-          # ------------------------------------------
+          # ------------------------------------------------------
 
           new_inventory = []
+
 
           for source in incoming:
 
               item_id = str(
                   source.get(
                       "itemId",
-                      source.get("id", "")
+                      source.get(
+                          "id",
+                          ""
+                      )
                   )
               ).strip()
 
+
               if not item_id:
+
                   print(
                       "Skipping item with no ID:",
                       source
                   )
+
                   continue
+
 
               old_item = existing_by_id.get(
                   item_id,
                   {}
               )
 
+
+              # --------------------------------------------------
+              # CURRENT BID
+              # --------------------------------------------------
+
+              current_price = source.get(
+                  "currentPrice",
+                  0
+              )
+
+
+              # Treat SharePoint blank/null Current Bid as $0.00
+
+              if current_price in [
+                  None,
+                  ""
+              ]:
+
+                  current_price = 0
+
+
+              # --------------------------------------------------
+              # BUILD PUBLIC ITEM
+              # --------------------------------------------------
+
               new_item = {
-                  "id": item_id,
+
+                  "id":
+                      item_id,
 
                   "description":
                       source.get(
@@ -147,13 +254,11 @@ jobs:
                       ),
 
                   "currentPrice":
-                      source.get(
-                          "currentPrice",
-                          ""
-                      ),
+                      current_price,
 
-                  # Keep existing photo while the
+                  # Keep the existing photo while the
                   # separate photo process runs.
+
                   "photo":
                       old_item.get(
                           "photo",
@@ -167,15 +272,23 @@ jobs:
                       )
               }
 
+
               new_inventory.append(
                   new_item
               )
 
-          # ------------------------------------------
+
+              print(
+                  f"Item {item_id}: Current Bid = {current_price}"
+              )
+
+
+          # ------------------------------------------------------
           # Sort by SharePoint ID
-          # ------------------------------------------
+          # ------------------------------------------------------
 
           def sort_key(item):
+
               value = str(
                   item.get(
                       "id",
@@ -184,25 +297,33 @@ jobs:
               )
 
               if value.isdigit():
-                  return int(value)
+
+                  return int(
+                      value
+                  )
 
               return 999999999
+
 
           new_inventory.sort(
               key=sort_key
           )
 
-          # ------------------------------------------
+
+          # ------------------------------------------------------
           # Save inventory ONCE
-          # ------------------------------------------
+          # ------------------------------------------------------
 
           data_file.write_text(
+
               json.dumps(
                   new_inventory,
                   indent=2
               ),
+
               encoding="utf-8"
           )
+
 
           print(
               "Inventory written successfully."
@@ -213,39 +334,155 @@ jobs:
               len(new_inventory)
           )
 
+
           PY
 
-      - name: Commit inventory batch
-        run: |
-          git config user.name "MetaBid Automation"
-          git config user.email "actions@github.com"
 
-          git add data/items.json
+      # ==========================================================
+      # COMMIT INVENTORY
+      # ==========================================================
+
+      - name: Commit inventory batch
+        id: commit_inventory
+
+        run: |
+
+          echo "pushed=false" >> "$GITHUB_OUTPUT"
+
+          git config \
+            user.name \
+            "MetaBid Automation"
+
+          git config \
+            user.email \
+            "actions@github.com"
+
+
+          git add \
+            data/items.json
+
+
+          # ------------------------------------------------------
+          # NOTHING CHANGED
+          # ------------------------------------------------------
 
           if git diff --cached --quiet
           then
+
             echo "Inventory already up to date."
+
             exit 0
+
           fi
 
-          git commit -m "MetaBid inventory batch sync"
 
+          # ------------------------------------------------------
+          # COMMIT
+          # ------------------------------------------------------
+
+          git commit \
+            -m "MetaBid inventory batch sync"
+
+
+          echo ""
           echo "Pushing inventory batch..."
+          echo ""
+
+
+          # ------------------------------------------------------
+          # FIRST PUSH
+          # ------------------------------------------------------
 
           if git push origin HEAD:main
           then
+
             echo "Inventory push successful."
+
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+
             exit 0
+
           fi
 
-          echo "Main changed. Rebasing once..."
 
-          git fetch origin main
+          # ------------------------------------------------------
+          # MAIN CHANGED
+          # ------------------------------------------------------
+
+          echo ""
+          echo "Main changed. Rebasing once..."
+          echo ""
+
+
+          git fetch \
+            origin \
+            main
+
+
+          # ------------------------------------------------------
+          # REBASE
+          # ------------------------------------------------------
 
           if GIT_EDITOR=true git rebase origin/main
           then
-            git push origin HEAD:main
-          else
-            git rebase --abort || true
+
+            echo ""
+            echo "Rebase successful."
+            echo ""
+
+
+            # ----------------------------------------------------
+            # SECOND PUSH
+            # ----------------------------------------------------
+
+            if git push origin HEAD:main
+            then
+
+              echo "Inventory push successful after rebase."
+
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+              exit 0
+
+            fi
+
+
+            echo "Push failed after successful rebase."
+
             exit 1
+
+          else
+
+            echo ""
+            echo "Inventory rebase conflict."
+            echo "Aborting rebase."
+            echo ""
+
+            git rebase --abort || true
+
+            exit 1
+
           fi
+
+
+      # ==========================================================
+      # DEPLOY PUBLIC SITE
+      # ==========================================================
+
+      - name: Deploy MetaBid Pages
+
+        if: ${{ steps.commit_inventory.outputs.pushed == 'true' }}
+
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+        run: |
+
+          echo "Inventory changed."
+          echo "Starting MetaBid Pages deployment..."
+
+          gh workflow run \
+            pages.yml \
+            --ref main
+
+          echo "MetaBid Pages deployment requested."
