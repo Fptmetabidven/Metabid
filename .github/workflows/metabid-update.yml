@@ -15,16 +15,12 @@ permissions:
 concurrency:
   group: metabid-inventory-write
   queue: max
-  
 
 jobs:
-
   update-metabid:
-
     runs-on: ubuntu-latest
 
     steps:
-
       # ======================================================
       # CHECKOUT
       # ======================================================
@@ -33,52 +29,134 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
 
 
-   
       # ======================================================
       # PROCESS EVENT
       # ======================================================
 
       - name: Process MetaBid event
         id: process_event
-
         env:
-
           EVENT_TYPE: ${{ github.event.action }}
-
           ITEM_ID: ${{ github.event.client_payload.itemId }}
-
           DESCRIPTION: ${{ github.event.client_payload.description }}
-
           WEIGHT: ${{ github.event.client_payload.weight }}
-
           FPT_NOTES: ${{ github.event.client_payload.fptNotes }}
-
           CURRENT_PRICE: ${{ github.event.client_payload.currentPrice }}
 
-
           PHOTO_FILENAME: ${{ github.event.client_payload.photoFileName }}
-
           PHOTO_SOURCE_NAME: ${{ github.event.client_payload.photoFileName }}
-
           PHOTO_CHUNK_COUNT: ${{ github.event.client_payload.photoChunkCount }}
 
           CHUNK_INDEX: ${{ github.event.client_payload.chunkIndex }}
-
           CHUNK_COUNT: ${{ github.event.client_payload.chunkCount }}
-
           CHUNK_DATA: ${{ github.event.client_payload.chunkData }}
 
         run: |
-
           python3 <<'PY'
-
           import os
           import json
           import base64
           import shutil
           from pathlib import Path
+
+
+          # ==================================================
+          # HELPERS
+          # ==================================================
+
+          def set_step_output(name, value):
+              output_file = os.environ.get("GITHUB_OUTPUT", "")
+              if output_file:
+                  safe_value = str(value).replace("\r", " ").replace("\n", " ")
+                  with open(output_file, "a", encoding="utf-8") as handle:
+                      handle.write(f"{name}={safe_value}\n")
+
+
+          def set_deploy_pages(value):
+              set_step_output(
+                  "deploy_pages",
+                  "true" if value else "false"
+              )
+
+
+          def load_items(data_file):
+              if not data_file.exists():
+                  return []
+
+              try:
+                  loaded = json.loads(
+                      data_file.read_text(
+                          encoding="utf-8"
+                      )
+                  )
+              except Exception:
+                  return []
+
+              if not isinstance(loaded, list):
+                  return []
+
+              return loaded
+
+
+          def save_items(data_file, items):
+              data_file.write_text(
+                  json.dumps(
+                      items,
+                      indent=2
+                  ),
+                  encoding="utf-8"
+              )
+
+
+          def sort_items(items):
+              def sort_key(item):
+                  value = str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  )
+
+                  if value.isdigit():
+                      return int(value)
+
+                  return 999999999
+
+              items.sort(
+                  key=sort_key
+              )
+
+
+          def find_existing_image(images_folder, item_id):
+              allowed_extensions = {
+                  ".jpg",
+                  ".jpeg",
+                  ".png",
+                  ".gif",
+                  ".webp"
+              }
+
+              matches = [
+                  path
+                  for path in images_folder.glob(
+                      f"{item_id}.*"
+                  )
+                  if path.is_file()
+                  and path.suffix.lower() in allowed_extensions
+              ]
+
+              if not matches:
+                  return None
+
+              matches.sort(
+                  key=lambda path: path.stat().st_mtime,
+                  reverse=True
+              )
+
+              return matches[0]
 
 
           # ==================================================
@@ -110,23 +188,22 @@ jobs:
               item_id
           )
 
-          # Step outputs used after the repository push succeeds.
-          def set_step_output(name, value):
-              output_file = os.environ.get("GITHUB_OUTPUT", "")
-              if output_file:
-                  safe_value = str(value).replace("\r", " ").replace("\n", " ")
-                  with open(output_file, "a", encoding="utf-8") as handle:
-                      handle.write(f"{name}={safe_value}\n")
 
-          def set_deploy_pages(value):
-              set_step_output(
-                  "deploy_pages",
-                  "true" if value else "false"
-              )
+          # ==================================================
+          # DEFAULT OUTPUTS
+          # ==================================================
 
           set_deploy_pages(False)
-          set_step_output("photo_completed", "false")
-          set_step_output("photo_filename", "")
+
+          set_step_output(
+              "photo_completed",
+              "false"
+          )
+
+          set_step_output(
+              "photo_filename",
+              ""
+          )
 
 
           # ==================================================
@@ -167,31 +244,9 @@ jobs:
           # LOAD INVENTORY
           # ==================================================
 
-          if data_file.exists():
-
-              try:
-
-                  items = json.loads(
-                      data_file.read_text(
-                          encoding="utf-8"
-                      )
-                  )
-
-              except Exception:
-
-                  items = []
-
-          else:
-
-              items = []
-
-
-          if not isinstance(
-              items,
-              list
-          ):
-
-              items = []
+          items = load_items(
+              data_file
+          )
 
 
           # ==================================================
@@ -199,7 +254,6 @@ jobs:
           # ==================================================
 
           if event_type == "metabid_update":
-
 
               description = os.environ.get(
                   "DESCRIPTION",
@@ -221,21 +275,18 @@ jobs:
                   ""
               )
 
-
               photo_source_name = os.environ.get(
                   "PHOTO_SOURCE_NAME",
                   ""
               ).strip()
 
 
-
               # ==============================================
-              # PRESERVE EXISTING PHOTO
+              # PRESERVE EXISTING PHOTO INFORMATION
               # ==============================================
 
               existing_photo = ""
               existing_photo_source_name = ""
-
 
               for item in items:
 
@@ -246,23 +297,103 @@ jobs:
                       )
                   ) == item_id:
 
-                      existing_photo = item.get(
-                          "photo",
-                          ""
-                      )
+                      existing_photo = str(
+                          item.get(
+                              "photo",
+                              ""
+                          )
+                      ).strip()
 
-                      existing_photo_source_name = item.get(
-                          "photoSourceName",
-                          ""
-                      )
+                      existing_photo_source_name = str(
+                          item.get(
+                              "photoSourceName",
+                              ""
+                          )
+                      ).strip()
 
                       break
 
 
-              # Lightweight updates do not send photoFileName.
-              # Preserve the last known SharePoint photo identity in that case.
+              # ==============================================
+              # CHECK THE IMAGES FOLDER FIRST
+              # ==============================================
+              #
+              # If the image already made it into GitHub but
+              # items.json lost or has the wrong path, recover
+              # the image locally instead of asking SharePoint
+              # to send the same image again.
+              #
+              # Only reuse an existing image automatically when
+              # this is a lightweight update with no incoming
+              # photo filename, or when the incoming filename
+              # matches the previously stored SharePoint photo.
+              # ==============================================
+
+              existing_image = find_existing_image(
+                  images_folder,
+                  item_id
+              )
+
+              source_matches_existing = (
+                  not photo_source_name
+                  or (
+                      bool(existing_photo_source_name)
+                      and photo_source_name == existing_photo_source_name
+                  )
+              )
+
+              recovered_existing_image = False
+
+              if (
+                  existing_image is not None
+                  and source_matches_existing
+              ):
+
+                  existing_photo = (
+                      existing_image.as_posix()
+                  )
+
+                  recovered_existing_image = True
+
+                  print(
+                      "Existing GitHub image found:",
+                      existing_photo
+                  )
+
+                  print(
+                      "Using image from images folder."
+                  )
+
+              elif existing_image is not None:
+
+                  print(
+                      "An existing image was found, but the "
+                      "SharePoint photo filename changed."
+                  )
+
+                  print(
+                      "Old source:",
+                      existing_photo_source_name
+                  )
+
+                  print(
+                      "New source:",
+                      photo_source_name
+                  )
+
+                  print(
+                      "Waiting for the new photo chunks."
+                  )
+
+
+              # Lightweight updates do not always send
+              # photoFileName. Preserve the last known
+              # SharePoint photo identity in that case.
+
               if not photo_source_name:
-                  photo_source_name = existing_photo_source_name
+                  photo_source_name = (
+                      existing_photo_source_name
+                  )
 
 
               # ==============================================
@@ -270,7 +401,6 @@ jobs:
               # ==============================================
 
               new_item = {
-
                   "id":
                       item_id,
 
@@ -291,7 +421,6 @@ jobs:
 
                   "photoSourceName":
                       photo_source_name
-
               }
 
 
@@ -300,7 +429,6 @@ jobs:
               # ==============================================
 
               found = False
-
 
               for index, item in enumerate(
                   items
@@ -318,7 +446,6 @@ jobs:
                       )
 
                       found = True
-
                       break
 
 
@@ -330,47 +457,17 @@ jobs:
 
 
               # ==============================================
-              # SORT BY SHAREPOINT ID
+              # SORT AND SAVE
               # ==============================================
 
-              def sort_key(item):
-
-                  value = str(
-                      item.get(
-                          "id",
-                          ""
-                      )
-                  )
-
-                  if value.isdigit():
-
-                      return int(
-                          value
-                      )
-
-                  return 999999999
-
-
-              items.sort(
-                  key=sort_key
+              sort_items(
+                  items
               )
 
-
-              # ==============================================
-              # SAVE ITEMS.JSON
-              # ==============================================
-
-              data_file.write_text(
-
-                  json.dumps(
-                      items,
-                      indent=2
-                  ),
-
-                  encoding="utf-8"
-
+              save_items(
+                  data_file,
+                  items
               )
-
 
               print(
                   "Item data updated."
@@ -381,24 +478,84 @@ jobs:
                   current_price
               )
 
-              # Mark the item pending when this update expects photo chunks.
+
+              # ==============================================
+              # PHOTO EXPECTATION
+              # ==============================================
+
               photo_chunk_count_text = os.environ.get(
                   "PHOTO_CHUNK_COUNT",
                   ""
               ).strip()
 
               try:
-                  photo_chunk_count = int(photo_chunk_count_text or "0")
+
+                  photo_chunk_count = int(
+                      photo_chunk_count_text or "0"
+                  )
+
               except ValueError:
+
                   photo_chunk_count = 0
 
+
               if photo_chunk_count > 0:
-                  pending_file = chunk_root / f"pending-{item_id}.txt"
-                  pending_file.write_text(str(photo_chunk_count), encoding="utf-8")
-                  print("Photo pending:", photo_chunk_count, "chunks expected.")
-                  print("Pages deployment will wait for the completed photo.")
+
+                  # If this is the SAME photo and the image
+                  # already exists in images/, do not mark it
+                  # missing again. Use the existing GitHub image.
+
+                  if recovered_existing_image:
+
+                      pending_file = (
+                          chunk_root /
+                          f"pending-{item_id}.txt"
+                      )
+
+                      if pending_file.exists():
+                          pending_file.unlink()
+
+                      print(
+                          "Photo chunks were expected, but the "
+                          "matching image already exists in GitHub."
+                      )
+
+                      print(
+                          "Skipping another photo pull."
+                      )
+
+                      set_deploy_pages(
+                          True
+                      )
+
+                  else:
+
+                      pending_file = (
+                          chunk_root /
+                          f"pending-{item_id}.txt"
+                      )
+
+                      pending_file.write_text(
+                          str(photo_chunk_count),
+                          encoding="utf-8"
+                      )
+
+                      print(
+                          "Photo pending:",
+                          photo_chunk_count,
+                          "chunks expected."
+                      )
+
+                      print(
+                          "Pages deployment will wait for "
+                          "the completed photo."
+                      )
+
               else:
-                  set_deploy_pages(True)
+
+                  set_deploy_pages(
+                      True
+                  )
 
 
           # ==================================================
@@ -406,7 +563,6 @@ jobs:
           # ==================================================
 
           elif event_type == "metabid_photo_chunk":
-
 
               chunk_index_text = os.environ.get(
                   "CHUNK_INDEX",
@@ -472,12 +628,9 @@ jobs:
               # ==============================================
 
               item_chunk_folder = (
-
                   chunk_root /
                   item_id
-
               )
-
 
               item_chunk_folder.mkdir(
                   parents=True,
@@ -495,11 +648,8 @@ jobs:
                       item_chunk_folder /
                       "filename.txt"
                   ).write_text(
-
                       photo_filename,
-
                       encoding="utf-8"
-
                   )
 
 
@@ -508,21 +658,14 @@ jobs:
               # ==============================================
 
               chunk_file = (
-
                   item_chunk_folder /
                   f"{chunk_index:06d}.txt"
-
               )
-
 
               chunk_file.write_text(
-
                   chunk_data,
-
                   encoding="utf-8"
-
               )
-
 
               print(
                   "Saved chunk",
@@ -537,25 +680,18 @@ jobs:
               # ==============================================
 
               expected_names = [
-
                   f"{index:06d}.txt"
-
                   for index in range(
                       chunk_count
                   )
-
               ]
 
-
               all_present = all(
-
                   (
                       item_chunk_folder /
                       name
                   ).exists()
-
                   for name in expected_names
-
               )
 
 
@@ -565,34 +701,22 @@ jobs:
 
               if not all_present:
 
-
                   actual_chunks = [
-
                       file
-
                       for file in
                       item_chunk_folder.glob(
                           "*.txt"
                       )
-
                       if file.name !=
                       "filename.txt"
-
                   ]
 
-
                   print(
-
                       "Waiting for remaining chunks.",
-
                       len(actual_chunks),
-
                       "of",
-
                       chunk_count,
-
                       "received."
-
                   )
 
 
@@ -601,7 +725,6 @@ jobs:
               # ==============================================
 
               else:
-
 
                   print(
                       "All photo chunks received."
@@ -614,24 +737,19 @@ jobs:
 
                   complete_base64 = ""
 
-
                   for index in range(
                       chunk_count
                   ):
 
                       current_chunk = (
-
                           item_chunk_folder /
                           f"{index:06d}.txt"
-
                       )
 
                       complete_base64 += (
-
                           current_chunk.read_text(
                               encoding="utf-8"
                           ).strip()
-
                       )
 
 
@@ -640,21 +758,16 @@ jobs:
                   # ==========================================
 
                   filename_file = (
-
                       item_chunk_folder /
                       "filename.txt"
-
                   )
-
 
                   if filename_file.exists():
 
                       saved_filename = (
-
                           filename_file.read_text(
                               encoding="utf-8"
                           ).strip()
-
                       )
 
                   else:
@@ -668,15 +781,12 @@ jobs:
                       saved_filename
                   ).suffix.lower()
 
-
                   if extension not in [
-
                       ".jpg",
                       ".jpeg",
                       ".png",
                       ".gif",
                       ".webp"
-
                   ]:
 
                       extension = ".jpg"
@@ -704,9 +814,7 @@ jobs:
                   except Exception as error:
 
                       raise SystemExit(
-
                           f"Could not decode image: {error}"
-
                       )
 
 
@@ -741,24 +849,18 @@ jobs:
                   # ==========================================
 
                   image_file = (
-
                       images_folder /
                       f"{item_id}{extension}"
-
                   )
-
 
                   image_file.write_bytes(
                       image_bytes
                   )
 
-
                   photo_path = (
-
                       f"images/"
                       f"{item_id}"
                       f"{extension}"
-
                   )
 
 
@@ -772,33 +874,9 @@ jobs:
                   # RELOAD ITEMS.JSON
                   # ==========================================
 
-                  if data_file.exists():
-
-                      try:
-
-                          items = json.loads(
-
-                              data_file.read_text(
-                                  encoding="utf-8"
-                              )
-
-                          )
-
-                      except Exception:
-
-                          items = []
-
-                  else:
-
-                      items = []
-
-
-                  if not isinstance(
-                      items,
-                      list
-                  ):
-
-                      items = []
+                  items = load_items(
+                      data_file
+                  )
 
 
                   # ==========================================
@@ -806,7 +884,6 @@ jobs:
                   # ==========================================
 
                   found = False
-
 
                   for item in items:
 
@@ -826,7 +903,6 @@ jobs:
                           )
 
                           found = True
-
                           break
 
 
@@ -837,7 +913,6 @@ jobs:
                   if not found:
 
                       items.append({
-
                           "id":
                               item_id,
 
@@ -858,50 +933,20 @@ jobs:
 
                           "photoSourceName":
                               saved_filename
-
                       })
 
 
                   # ==========================================
-                  # SORT ITEMS
+                  # SORT AND SAVE ITEMS.JSON
                   # ==========================================
 
-                  def sort_key(item):
-
-                      value = str(
-                          item.get(
-                              "id",
-                              ""
-                          )
-                      )
-
-                      if value.isdigit():
-
-                          return int(
-                              value
-                          )
-
-                      return 999999999
-
-
-                  items.sort(
-                      key=sort_key
+                  sort_items(
+                      items
                   )
 
-
-                  # ==========================================
-                  # SAVE ITEMS.JSON
-                  # ==========================================
-
-                  data_file.write_text(
-
-                      json.dumps(
-                          items,
-                          indent=2
-                      ),
-
-                      encoding="utf-8"
-
+                  save_items(
+                      data_file,
+                      items
                   )
 
 
@@ -913,20 +958,36 @@ jobs:
                       item_chunk_folder
                   )
 
-                  pending_file = chunk_root / f"pending-{item_id}.txt"
+                  pending_file = (
+                      chunk_root /
+                      f"pending-{item_id}.txt"
+                  )
+
                   if pending_file.exists():
                       pending_file.unlink()
+
 
                   print(
                       "Photo assembly complete."
                   )
 
-                  # The real image and items.json are now ready.
-                  # Acknowledge this exact SharePoint photo only after
-                  # the completed image is successfully pushed to main.
-                  set_step_output("photo_completed", "true")
-                  set_step_output("photo_filename", saved_filename)
-                  set_deploy_pages(True)
+
+                  # The workflow will verify the committed copy
+                  # on main before creating the acknowledgement.
+
+                  set_step_output(
+                      "photo_completed",
+                      "true"
+                  )
+
+                  set_step_output(
+                      "photo_filename",
+                      saved_filename
+                  )
+
+                  set_deploy_pages(
+                      True
+                  )
 
 
           # ==================================================
@@ -935,38 +996,25 @@ jobs:
 
           elif event_type == "metabid_remove":
 
-
               print(
                   "Removing item:",
                   item_id
               )
 
-
               items = [
-
                   item
-
                   for item in items
-
                   if str(
                       item.get(
                           "id",
                           ""
                       )
                   ) != item_id
-
               ]
 
-
-              data_file.write_text(
-
-                  json.dumps(
-                      items,
-                      indent=2
-                  ),
-
-                  encoding="utf-8"
-
+              save_items(
+                  data_file,
+                  items
               )
 
 
@@ -984,12 +1032,9 @@ jobs:
               # Remove unfinished chunks
 
               item_chunk_folder = (
-
                   chunk_root /
                   item_id
-
               )
-
 
               if item_chunk_folder.exists():
 
@@ -998,16 +1043,23 @@ jobs:
                   )
 
 
-              pending_file = chunk_root / f"pending-{item_id}.txt"
+              pending_file = (
+                  chunk_root /
+                  f"pending-{item_id}.txt"
+              )
+
               if pending_file.exists():
                   pending_file.unlink()
+
 
               print(
                   "Removed MetaBid item:",
                   item_id
               )
 
-              set_deploy_pages(True)
+              set_deploy_pages(
+                  True
+              )
 
 
           # ==================================================
@@ -1017,11 +1069,8 @@ jobs:
           else:
 
               raise SystemExit(
-
                   f"Unknown event: {event_type}"
-
               )
-
 
           PY
 
@@ -1032,15 +1081,11 @@ jobs:
 
       - name: Commit MetaBid changes
         id: commit_changes
-
         env:
-
           ITEM_ID: ${{ github.event.client_payload.itemId }}
-
           EVENT_TYPE: ${{ github.event.action }}
 
         run: |
-
           echo "pushed=false" >> "$GITHUB_OUTPUT"
 
           git config user.name \
@@ -1048,7 +1093,6 @@ jobs:
 
           git config user.email \
             "actions@github.com"
-
 
           git add -A
 
@@ -1078,15 +1122,21 @@ jobs:
 
           if [ "$EVENT_TYPE" = "metabid_photo_chunk" ] && [ -z "$NON_CHUNK_CHANGES" ]
           then
+
             git commit \
               -m "MetaBid photo chunk item ${ITEM_ID}"
+
           elif [ "$EVENT_TYPE" = "metabid_photo_chunk" ]
           then
+
             git commit \
               -m "MetaBid complete photo item ${ITEM_ID}"
+
           else
+
             git commit \
               -m "MetaBid ${EVENT_TYPE} item ${ITEM_ID}"
+
           fi
 
 
@@ -1116,7 +1166,6 @@ jobs:
           echo "Main changed before this run could push."
           echo "Fetching newest main..."
           echo ""
-
 
           git fetch origin main
 
@@ -1152,7 +1201,6 @@ jobs:
 
             exit 1
 
-
           else
 
             echo ""
@@ -1161,9 +1209,7 @@ jobs:
             echo "the same conflict repeatedly."
             echo ""
 
-
             git rebase --abort || true
-
 
             exit 1
 
@@ -1171,15 +1217,426 @@ jobs:
 
 
       # ======================================================
+      # VERIFY COMPLETED PHOTO ON MAIN
+      #
+      # Before creating the GitHub acknowledgement/issue,
+      # check the actual images folder on main.
+      #
+      # If the image exists but items.json has the wrong
+      # photo path, repair items.json from images/ instead of
+      # asking SharePoint to send the same image again.
+      # ======================================================
+
+      - name: Verify completed photo and repair items.json
+        id: verify_photo
+        if: ${{ steps.process_event.outputs.photo_completed == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
+
+        env:
+          ITEM_ID: ${{ github.event.client_payload.itemId }}
+          PHOTO_FILENAME: ${{ steps.process_event.outputs.photo_filename }}
+
+        run: |
+          echo "image_found=false" >> "$GITHUB_OUTPUT"
+          echo "photo_repaired=false" >> "$GITHUB_OUTPUT"
+          echo "photo_path=" >> "$GITHUB_OUTPUT"
+
+          echo ""
+          echo "Checking main branch for item ${ITEM_ID} image..."
+          echo ""
+
+          git fetch origin main
+          git reset --hard origin/main
+
+
+          python3 <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+
+          item_id = str(
+              os.environ.get(
+                  "ITEM_ID",
+                  ""
+              )
+          ).strip()
+
+          photo_filename = str(
+              os.environ.get(
+                  "PHOTO_FILENAME",
+                  ""
+              )
+          ).strip()
+
+          images_folder = Path(
+              "images"
+          )
+
+          data_file = Path(
+              "data/items.json"
+          )
+
+          allowed_extensions = {
+              ".jpg",
+              ".jpeg",
+              ".png",
+              ".gif",
+              ".webp"
+          }
+
+
+          # ==================================================
+          # FIND IMAGE ALREADY STORED IN GITHUB
+          # ==================================================
+
+          matches = [
+              path
+              for path in images_folder.glob(
+                  f"{item_id}.*"
+              )
+              if path.is_file()
+              and path.suffix.lower() in allowed_extensions
+          ]
+
+
+          if not matches:
+
+              print(
+                  f"No image exists in images/ for item {item_id}."
+              )
+
+              raise SystemExit(0)
+
+
+          matches.sort(
+              key=lambda path: path.stat().st_mtime,
+              reverse=True
+          )
+
+          image_file = matches[0]
+
+          photo_path = (
+              image_file.as_posix()
+          )
+
+
+          print(
+              "Image found in GitHub:",
+              photo_path
+          )
+
+
+          output_file = os.environ.get(
+              "GITHUB_OUTPUT",
+              ""
+          )
+
+          with open(
+              output_file,
+              "a",
+              encoding="utf-8"
+          ) as output:
+
+              output.write(
+                  "image_found=true\n"
+              )
+
+              output.write(
+                  f"photo_path={photo_path}\n"
+              )
+
+
+          # ==================================================
+          # LOAD ITEMS.JSON
+          # ==================================================
+
+          if not data_file.exists():
+
+              print(
+                  "items.json does not exist."
+              )
+
+              raise SystemExit(1)
+
+
+          try:
+
+              items = json.loads(
+                  data_file.read_text(
+                      encoding="utf-8"
+                  )
+              )
+
+          except Exception as error:
+
+              raise SystemExit(
+                  f"Could not read items.json: {error}"
+              )
+
+
+          if not isinstance(
+              items,
+              list
+          ):
+
+              raise SystemExit(
+                  "items.json is not a list."
+              )
+
+
+          # ==================================================
+          # REPAIR PHOTO REFERENCE
+          # ==================================================
+
+          found = False
+          changed = False
+
+          for item in items:
+
+              if str(
+                  item.get(
+                      "id",
+                      ""
+                  )
+              ) == item_id:
+
+                  found = True
+
+                  current_photo = str(
+                      item.get(
+                          "photo",
+                          ""
+                      )
+                  ).strip()
+
+                  if current_photo != photo_path:
+
+                      print(
+                          "Repairing photo path."
+                      )
+
+                      print(
+                          "Old path:",
+                          current_photo
+                      )
+
+                      print(
+                          "New path:",
+                          photo_path
+                      )
+
+                      item["photo"] = (
+                          photo_path
+                      )
+
+                      changed = True
+
+
+                  if (
+                      photo_filename
+                      and str(
+                          item.get(
+                              "photoSourceName",
+                              ""
+                          )
+                      ).strip() != photo_filename
+                  ):
+
+                      print(
+                          "Repairing photo source name."
+                      )
+
+                      item["photoSourceName"] = (
+                          photo_filename
+                      )
+
+                      changed = True
+
+                  break
+
+
+          if not found:
+
+              print(
+                  f"Item {item_id} is missing from items.json."
+              )
+
+              print(
+                  "Creating a fallback item so the existing "
+                  "GitHub image can still be referenced."
+              )
+
+              items.append({
+                  "id":
+                      item_id,
+
+                  "description":
+                      "",
+
+                  "weight":
+                      "",
+
+                  "fptNotes":
+                      "",
+
+                  "currentPrice":
+                      "",
+
+                  "photo":
+                      photo_path,
+
+                  "photoSourceName":
+                      photo_filename
+              })
+
+              changed = True
+
+
+          # ==================================================
+          # SAVE ONLY IF A REPAIR IS NEEDED
+          # ==================================================
+
+          if changed:
+
+              def sort_key(item):
+                  value = str(
+                      item.get(
+                          "id",
+                          ""
+                      )
+                  )
+
+                  if value.isdigit():
+                      return int(value)
+
+                  return 999999999
+
+
+              items.sort(
+                  key=sort_key
+              )
+
+
+              data_file.write_text(
+                  json.dumps(
+                      items,
+                      indent=2
+                  ),
+                  encoding="utf-8"
+              )
+
+
+              with open(
+                  output_file,
+                  "a",
+                  encoding="utf-8"
+              ) as output:
+
+                  output.write(
+                      "photo_repaired=true\n"
+                  )
+
+
+              print(
+                  "items.json repaired from existing GitHub image."
+              )
+
+          else:
+
+              print(
+                  "items.json already points to the existing image."
+              )
+
+          PY
+
+
+          # ==================================================
+          # COMMIT REPAIR IF NEEDED
+          # ==================================================
+
+          if [ -n "$(git status --porcelain data/items.json)" ]
+          then
+
+            echo ""
+            echo "Committing repaired photo reference..."
+            echo ""
+
+            git config user.name \
+              "MetaBid Automation"
+
+            git config user.email \
+              "actions@github.com"
+
+            git add data/items.json
+
+            git commit \
+              -m "Repair MetaBid photo reference item ${ITEM_ID}"
+
+
+            if git push origin HEAD:main
+            then
+
+              echo ""
+              echo "Photo reference repair pushed."
+              echo ""
+
+            else
+
+              echo ""
+              echo "Main changed while pushing repair."
+              echo "Rebasing repair onto latest main..."
+              echo ""
+
+              git fetch origin main
+
+              if GIT_EDITOR=true git rebase origin/main
+              then
+
+                git push origin HEAD:main
+
+                echo ""
+                echo "Photo reference repair pushed after rebase."
+                echo ""
+
+              else
+
+                git rebase --abort || true
+
+                echo ""
+                echo "Could not safely push photo reference repair."
+                echo ""
+
+                exit 1
+
+              fi
+
+            fi
+
+          else
+
+            echo ""
+            echo "No photo reference repair required."
+            echo ""
+
+          fi
+
+
+      # ======================================================
       # ACKNOWLEDGE COMPLETED PHOTO TO POWER AUTOMATE
+      #
+      # This only happens AFTER GitHub confirms the image
+      # exists in images/ and items.json points to it.
       # ======================================================
 
       - name: Create photo completion acknowledgement
-        if: ${{ steps.process_event.outputs.photo_completed == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
+        if: ${{ steps.process_event.outputs.photo_completed == 'true' && steps.verify_photo.outputs.image_found == 'true' }}
+
         env:
           GH_TOKEN: ${{ github.token }}
           ITEM_ID: ${{ github.event.client_payload.itemId }}
           PHOTO_FILENAME: ${{ steps.process_event.outputs.photo_filename }}
+          PHOTO_PATH: ${{ steps.verify_photo.outputs.photo_path }}
+
         run: |
           echo "Creating photo completion acknowledgement..."
 
@@ -1187,10 +1644,11 @@ jobs:
           METABID_PHOTO_COMPLETE
           ItemID: ${ITEM_ID}
           PhotoFileName: ${PHOTO_FILENAME}
+          PhotoPath: ${PHOTO_PATH}
           EOF
           )
 
-            gh issue create \
+          gh issue create \
             --repo "$GITHUB_REPOSITORY" \
             --title "MetaBid Photo Complete - Item ${ITEM_ID}" \
             --body "$BODY" \
@@ -1200,14 +1658,24 @@ jobs:
 
 
       # ======================================================
-      # DEPLOY PAGES ONLY FOR FINISHED PUBLIC CHANGES
+      # DEPLOY PAGES
+      #
+      # Normal item/remove changes deploy normally.
+      # Completed photos deploy only after the image is
+      # verified on main.
       # ======================================================
 
       - name: Deploy MetaBid Pages
-        if: ${{ !cancelled() && steps.process_event.outputs.deploy_pages == 'true' && steps.commit_changes.outputs.pushed == 'true' }}
+        if: ${{ !cancelled() && steps.process_event.outputs.deploy_pages == 'true' && steps.commit_changes.outputs.pushed == 'true' && (steps.process_event.outputs.photo_completed != 'true' || steps.verify_photo.outputs.image_found == 'true') }}
+
         env:
           GH_TOKEN: ${{ github.token }}
+
         run: |
           echo "Starting MetaBid Pages deployment..."
-          gh workflow run pages.yml --ref main
+
+          gh workflow run \
+            pages.yml \
+            --ref main
+
           echo "Pages deployment requested."
