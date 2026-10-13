@@ -20,9 +20,9 @@
   {
     "id": "120",
     "description": "Small Microwave Cable",
-    "weight": "450",
+    "weight": 450,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/120.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[56a776aae3f341bcaccb3dc1a5d6c961][1]_[1].jpeg"
   },
@@ -769,7 +769,7 @@
     "description": "70% #2 Copper Wire",
     "weight": 30000,
     "fptNotes": "Inkster",
-    "currentPrice": 3.96,
+    "currentPrice": 4.09,
     "photo": "images/206.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6624a52bea40423d921f1b112985376a][1]_[1].jpeg"
   },
@@ -841,7 +841,7 @@
     "description": "CAT 5 Copper Wire",
     "weight": 1600,
     "fptNotes": "Inkster",
-    "currentPrice": 2.65,
+    "currentPrice": 2.69,
     "photo": "images/214.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ad6512176d324262af6890372a660eaf][1]_[1].jpeg"
   },
@@ -886,7 +886,7 @@
     "description": "Aluminum BX",
     "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": 3.3,
+    "currentPrice": 3,
     "photo": "images/220.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[0799081af4494147b999d2137e6818e8][1]_[1].jpeg"
   },
