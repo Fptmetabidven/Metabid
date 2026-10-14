@@ -20,9 +20,9 @@
   {
     "id": "120",
     "description": "Small Microwave Cable",
-    "weight": "450",
+    "weight": 450,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 2.3,
     "photo": "images/120.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[56a776aae3f341bcaccb3dc1a5d6c961][1]_[1].jpeg"
   },
@@ -985,7 +985,7 @@
     "description": "New & Old Harness Mixed",
     "weight": 125000,
     "fptNotes": "New and Old Harness wire mixed together ",
-    "currentPrice": 2.88,
+    "currentPrice": 2.77,
     "photo": "images/232.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[068b6980b5434505bbc4fba6bf183649][1]_[1].jpeg"
   },
