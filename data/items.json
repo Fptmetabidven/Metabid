@@ -4,7 +4,7 @@
     "description": "Mold Max Turnings",
     "weight": 1000,
     "fptNotes": "",
-    "currentPrice": 5.95,
+    "currentPrice": 5.73,
     "photo": "images/118.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[f5a2f751adfc427eb98d2c86e457a63f][1]_[1].jpeg"
   },
@@ -13,16 +13,16 @@
     "description": "Aluminum Armor Cable",
     "weight": 1167,
     "fptNotes": "",
-    "currentPrice": 3.3,
+    "currentPrice": 3.41,
     "photo": "images/119.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[55154785ea43448fb552440533ff5099][1]_[1].jpeg"
   },
   {
     "id": "120",
     "description": "Small Microwave Cable",
-    "weight": "450",
+    "weight": 450,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 2.04,
     "photo": "images/120.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[56a776aae3f341bcaccb3dc1a5d6c961][1]_[1].jpeg"
   },
@@ -31,7 +31,7 @@
     "description": "Water Meters",
     "weight": 2450,
     "fptNotes": "",
-    "currentPrice": 5.21,
+    "currentPrice": 5.23,
     "photo": "images/121.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[88215f16b1ae4f5ca81e89b34b5f4ac6][1]_[1].jpeg"
   },
@@ -40,7 +40,7 @@
     "description": "85/15 bronze",
     "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": 4.75,
+    "currentPrice": 5.05,
     "photo": "images/122.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[bc28c4e84bf4490fa903d14a6fb28e82][1]_[1].jpeg"
   },
@@ -58,7 +58,7 @@
     "description": "11% Al / 11% ICW Trays",
     "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.35,
+    "currentPrice": 0.22,
     "photo": "images/125.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[aaacc9b018d24329b6f920cc341feb35][1]_[1].jpeg"
   },
@@ -67,7 +67,7 @@
     "description": "Mixed Transformers",
     "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.65,
+    "currentPrice": 0.66,
     "photo": "images/126.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ac8b24a5f3384662baca560b67f81c59][1]_[1].jpeg"
   },
@@ -76,7 +76,7 @@
     "description": "Cu Transformers - Medium",
     "weight": 7500,
     "fptNotes": "Inkster",
-    "currentPrice": 1.28,
+    "currentPrice": 1.1,
     "photo": "images/127.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ddd367811b7f4a9199223e0350e6b2dc][1]_[1].jpeg"
   },
@@ -85,7 +85,7 @@
     "description": "Copper Fuses",
     "weight": 500,
     "fptNotes": "Inkster",
-    "currentPrice": 2.3,
+    "currentPrice": 1.35,
     "photo": "images/128.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[00bcfd05ebe548ac9b60a29ba97a9d4f][1]_[1].jpeg"
   },
@@ -94,7 +94,7 @@
     "description": "Battery Jump Boxes",
     "weight": 2000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.45,
+    "currentPrice": 0.22,
     "photo": "images/129.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[149bd233fedd481d96dac4c7bced29ff][1]_[1].jpeg"
   },
@@ -103,7 +103,7 @@
     "description": "Laptops",
     "weight": 650,
     "fptNotes": "Inkster",
-    "currentPrice": 1.52,
+    "currentPrice": 1.55,
     "photo": "images/131.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[0f021decb5064a33bf85f63093ad2093][1]_[1].jpeg"
   },
@@ -112,7 +112,7 @@
     "description": "Switches",
     "weight": 1080,
     "fptNotes": "Inkster",
-    "currentPrice": 1.1,
+    "currentPrice": 1.6,
     "photo": "images/132.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[d88ad8dc2f96481d8c3ffb474733aff8][1]_[1].jpeg"
   },
@@ -121,7 +121,7 @@
     "description": "Clean Die Cast",
     "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.96,
+    "currentPrice": 0.9,
     "photo": "images/133.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2cfa9aaaa68c4c018be9dd812eb313c4][1]_[1].jpeg"
   },
@@ -130,7 +130,7 @@
     "description": "Clean Brass Meters",
     "weight": 900,
     "fptNotes": "Inkster",
-    "currentPrice": 5.21,
+    "currentPrice": 5.23,
     "photo": "images/134.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[539b7db150714c2f93472131d468d3d1][1]_[1].jpeg"
   },
@@ -139,7 +139,7 @@
     "description": "Brass Shells",
     "weight": 3500,
     "fptNotes": "Inkster",
-    "currentPrice": 4.16,
+    "currentPrice": 4,
     "photo": "images/135.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[6a3e7bfd0c954999a252b4675573d4e1][1]_[1].jpeg"
   },
@@ -148,7 +148,7 @@
     "description": "Small Armatures",
     "weight": 3000,
     "fptNotes": "Inkster",
-    "currentPrice": 1.4,
+    "currentPrice": 1.22,
     "photo": "images/136.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[fb6328d44dcd49e281e6b87efc583bd9][1]_[1].jpeg"
   },
@@ -157,7 +157,7 @@
     "description": "Stator Rings",
     "weight": 1500,
     "fptNotes": "Inkster",
-    "currentPrice": 1.72,
+    "currentPrice": 2.2,
     "photo": "images/137.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[494e76989cef4ca8bbb5f5f9b6234bc7][1]_[1].jpeg"
   },
@@ -166,7 +166,7 @@
     "description": "Copper Windings",
     "weight": 1800,
     "fptNotes": "Inkser",
-    "currentPrice": 5.8,
+    "currentPrice": 0.16,
     "photo": "images/138.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[486c6f1536354572abee2111cfbc61f7][1]_[1].jpeg"
   },
@@ -175,7 +175,7 @@
     "description": "Open Eye Cable (Hollow Core)",
     "weight": 5000,
     "fptNotes": "Inkster",
-    "currentPrice": 3.3,
+    "currentPrice": 3,
     "photo": "images/139.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[16e86e1fb7474e38b9c68dc8512e4bbc][1]_[1].jpeg"
   },
@@ -184,7 +184,7 @@
     "description": "Clean Lead",
     "weight": 7000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.76,
+    "currentPrice": 0.77,
     "photo": "images/140.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[0a4324003dee4d3a92cee8c596055e82][1]_[1].jpeg"
   },
@@ -193,7 +193,7 @@
     "description": "Mixed Boards",
     "weight": 500,
     "fptNotes": "Inkster",
-    "currentPrice": 1.4,
+    "currentPrice": 1.41,
     "photo": "images/141.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[dd8b028c1eb14d1488002f2a2aa0d206][1]_[1].jpeg"
   },
@@ -202,7 +202,7 @@
     "description": "Mixed E Scrap",
     "weight": 500,
     "fptNotes": "Inkster",
-    "currentPrice": 0.45,
+    "currentPrice": 0.47,
     "photo": "images/142.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[7aaf8bb0adcf4f9084caa930cd31fdff][1]_[1].jpeg"
   },
@@ -211,7 +211,7 @@
     "description": "Talk Ends",
     "weight": 2500,
     "fptNotes": "Inkster",
-    "currentPrice": 2.22,
+    "currentPrice": 2.1,
     "photo": "images/143.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[3366a776bbbe410794294b4a2f3da9e9][1]_[1].jpeg"
   },
@@ -220,7 +220,7 @@
     "description": "Computer Towers",
     "weight": 1000,
     "fptNotes": "Inkster",
-    "currentPrice": 0.67,
+    "currentPrice": 0.64,
     "photo": "images/144.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[993c331eb69d4423af107959a0f471ab][1]_[1].jpeg"
   },
@@ -229,7 +229,7 @@
     "description": "Cu Transformers - Large",
     "weight": 3300,
     "fptNotes": "Inkster",
-    "currentPrice": 1.47,
+    "currentPrice": 1.25,
     "photo": "images/145.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[729f4a7a39c44a88af8b1189b8a4673f][1]_[1].jpeg"
   },
@@ -238,7 +238,7 @@
     "description": "EV Fuse Box",
     "weight": 1100,
     "fptNotes": "Inkster",
-    "currentPrice": 0.95,
+    "currentPrice": 1.05,
     "photo": "images/146.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ec1cc73dc4ec4b17b40458d7ed461b1b][1]_[1].jpeg"
   },
@@ -247,7 +247,7 @@
     "description": "EV Valve Covers",
     "weight": 6000,
     "fptNotes": "Inkster",
-    "currentPrice": 1.4,
+    "currentPrice": 0.67,
     "photo": "images/147.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[61929c199c4246168d4a13ba0825f670][1]_[1].jpeg"
   },
@@ -256,7 +256,7 @@
     "description": "Orange Bus Bar",
     "weight": 1700,
     "fptNotes": "Inkster",
-    "currentPrice": 5.23,
+    "currentPrice": 0.66,
     "photo": "images/148.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[37dc46a4324e4aab940f30ebcfe12704][1]_[1].jpeg"
   },
@@ -265,7 +265,7 @@
     "description": "#1 Insulated 55%",
     "weight": 1350,
     "fptNotes": "",
-    "currentPrice": 3.27,
+    "currentPrice": 3.25,
     "photo": "images/149.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9dac7381b9f04cdba51a6c29dc239049][1]_[1].jpeg"
   },
@@ -274,7 +274,7 @@
     "description": "#1 Insulated 60%",
     "weight": 1980,
     "fptNotes": "",
-    "currentPrice": 3.66,
+    "currentPrice": 3.56,
     "photo": "images/150.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[388957ead508429c8f2c6168e469f621][1]_[1].jpeg"
   },
@@ -283,7 +283,7 @@
     "description": "#3 Copper with Light Tar",
     "weight": 630,
     "fptNotes": "",
-    "currentPrice": 4.9,
+    "currentPrice": 5.32,
     "photo": "images/151.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[21c2b0f5724045aea2fecd8ca756e1e3][1]_[1].jpeg"
   },
@@ -292,7 +292,7 @@
     "description": "Talk Ends",
     "weight": 20000,
     "fptNotes": "",
-    "currentPrice": 2.22,
+    "currentPrice": 2.1,
     "photo": "images/152.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[3508bdb4dfe64eab8df1f3c398a456c3][1]_[1].jpeg"
   },
@@ -301,7 +301,7 @@
     "description": "AL/BX Wire",
     "weight": 550,
     "fptNotes": "",
-    "currentPrice": 3.31,
+    "currentPrice": 3,
     "photo": "images/153.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[09378aeaa587448e8e1d2e68073d84ac][1]_[1].jpeg"
   },
@@ -310,7 +310,7 @@
     "description": "Al/Cu URD",
     "weight": 1050,
     "fptNotes": "",
-    "currentPrice": 1.32,
+    "currentPrice": 1.06,
     "photo": "images/154.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[90ad817060214930befb5c4dbb44d0e8][1]_[1].jpeg"
   },
@@ -319,7 +319,7 @@
     "description": "Ampco Solids",
     "weight": 2060,
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": 4.45,
     "photo": "images/155.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b91319f309a04ccc9322d071abf9e8c8][1]_[1].jpeg"
   },
@@ -328,7 +328,7 @@
     "description": "Ampco Turnings",
     "weight": 5200,
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": 4,
     "photo": "images/156.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[5c5514ce793d4ba8a3023ba711e80c7e][1]_[1].jpeg"
   },
@@ -337,7 +337,7 @@
     "description": "Battery Jump Boxes",
     "weight": 570,
     "fptNotes": "",
-    "currentPrice": 0.45,
+    "currentPrice": 0.22,
     "photo": "images/157.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2c2b37967f4c43fb8e96e2c5e6e5fb4b][1]_[1].jpeg"
   },
@@ -346,7 +346,7 @@
     "description": "Brass Breakage",
     "weight": 4380,
     "fptNotes": "",
-    "currentPrice": 2.1,
+    "currentPrice": 2.38,
     "photo": "images/158.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[4ca00b162ffb4650b7d99af798248e21][1]_[1].jpeg"
   },
@@ -355,7 +355,7 @@
     "description": "Brass Shells",
     "weight": 1530,
     "fptNotes": "",
-    "currentPrice": 4.16,
+    "currentPrice": 4,
     "photo": "images/159.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b1617e713f9a483e9212b7e95a404746][1]_[1].jpeg"
   },
@@ -364,7 +364,7 @@
     "description": "CAT Wire",
     "weight": 10700,
     "fptNotes": "",
-    "currentPrice": 2.81,
+    "currentPrice": 2.73,
     "photo": "images/160.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[407d8f4db1f84ef29274d4a4b82add5e][1]_[1].jpeg"
   },
@@ -373,7 +373,7 @@
     "description": "Clean Brass Rads",
     "weight": 12000,
     "fptNotes": "",
-    "currentPrice": 4.18,
+    "currentPrice": 4,
     "photo": "images/161.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[ef535fa6f0dc4d9cbf90435d613f5684][1]_[1].jpeg"
   },
@@ -382,7 +382,7 @@
     "description": "Clean Zinc/Diecast",
     "weight": 2773,
     "fptNotes": "",
-    "currentPrice": 0.96,
+    "currentPrice": 0.9,
     "photo": "images/162.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[024bc193b6794c3f87a67639db0250ca][1]_[1].jpeg"
   },
@@ -391,7 +391,7 @@
     "description": "Communication Wire",
     "weight": 1000,
     "fptNotes": "",
-    "currentPrice": 3.7,
+    "currentPrice": 3.66,
     "photo": "images/163.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[2f0761b902054245aa8d69aefd4dcb3d][1]_[1].jpeg"
   },
@@ -400,7 +400,7 @@
     "description": "Computer Towers",
     "weight": 2200,
     "fptNotes": "",
-    "currentPrice": 0.67,
+    "currentPrice": 0.64,
     "photo": "images/164.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[236c02f53c924c6ba5bbccbe0252230b][1]_[1].jpeg"
   },
@@ -409,7 +409,7 @@
     "description": "Computer Wire",
     "weight": 1000,
     "fptNotes": "",
-    "currentPrice": 1.55,
+    "currentPrice": 0.79,
     "photo": "images/165.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[b4eef99656584cd581330b0b90d316fc][1]_[1].jpeg"
   },
@@ -418,7 +418,7 @@
     "description": "Copper Bearing 60%",
     "weight": 1800,
     "fptNotes": "",
-    "currentPrice": 3.6,
+    "currentPrice": 3.33,
     "photo": "images/166.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[930308b5529d4de4a473902874d9a2a1][1]_[1].jpeg"
   },
@@ -427,7 +427,7 @@
     "description": "Copper Bearing 93%",
     "weight": 850,
     "fptNotes": "",
-    "currentPrice": 5.4,
+    "currentPrice": 5.3,
     "photo": "images/167.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[9f05c2253f1a4fb6afa01984970aa40c][1]_[1].jpeg"
   },
@@ -436,7 +436,7 @@
     "description": "Copper Breakage",
     "weight": 3275,
     "fptNotes": "",
-    "currentPrice": 1.2,
+    "currentPrice": 1.07,
     "photo": "images/168.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[35db79c2b1b14142bed84d4fc7c10b0e][1]_[1].jpeg"
   },
@@ -445,7 +445,7 @@
     "description": "Mixed Copper Transformers",
     "weight": 13000,
     "fptNotes": "",
-    "currentPrice": 1.3,
+    "currentPrice": 1.2,
     "photo": "images/169.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[7fb5d8cc88a54f4aa3d8eeff62f62e53][1]_[1].jpeg"
   },
@@ -994,7 +994,7 @@
     "description": "Lap Top Computers",
     "weight": 1165,
     "fptNotes": "",
-    "currentPrice": 0,
+    "currentPrice": 1.5,
     "photo": "",
     "photoSourceName": ""
   }
