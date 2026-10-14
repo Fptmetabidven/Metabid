@@ -20,9 +20,9 @@
   {
     "id": "120",
     "description": "Small Microwave Cable",
-    "weight": "450",
+    "weight": 450,
     "fptNotes": "",
-    "currentPrice": "",
+    "currentPrice": 0,
     "photo": "images/120.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[56a776aae3f341bcaccb3dc1a5d6c961][1]_[1].jpeg"
   },
@@ -988,5 +988,14 @@
     "currentPrice": 2.7,
     "photo": "images/232.jpeg",
     "photoSourceName": "Reserved_ImageAttachment_[5]_[Photo][32]_[068b6980b5434505bbc4fba6bf183649][1]_[1].jpeg"
+  },
+  {
+    "id": "233",
+    "description": "Lap Top Computers",
+    "weight": 1165,
+    "fptNotes": "",
+    "currentPrice": 0,
+    "photo": "",
+    "photoSourceName": ""
   }
 ]
